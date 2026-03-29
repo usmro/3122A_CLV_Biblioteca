@@ -15,27 +15,39 @@ public:
     std::string data_pub;
     int nr_pagini;
     std::string destinatar;
-    std::string subiect;
-    std::string note;
-    std::sursa;
     std::string status; 
+    std::string sursa;
+    
+
+    Carte(int id, std::string t, std::string a, std::string ed, std::string i, std::string l, std::string d_p, int nr, std::string dest,std::string st,std::string s_sursa);
 };
 
-class Utilizator {
+
+class CarteFictiune: public Carte{
+    public:
+        std::string personaj_principal;
+        std::string serie;
+        std::string tip_naratiune;
+        int varsta_recomandata;
+
+        CarteFictiune(int id, std::string t, std::string a, std::string ed, std::string i, std::string l, std::string d_p, int nr, std::string dest,std::string st, std::string s_sursa,  std::string p_p, std::string ser, std::string t_n, int varsta);
+};
+
+class CarteNonFictiune : public Carte {
 public:
-    int id_utilizator;
-    std::string nume;
-    std::string prenume;
-    std::string email;
-    std::string telefon;
-    std::string data_nasterii;
-    std::string gen;
-    std::string tip_utilizator; 
-    std::string data_inscriere;
-    int carti_active;
-    
-    
-    std::vector<int> lista_imprumuturi;
+    std::string domeniu;
+    std::string institutie_sursa;
+    std::string editie_revizuita;
+
+    CarteNonFictiune(int id, std::string t, std::string a, std::string ed, std::string i, std::string l, std::string d_p, int nr, std::string dest,std::string st, std::string s_sursa, std::string dom, std::string inst, std::string revz);
+};
+
+class CartePeriodica : public Carte {
+public:
+    int numar_editie;
+    std::string frecventa;
+
+    CartePeriodica(int id, std::string t, std::string a, std::string ed, std::string i, std::string l, std::string d_p, int nr, std::string dest, std::string st,std::string s_sursa, int nr_ed, std::string frecv);
 };
 
 #endif
