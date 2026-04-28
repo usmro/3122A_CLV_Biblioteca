@@ -15,9 +15,7 @@ ISBN		Caracter	20			Codul unic internațional
 Limba		Caracter	20			Limba în care este scrisă
 Data_pub	Caracter	12			Format 'yyyy-mm-dd' 
 Nr_pagini	Întreg		5			Numărul de pagini
-Destinatar	Caracter	30			Publicul țintă (Ex: Copii, Academic)
-Subiect		Caracter	100			Cuvinte cheie despre subiect
-Note		Caracter	200			Note generale/Observații 
+Destinatar	Caracter	30			Publicul țintă (Ex: Copii, Academic) 
 Sursa		Caracter	30			Proveniența (Editură/Donator)
 Status		Caracter	15			Disponibilă / Împrumutată
 
