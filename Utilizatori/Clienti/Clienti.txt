@@ -1,0 +1,11 @@
+ID;Nume;Prenume;Email;Telefon;DataN;Gen;Parola;Poza;Username;Varsta;DataInscriere
+101;Ionescu;Andrei;andrei.i@email.com;0721111222;1995-05-12;M;pass123;p101.jpg;AndreiCiteste;31;2024-01-15
+102;Popa;Elena;elena.p@email.com;0732444555;2002-11-20;F;elena99;p102.jpg;EleBook;24;2024-02-10
+103;Dumitru;Mihai;mihai.d@email.com;0745000999;1988-03-03;M;mihai_m;p103.jpg;Mihai_Arch;38;2023-11-20
+104;Stan;Maria;maria.stan@email.com;0722333444;2005-07-25;F;mary2005;p104.jpg;MaryReads;21;2024-03-01
+105;Radu;Stefan;stefan.r@email.com;0755666777;1990-12-30;M;stef_pass;p105.jpg;Stefan_Editor;35;2024-01-05
+106;Marin;Anca;anca.m@email.com;0766111333;1998-09-14;F;anca_sep;p106.jpg;Anca_Pasionata;27;2023-12-15
+107;Stoica;Cristian;cristi.s@email.com;0744222888;2000-01-01;M;cristi00;p107.jpg;Cris_Reviews;26;2024-02-25
+108;Georgescu;Ioana;ioana.g@email.com;0733999111;1993-04-18;F;ioana_pass;p108.jpg;Ioana_Library;33;2024-01-20
+109;Vasile;Vlad;vlad.v@email.com;0728333555;2008-06-10;M;vlad_v;p109.jpg;Vlad_Junior;18;2024-04-10
+110;Nistor;Andreea;andreea.n@email.com;0755444222;1997-02-28;F;andy_n;p110.jpg;Andy_Books;29;2023-10-05

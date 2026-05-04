@@ -1,4 +1,11 @@
 #include "Biblioteca.h"
+#include "Carte.h"
+#include "Autor.h"
+#include "Cladiri/Cladire.h"
+#include "Utilizatori/Voluntari/Voluntar.h"
+#include "Utilizatori/Angajati/Angajat.h"
+#include "Utilizatori/Utilizator.h"
+#include "Utilizatori/Clienti/Client.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -9,13 +16,8 @@ bool contine(const std::vector<T>& vec, const T& valoare) {
     if (vec.empty()) return true; 
     return std::find(vec.begin(), vec.end(), valoare) != vec.end();
 }
-bool comparaAutori(Carte* a, Carte* b) { 
-    return a->autor < b->autor; 
-}
-
-bool comparaEdituri(Carte* a, Carte* b) { 
-    return a->editura < b->editura; 
-}
+bool comparaAutori(Carte* a, Carte* b) { return a->autor < b->autor; }
+bool comparaEdituri(Carte* a, Carte* b) { return a->editura < b->editura; }
 
 bool comparaAni(Carte* a, Carte* b) { 
     return a->data_pub < b->data_pub; 
@@ -36,21 +38,19 @@ Biblioteca::Biblioteca() {
 Biblioteca::~Biblioteca() {
     for (Carte* c : inventar_general) delete c;
     for (Autor* a : baza_date_autori) delete a;
+    for (Client* cl : lista_clienti) delete cl;
+    for (Voluntar* v : lista_voluntari) delete v;
+    for (Angajat* an : lista_angajati) delete an;
 }
 
 void Biblioteca::salveazaLogistica() {
     std::ofstream fC("cladiri.csv");
-    std::ofstream fS("sali.csv");
-    if (!fC.is_open() || !fS.is_open()) return;
+    if (!fC.is_open()) return;
     fC << "Nume;Adresa;Contact;Email;Etaje;Angajati;Mese;Scaune;Capacitate;Central\n";
     for (const auto& c : lista_filiale) {
         fC << c.nume_filiala << ";" << c.adresa << ";" << c.numar_contact << ";" << c.email_contact << ";"
            << c.numar_etaje << ";" << c.numar_total_angajati << ";" << c.numar_mese << ";" 
            << c.numar_scaune << ";" << c.capacitate_maxima_carti << ";" << c.este_sediu_central << "\n";
-        
-        for (const auto& s : c.inventar_sali) {
-            fS << c.nume_filiala << ";" << s.nume << ";" << s.tip << ";" << s.etaj << ";" << s.capacitate_locuri << "\n";
-        }
     }
 }
 
@@ -309,17 +309,19 @@ void Biblioteca::sorteazaDupaAn(std::vector<Carte*>& lista) {
 }
 
 void Biblioteca::inregistreazaClient(Client c) {
-    lista_clienti.push_back(c);
-    std::cout << "Utilizator inregistrat in sistem conform politicilor de confidentialitate.\n";
+    lista_clienti.push_back(new Client(c));
+    std::cout << "Client inregistrat.\n";
 }
 
-void Biblioteca::inregistreazaAngajat(Angajat a) {
-    lista_angajati.push_back(a);
-    std::cout << "Datele angajatului au fost actualizate in registrul de personal.\n";
+void Biblioteca::inregistreazaAngajat(Angajat* a) { 
+    if (a != nullptr) {
+        lista_angajati.push_back(a); 
+        std::cout << "Datele angajatului au fost actualizate.\n";
+    }
 }
 
 void Biblioteca::inregistreazaVoluntar(Voluntar v) {
-    lista_voluntari.push_back(v);
+    lista_voluntari.push_back(new Voluntar(v));
     std::cout << "Colaborator (Voluntar) inregistrat pentru activitati conexe.\n";
 }
 
@@ -390,78 +392,82 @@ void Biblioteca::incarcaBazaDate() {
     }
     f.close();
 }
-void Biblioteca::incarcaAutori() {
-    std::ifstream f("autori.csv");
+void Biblioteca::incarcaClienti(const std::string& nume_fisier) {
+    std::ifstream fisier(nume_fisier);
+    if (!fisier.is_open()) return;
     std::string linie;
-    if (!f.is_open()) return;
+    std::getline(fisier, linie); 
 
-    std::getline(f, linie); 
-    while (std::getline(f, linie)) {
+    while (std::getline(fisier, linie)) {
         if (linie.empty()) continue;
         std::stringstream ss(linie);
-        std::string nume,  bio, poza;
+        std::string t_id, n, p, e, tel, dN, g, pass, poza, user, t_v, dI, r;
+        
+        std::getline(ss, t_id, ';'); std::getline(ss, n, ';'); std::getline(ss, p, ';');
+        std::getline(ss, e, ';'); std::getline(ss, tel, ';'); std::getline(ss, dN, ';');
+        std::getline(ss, g, ';'); std::getline(ss, pass, ';'); std::getline(ss, poza, ';');
+        std::getline(ss, user, ';'); std::getline(ss, t_v, ';'); std::getline(ss, dI, ';');
+        std::getline(ss, r, ';');
 
-        std::getline(ss, nume, ';');
-        std::getline(ss, bio, ';');
-        std::getline(ss, poza, ';');
-
-        Autor* a = new Autor(nume, bio, poza);
-        baza_date_autori.push_back(a);
+        try {
+            int id = std::stoi(t_id);
+            int varsta = std::stoi(t_v);
+            // REPARAT: Constructorul cere 13 argumente
+            lista_clienti.push_back(new Client(id, n, p, e, tel, dN, g, pass, user, varsta, dI,"novice", poza));
+        } catch (...) {}
     }
-    f.close();
 }
-void Biblioteca::realizeazaImprumut(int id_c, int id_u, std::string data_azi) {
+void Biblioteca::stergeClient(int id_cautat) {
+    // Căutăm clientul în vectorul de clienți
+    for (auto it = lista_clienti.begin(); it != lista_clienti.end(); ++it) {
+        if ((*it)->getId() == id_cautat) {
+            
+            delete *it;
+            lista_clienti.erase(it);
+            
+            std::cout << "[SISTEM] Clientul cu ID " << id_cautat << " a fost sters.\n";
+            
+            return;
+        }
+    }
+    std::cout << "[EROARE] Clientul cu ID " << id_cautat << " nu a fost gasit.\n";
+}
+void Biblioteca::realizeazaImprumut(int id_c, int id_u, const std::string& data_azi) {
     for (Carte* c : inventar_general) {
         if (c->id_carte == id_c) {
             if (c->este_patrimoniu) {
-                std::cout << "[EROARE] Document de patrimoniu. Consultare doar in sala!\n";
+                std::cout << "[EROARE] Patrimoniu - Doar consultare sala!\n";
                 return;
             }
             if (c->exemplare_disponibile > 0) {
                 c->exemplare_disponibile--;
-                
-                InregistrareImprumut nou;
-                nou.id_carte = id_c;
-                nou.id_utilizator = id_u;
-                nou.data_imprumut = data_azi;
-                nou.data_limita = "Data Scadenta (+21 zile)"; 
-                nou.returnata = false;
-                
+                InregistrareImprumut nou = {id_u, id_c, data_azi, "Data+21zile", false};
                 istoric_imprumuturi.push_back(nou);
-                std::cout << "[SUCCES] Imprumut inregistrat pentru: " << c->titlu << "\n";
+                std::cout << "[SUCCES] Imprumutat: " << c->titlu << "\n";
                 salveazaBazaDate();
-            } else {
-                std::cout << "[STOC EPUIZAT] Nu mai sunt exemplare disponibile.\n";
-            }
+            } else std::cout << "[STOC 0]\n";
             return;
         }
     }
 }
 
-void Biblioteca::realizeazaRetur(int id_carte, std::string data_retur_reala) {
+void Biblioteca::realizeazaRetur(int id_carte, const std::string& data_retur_reala) {
     bool gasit = false;
     for (auto& imp : istoric_imprumuturi) {
         if (imp.id_carte == id_carte && !imp.returnata) {
             imp.returnata = true;
             gasit = true;
-            if (data_retur_reala > imp.data_limita) {
-                std::cout << "[PENALIZARE] Returnare intarziata! Limita a fost: " << imp.data_limita << "\n";
-            }
             break;
         }
     }
-
     if (gasit) {
         for (Carte* c : inventar_general) {
             if (c->id_carte == id_carte) {
                 c->exemplare_disponibile++;
-                std::cout << "[LOG] Stoc actualizat pentru: " << c->titlu << " (" << c->exemplare_disponibile << " disponibile)\n";
                 break;
             }
         }
         salveazaBazaDate();
-    } else {
-        std::cout << "[EROARE] Nu s-a gasit niciun imprumut activ pentru ID-ul " << id_carte << ".\n";
     }
 }
 
@@ -485,3 +491,65 @@ void Biblioteca::realizareInventar(const std::string& nume_angajat) {
         std::cout << "Raportul de control a fost salvat in arhiva.\n";
     }
 }
+
+void Biblioteca::incarcaVoluntari(const std::string& nume_fisier) {
+    std::ifstream fisier(nume_fisier);
+    if (!fisier.is_open()) return;
+    std::string linie; std::getline(fisier, linie);
+    while (std::getline(fisier, linie)) {
+        if (linie.empty()) continue;
+        std::stringstream ss(linie);
+        std::string id_s, n, p, e, tel, dN, g, pass, poza, cont, dS, dE, lI, lIn, lPr, lPe, ore_s;
+        
+        std::getline(ss, id_s, ';'); std::getline(ss, n, ';'); std::getline(ss, p, ';');
+        std::getline(ss, e, ';'); std::getline(ss, tel, ';'); std::getline(ss, dN, ';');
+        std::getline(ss, g, ';'); std::getline(ss, pass, ';'); std::getline(ss, poza, ';');
+        std::getline(ss, cont, ';'); std::getline(ss, dS, ';'); std::getline(ss, dE, ';');
+        std::getline(ss, lI, ';'); std::getline(ss, lIn, ';'); std::getline(ss, lPr, ';');
+        std::getline(ss, lPe, ';'); std::getline(ss, ore_s, ';');
+
+        try {
+            Voluntar* v = new Voluntar(std::stoi(id_s), n, p, e, tel, dN, g, pass, poza, 
+                           cont, dS, dE, lI, lIn, lPr, lPe, std::stoi(ore_s));
+            lista_voluntari.push_back(v);
+        } catch (...) {}
+    }
+}
+
+void Biblioteca::incarcaAngajati(const std::string& /*nume_fisier*/) {
+    std::ofstream fisier("angajati.csv");
+    if (!fisier.is_open()) return;
+
+    fisier << "ID;Nume;Prenume;Email;Telefon;DataN;Gen;Parola;Poza;Contract;DStart;DEnd;LIdei;LInscriere;LProg;LPers;Ore;Salariu;Concediu;IDSef;ParolaResursa;TipAngajat\n";
+
+    for (auto a : lista_angajati) {
+        fisier << a->exportaInCSV() << "\n";}
+}
+void Biblioteca::stergeAngajat(int id_cautat) {
+    // 1. Căutăm angajatul în vector
+    for (auto it = lista_angajati.begin(); it != lista_angajati.end(); ++it) {
+        if ((*it)->getId() == id_cautat) {
+            delete *it;
+            lista_angajati.erase(it);
+            std::cout << "Angajatul cu ID " << id_cautat << " a fost sters din sistem.\n";
+             
+            return;
+        }
+    }
+    std::cout << "Eroare: Nu s-a gasit niciun angajat cu ID-ul " << id_cautat << ".\n";
+}
+
+void Biblioteca::stergeVoluntar(int id_cautat) {
+    for (auto it = lista_voluntari.begin(); it != lista_voluntari.end(); ++it) {
+        if ((*it)->getId() == id_cautat) {
+            delete *it; 
+            lista_voluntari.erase(it);
+            
+            std::cout << "[SISTEM] Voluntarul cu ID " << id_cautat << " a fost eliminat.\n";
+             
+            return;
+        }
+    }
+    std::cout << "[EROARE] Nu s-a gasit voluntarul cu ID " << id_cautat << ".\n";
+}
+void Biblioteca::incarcaAutori() { /* Implementare incarcare autori din fisier daca e cazul */ }

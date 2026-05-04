@@ -1,16 +1,25 @@
 #include "Cladire.h"
+#include "Autor/Autor.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <string>
 
 Cladire::Cladire(std::string nume, std::string adr, int angajati, int etaje, int sali, 
                  int mese, int scaune, int cap_max, bool central, std::string deschidere, std::string inchidere)
-    : nume_filiala(nume), adresa(adr), numar_total_angajati(angajati), 
-      numar_etaje(etaje), numar_sali(sali), numar_mese(mese), numar_scaune(scaune),
-      capacitate_maxima_carti(cap_max), este_sediu_central(central), 
-      ora_deschidere(deschidere), ora_inchidere(inchidere) {
-    
+    : nume_filiala(nume), 
+      adresa(adr), 
+      numar_total_angajati(angajati), 
+      numar_etaje(etaje),      
+      numar_sali(sali),        
+      numar_mese(mese), 
+      numar_scaune(scaune),
+      capacitate_maxima_carti(cap_max), 
+      este_sediu_central(central), 
+      ora_deschidere(deschidere), 
+      ora_inchidere(inchidere)
+{
     numar_carti_actual = 0; 
     angajati_per_etaj = (etaje > 0) ? angajati / etaje : angajati;
 
@@ -113,14 +122,29 @@ void Cladire::afiseazaEvenimenteViitoare() {
     }
 
     for (const auto& ev : lista_evenimente) {
-        std::cout << ">> " << ev.nume << " <<\n";
+        if (ev.este_sedinta) {
+            std::cout << "[SEDINTA] >> " << ev.nume << " <<\n";
+        } else {
+            std::cout << ">> " << ev.nume << " <<\n";
+        }
+        if (ev.autor_invitat != nullptr) {
+            std::cout << "   INVITAT SPECIAL: " << ev.autor_invitat->nume_complet << "\n";
+        }
         std::cout << "   Data: " << ev.data << " | Ora: " << ev.ora_inceput << "\n";
         std::cout << "   Locatie: " << ev.sala << " | Participanti: " << ev.nr_participanti_estimat << "\n";
+        
+        std::cout << "   Descriere: " << ev.descriere << "\n";
+        
         std::cout << "   Staff alocat: " << ev.angajati_necesari << " persoane\n";
         std::cout << "------------------------------------------\n";
     } 
-} 
-
+}
+void Cladire::adaugaCarteInDepozit(Carte* c) {
+        if (c != nullptr && numar_carti_actual < capacitate_maxima_carti) {
+            colectie_carti.push_back(c);
+            numar_carti_actual++;
+        }
+    }
 int Cladire::angajatiLiberi(std::string data, std::string ora) {
     int angajati_ocupati = 0;
     angajati_ocupati += numar_etaje;

@@ -1,0 +1,2 @@
+ID;Nume;Prenume;Email;Telefon;DataNastere;Gen;Parola;CalePoza;CaleContract;DataStart;DataEnd;LinkIdei;LinkInscriere;LinkProgram;OreLucrate
+1;Popescu;Andrei;andrei.v@email.com;0722123456;2002-05-15;M;parola123;assets/p1.jpg;docs/c1.pdf;2026-01-01;2026-12-31;https://forms.gle/idei;https://forms.gle/org;https://calendar.google/prog;10

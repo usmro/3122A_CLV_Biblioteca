@@ -1,10 +1,12 @@
 #ifndef BIBLIOTECA_H
 #define BIBLIOTECA_H
 
-#include "Carte.h"
-#include "Utilizator.h"
-#include "Cladire.h"
-#include "Autor.h" 
+#include "Utilizatori/Clienti/Client.h"
+#include "Utilizatori/Voluntari/Voluntar.h"
+#include "Utilizatori/Angajati/Angajat.h"
+#include "Carte/Carte.h"
+#include "Autor/Autor.h"
+#include "Cladiri/Cladire.h"
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -51,56 +53,63 @@ public:
 
     std::vector<Carte*> inventar_general; 
     std::vector<Autor*> baza_date_autori;
-    std::vector<Client> lista_clienti;
-    std::vector<Angajat> lista_angajati;
-    std::vector<Voluntar> lista_voluntari;
+    std::vector<Client*> lista_clienti;
+    std::vector<Voluntar*> lista_voluntari; 
+    std::vector<Angajat*> lista_angajati;
+    std::vector<Utilizator*> lista_utilizatori;
     std::vector<Cladire> lista_filiale;
     std::vector<InregistrareImprumut> istoric_imprumuturi;
-    std::vector<Carte*> cautaDupaAutor(const std::string& autor);
-    std::vector<Carte*> cautaDupaTitlu(const std::string& titlu);
-    std::vector<Carte*> filtreazaAvansat(const CriteriiFiltrare& criterii);
-    
     Biblioteca();
     ~Biblioteca(); 
 
-
+    // Gestiune Cărți și Autori
     void adaugaCarte(Carte* c, Locatie loc);
     void adaugaAutor(Autor* a);
+    void coreleazaAutoriCuCarti();
+    void populeazaAutoriDinCarti();
 
+    // Căutare și Filtrare
+    std::vector<Carte*> cautaDupaAutor(const std::string& autor);
+    std::vector<Carte*> cautaDupaTitlu(const std::string& titlu);
+    std::vector<Carte*> filtreazaAvansat(const CriteriiFiltrare& criterii);
+    void filtreazaDupaRating(float ratingMinim);
     void afiseazaDisponibilitateExemplare(const std::string& titlu_cautat, const std::string& autor_cautat);
     void cautaInfoAutor(const std::string& nume_cautat);
-    void realizareInventar(const std::string& nume_angajat);
-    void filtreazaDupaRating(float ratingMinim);
 
+    // Sortare
     void sorteazaDupaAutor(std::vector<Carte*>& lista);
     void sorteazaDupaEditura(std::vector<Carte*>& lista);
     void sorteazaDupaAn(std::vector<Carte*>& lista);
 
+    // Împrumuturi
     void realizeazaImprumut(int id_carte, int id_utilizator, const std::string& data_azi);
     void realizeazaRetur(int id_carte, const std::string& data_retur_reala);
 
+    // Utilizatori - Metode de înregistrare 
+    void inregistreazaClient(Client c);
+    void inregistreazaAngajat(Angajat* a);
+    void inregistreazaVoluntar(Voluntar v);
+
+    // Încărcare/Ștergere Utilizatori
+    void incarcaClienti(const std::string& fisier_clienti);
+    void incarcaAngajati(const std::string& nume_fisier);
+    void incarcaVoluntari(const std::string& nume_fisier);
+    void stergeVoluntar(int id_cautat);
+    void stergeAngajat(int id_cautat);
+    void stergeClient(int id_cautat);
+
+    // Rapoarte și Logistică
     void afiseazaHartaGrupata();
-    
     void afiseazaTotInventarul();
     void afiseazaRegulament();
-
+    void realizareInventar(const std::string& nume_angajat);
+    
     void salveazaLogistica();
     void incarcaLogistica();
     void initializeazaLogisticaA_F();
-
-    void coreleazaAutoriCuCarti();
-
-    void inregistreazaClient(Client c);
-    void inregistreazaAngajat(Angajat a);
-    void inregistreazaVoluntar(Voluntar v);
-
     void salveazaBazaDate();
     void incarcaBazaDate();
     void incarcaAutori();
-    void populeazaAutoriDinCarti();
-
-    void realizeazaImprumut(int id_carte, int id_utilizator, std::string data_azi);
-    void realizeazaRetur(int id_carte, std::string data_retur_reala);
 };
 
 #endif

@@ -1,2 +1,0 @@
-1;Popescu;Ion;ion.p@email.com;0722112233;1990-05-15;M;parola123;2026-04-28;Student
-2;Ionescu;Maria;maria.i@email.com;0744556677;1995-10-20;F;mariapass;2026-04-28;Pensionar

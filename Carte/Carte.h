@@ -4,7 +4,13 @@
 #include <string>
 #include <vector>
 #include <iostream>
-
+class Autor;
+struct Recenzie {
+    int id_utilizator;
+    std::string username;
+    int nota; // 1-5 stele
+    std::string comentariu;
+};
 enum class TipSuport { FIZIC, DIGITAL_PDF, AUDIOBOOK, VIDEO };
 struct Locatie {
     std::string nume_filiala;
@@ -34,17 +40,24 @@ public:
 
     TipSuport suport;
     int valoare_masurabila; // Nr. pagini sau minute 
-    float marime_mb;        
+    float marime_mb;    
+    Locatie adresa_raft; 
+    
+    std::vector<Recenzie> lista_recenzii;
+    Autor* autor_ref = nullptr;
 
     // Constructor complet
     Carte(int id, std::string t, std::string a, std::string ed, std::string l, std::string d_p, 
           int val, std::string dest, std::string st, std::string s_sursa,std::string tara, int an, int pag, std::string sc, 
           int stoc, bool p, float pret, std::string rez, float rat, TipSuport sup, float mb);
 
-    Locatie adresa_raft;
-    virtual void afiseazaFisaCatalog() = 0; 
+    virtual void afiseazaFisaCatalog() ; 
     void adaugaDefect(std::string descriere);
     void afiseazaStareFizica();
+    
+    void adaugaRecenzieSociala(int id_user, std::string user, int nota, std::string text);
+    void actualizeazaRatingMediu();
+    bool esteDisponibila() const { return status == "Disponibila" && exemplare_disponibile > 0; }
     
     virtual ~Carte() {}
 };

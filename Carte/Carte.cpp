@@ -10,9 +10,7 @@ Carte::Carte(int id, std::string t, std::string a, std::string ed, std::string l
       exemplare_disponibile(stoc), este_patrimoniu(p), pret_intrare(pret), 
       rating(rat), rezumat(rez), suport(sup), valoare_masurabila(val), marime_mb(mb) {}
 
-void Carte::adaugaDefect(std::string descriere) {
-    defecte.push_back(descriere);
-}
+
 
 void Carte::afiseazaStareFizica() {
     std::cout << "Serie Contabila: " << serie_contabila << "\n";
@@ -73,4 +71,27 @@ void CartePeriodica::afiseazaFisaCatalog() {
     std::cout << "[PERIODIC - ISSN: " << issn << "] " << titlu << "\n"
               << "Editia: " << numar_editie << " | Frecventa: " << frecventa << " | Limba: " << limba << "\n"
               << "-------------------------------------------\n";
+}
+
+void Carte::adaugaRecenzieSociala(int id_user, std::string user, int nota, std::string text) {
+    Recenzie r = {id_user, user, nota, text};
+    lista_recenzii.push_back(r);
+    actualizeazaRatingMediu();
+}
+
+void Carte::actualizeazaRatingMediu() {
+    if (lista_recenzii.empty()) return;
+    float suma = 0;
+    for (const auto& r : lista_recenzii) suma += r.nota;
+    rating = suma / lista_recenzii.size();
+}
+
+void Carte::afiseazaFisaCatalog() {
+    std::cout << "--- " << titlu << " [" << autor << "] ---\n";
+    std::cout << "Status: " << status << " | Rating: " << rating << "*/5\n";
+    std::cout << "Rezumat: " << rezumat.substr(0, 100) << "...\n";
+}
+
+void Carte::adaugaDefect(std::string descriere) {
+    defecte.push_back(descriere);
 }

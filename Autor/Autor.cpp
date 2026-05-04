@@ -29,5 +29,6 @@ void Autor::afiseazaProfilComplet() {
 void Autor::adaugaCarteInLista(Carte* c) {
     if (c != nullptr) {
         carti_in_biblioteca.push_back(c);
+        c->autor_ref = this;
     }
 }

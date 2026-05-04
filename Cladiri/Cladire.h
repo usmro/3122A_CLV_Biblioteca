@@ -6,6 +6,9 @@
 #include <iostream>
 #include <map>
 
+class Carte; 
+class Autor;
+
 struct Eveniment {
     std::string nume;
     std::string data;
@@ -14,6 +17,9 @@ struct Eveniment {
     std::string sala;
     int nr_participanti_estimat;
     int angajati_necesari;
+    std::string descriere;
+    bool este_sedinta;
+    Autor* autor_invitat = nullptr;
 };
 struct DetaliiSala {
     std::string nume;
@@ -51,6 +57,7 @@ public:
     std::vector<Eveniment> lista_evenimente;
     std::vector<DetaliiSala> inventar_sali;
     Facilitati facilitati_cladire;
+    std::vector<Carte*> colectie_carti;
    
     Cladire(std::string nume, std::string adr, int angajati, int etaje, int sali, 
             int mese, int scaune, int cap_max, bool central, std::string deschidere, std::string inchidere);
@@ -64,6 +71,7 @@ public:
     bool sePoateOrganizaEveniment(int participanti, int staff_necesar, std::string ora_start);
     bool verificaSpatiuDisponibil(int carti_existente);
     int angajatiLiberi(std::string data, std::string ora);
+    void adaugaCarteInDepozit(Carte* c);
 };
 
 #endif
