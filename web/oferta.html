@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ofertă · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mov-deschis: #e8e0f5; --mov-pastel: #c9b8e8; --mov-mediu: #9b7dc8;
+  --mov-inchis: #6b4fa0; --mov-profund: #4a3270; --lila: #d4c5ed;
+  --alb-cald: #faf8fd; --text-principal: #2d1f4e; --text-secundar: #7a6a9a;
+  --text-subtil: #b0a0cc;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--alb-cald); color:var(--text-principal); }
+
+header { display:flex; align-items:center; justify-content:space-between; padding:1.2rem 3rem; border-bottom:1px solid var(--lila); background:white; position:sticky; top:0; z-index:100; }
+.logo { display:flex; align-items:center; gap:0.8rem; text-decoration:none; }
+.logo-svg { width:32px; height:32px; }
+.logo-nume { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; color:var(--mov-profund); }
+nav { display:flex; gap:0.5rem; align-items:center; }
+nav a { font-size:0.83rem; color:var(--text-secundar); text-decoration:none; padding:0.4rem 0.9rem; border-radius:20px; transition:all 0.2s; }
+nav a:hover { background:var(--mov-deschis); color:var(--mov-inchis); }
+.btn-login { background:var(--mov-inchis) !important; color:white !important; font-weight:500 !important; }
+
+.hero {
+  background:linear-gradient(135deg, var(--mov-profund), var(--mov-inchis));
+  padding:3rem; position:relative; overflow:hidden;
+}
+.hero::before { content:''; position:absolute; right:-80px; top:-80px; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,0.04); }
+.hero-content { max-width:800px; margin:0 auto; position:relative; z-index:1; }
+.hero-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.8); font-size:0.72rem; padding:0.3rem 0.75rem; border-radius:20px; margin-bottom:1rem; }
+.hero h1 { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:300; color:white; margin-bottom:0.5rem; line-height:1.2; }
+.hero h1 em { font-style:italic; color:var(--mov-pastel); }
+.hero-meta { display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:1rem; }
+.hero-meta-item { display:flex; align-items:center; gap:0.4rem; font-size:0.78rem; color:rgba(255,255,255,0.7); }
+.hero-meta-item svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; }
+
+.page-wrapper { max-width:800px; margin:0 auto; padding:2.5rem 2rem 4rem; }
+
+.inapoi { display:inline-flex; align-items:center; gap:0.4rem; font-size:0.8rem; color:var(--text-secundar); text-decoration:none; margin-bottom:1.5rem; transition:color 0.2s; }
+.inapoi:hover { color:var(--mov-inchis); }
+.inapoi svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+
+.sectiune { background:white; border:1px solid var(--lila); border-radius:16px; padding:1.75rem; margin-bottom:1.25rem; }
+.sectiune-titlu { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; color:var(--mov-inchis); margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid var(--mov-deschis); display:flex; align-items:center; gap:0.5rem; }
+.sectiune-titlu .icon { font-size:1rem; }
+
+.lista-cerinte { list-style:none; }
+.lista-cerinte li { padding:0.5rem 0; padding-left:1.2rem; font-size:0.87rem; color:var(--text-secundar); line-height:1.6; position:relative; border-bottom:1px solid var(--alb-cald); }
+.lista-cerinte li:last-child { border:none; }
+.lista-cerinte li::before { content:''; position:absolute; left:0; top:0.9rem; width:5px; height:5px; border-radius:50%; background:var(--mov-pastel); }
+.lista-cerinte li strong { color:var(--text-principal); font-weight:500; }
+
+.oferta-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+.oferta-item { background:var(--mov-deschis); border-radius:10px; padding:0.85rem 1rem; }
+.oferta-label { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-subtil); margin-bottom:0.25rem; }
+.oferta-val { font-size:0.85rem; color:var(--mov-profund); font-weight:500; }
+
+.reg-articol { margin-bottom:0.75rem; padding-left:1.2rem; font-size:0.85rem; line-height:1.7; color:var(--text-principal); position:relative; }
+.reg-articol::before { content:''; position:absolute; left:0; top:0.65rem; width:5px; height:5px; border-radius:50%; background:var(--mov-pastel); }
+.reg-articol strong { color:var(--mov-inchis); font-weight:500; }
+
+.form-sectiune { background:white; border:1px solid var(--lila); border-radius:16px; padding:1.75rem; margin-bottom:1.25rem; }
+.form-titlu { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; color:var(--mov-inchis); margin-bottom:1.25rem; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.form-camp { display:flex; flex-direction:column; gap:0.4rem; }
+.form-camp.full { grid-column:span 2; }
+.form-camp label { font-size:0.75rem; color:var(--text-secundar); font-weight:500; }
+.form-camp input, .form-camp select, .form-camp textarea {
+  padding:0.6rem 0.85rem; border:1px solid var(--lila); border-radius:10px;
+  font-family:'DM Sans',sans-serif; font-size:0.85rem; outline:none;
+  background:var(--alb-cald); transition:border-color 0.2s;
+}
+.form-camp input:focus, .form-camp select:focus, .form-camp textarea:focus { border-color:var(--mov-mediu); background:white; }
+.form-camp textarea { resize:vertical; min-height:100px; }
+.btn-aplica { width:100%; padding:0.85rem; background:var(--mov-inchis); color:white; border:none; border-radius:12px; font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:500; cursor:pointer; transition:all 0.2s; margin-top:0.5rem; }
+.btn-aplica:hover { background:var(--mov-profund); transform:translateY(-1px); }
+
+.not-found { text-align:center; padding:4rem 2rem; }
+.not-found h2 { font-family:'Cormorant Garamond',serif; font-size:1.8rem; color:var(--text-secundar); margin-bottom:1rem; }
+.not-found p { font-size:0.88rem; color:var(--text-subtil); }
+
+footer { text-align:center; padding:2rem; border-top:1px solid var(--mov-deschis); font-size:0.75rem; color:var(--text-subtil); }
+footer span { color:var(--mov-mediu); }
+
+@media(max-width:768px) {
+  header { padding:1rem 1.25rem; }
+  .hero { padding:2rem 1.25rem; }
+  .page-wrapper { padding:1.5rem 1rem 3rem; }
+  .oferta-grid { grid-template-columns:1fr; }
+  .form-grid { grid-template-columns:1fr; }
+  .form-camp.full { grid-column:span 1; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/web/primapagina.html" class="logo">
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none">
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(157.5 24 24)"/>
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <span class="logo-nume">Biblioteca Aster</span>
+  </a>
+  <nav>
+    <a href="/web/primapagina.html">Acasă</a>
+    <a href="/web/anunturi.html">Evenimente</a>
+    <a href="/web/despre.html">Despre</a>
+    <a href="/web/login.html" class="btn-login">Autentificare</a>
+  </nav>
+</header>
+
+<div id="hero-container"></div>
+
+<div class="page-wrapper">
+  <a onclick="history.back()" style="cursor:pointer;" class="inapoi">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Înapoi la Anunțuri & Evenimente
+  </a>
+  <div id="continut"></div>
+</div>
+
+<footer>© 2026 <span>Biblioteca Aster</span> · Toate drepturile rezervate · Suceava, România</footer>
+
+<script>
+const oferte = {
+  bibliotecar: {
+    tip: 'Angajare',
+    titlu: 'Bibliotecar Specialist',
+    subtitlu: 'Corp B — Studiu & Non-Ficțiune',
+    emoji: '🧑‍💼',
+    deadline: '31 Mai 2026',
+    program: 'Full-time · 40 ore/săptămână',
+    locatie: 'Corp B, Str. Principală 2',
+    departament: 'Colecții & Servicii',
+    descriere: 'Biblioteca Aster caută un bibliotecar specialist cu experiență în catalogare și gestionarea colecțiilor pentru Corpul B — Studiu & Non-Ficțiune. Candidatul ideal are o pasiune autentică pentru cărți și pentru serviciul public, și dorește să contribuie la dezvoltarea uneia dintre cele mai active biblioteci din regiune.',
+    responsabilitati: [
+      'Catalogarea și clasificarea materialelor bibliografice conform standardelor MARC și DDC',
+      'Gestionarea colecției de non-ficțiune și a sălilor de studiu individual',
+      'Asistarea utilizatorilor în căutarea și accesarea resurselor bibliotecii',
+      'Organizarea și coordonarea cluburilor de lectură și evenimentelor literare',
+      'Colaborarea cu echipa pentru actualizarea catalogului electronic',
+      'Participarea la evaluarea și selecția achizițiilor noi'
+    ],
+    cerinte: [
+      { req: true, text: 'Studii superioare în Biblioteconomie, Arhivistică sau domeniu conex' },
+      { req: true, text: 'Experiență minimum 2 ani într-o poziție similară' },
+      { req: true, text: 'Cunoașterea standardelor de catalogare (MARC, DDC, AACR2/RDA)' },
+      { req: true, text: 'Abilități excelente de comunicare și lucru cu publicul' },
+      { req: false, text: 'Cunoașterea limbii engleze la nivel mediu sau avansat' },
+      { req: false, text: 'Experiență cu software de gestionare a bibliotecilor (OPAC, Koha)' },
+      { req: false, text: 'Pasiune pentru literatura de non-ficțiune și știință' }
+    ],
+    oferim: [
+      { label: 'Salariu', val: 'Negociabil, în funcție de experiență' },
+      { label: 'Program', val: 'Luni — Vineri, 08:00 — 16:00' },
+      { label: 'Tip contract', val: 'Perioadă nedeterminată' },
+      { label: 'Beneficii', val: 'Tichete de masă + abonament cultural' }
+    ]
+  },
+  animatori: {
+    tip: 'Voluntariat',
+    titlu: 'Animatori pentru Copii',
+    subtitlu: 'Corp F — Copii & Evenimente',
+    emoji: '🌟',
+    deadline: 'Înscrieri deschise',
+    program: 'Part-time · 20 ore/lună',
+    locatie: 'Corp F, Str. Principală 6',
+    departament: 'Activități pentru Copii',
+    descriere: 'Căutăm voluntari pasionați de lucrul cu copiii pentru activitățile din Corp F — Ora Poveștilor, Atelier Creație și Biblioteca Părinților. Nu sunt necesare studii specifice, doar entuziasm și dorința de a face diferența în viața celor mici.',
+    responsabilitati: [
+      'Facilitarea sesiunilor de Ora Poveștilor pentru copii între 4 și 8 ani',
+      'Coordonarea atelierelor de creație (desen, colaj, ilustrație)',
+      'Asistarea bibliotecarilor în organizarea evenimentelor pentru familii',
+      'Menținerea unui mediu sigur, prietenos și stimulativ pentru copii',
+      'Comunicarea cu părinții și însoțitorii despre activitățile desfășurate'
+    ],
+    cerinte: [
+      { req: true, text: 'Vârsta minimum 16 ani' },
+      { req: true, text: 'Disponibilitate de minimum 20 ore pe lună' },
+      { req: true, text: 'Răbdare, empatie și abilități de comunicare cu copiii' },
+      { req: false, text: 'Experiență anterioară cu copii (babysitting, meditații, tabere)' },
+      { req: false, text: 'Cunoștințe în domeniul artei, muzicii sau literaturii pentru copii' },
+      { req: false, text: 'Studii în Pedagogie, Psihologie sau Asistență Socială' }
+    ],
+    oferim: [
+      { label: 'Tip', val: 'Voluntariat neplătit' },
+      { label: 'Program', val: 'Flexibil, minim 20 ore/lună' },
+      { label: 'Beneficii', val: 'Acces gratuit la toate resursele' },
+      { label: 'Extras', val: 'Adeverință de voluntariat + recomandare' }
+    ]
+  },
+  it: {
+    tip: 'Voluntariat',
+    titlu: 'Suport IT & Mediatecă',
+    subtitlu: 'Corp C — Hub Digital & Mediatecă',
+    emoji: '💻',
+    deadline: 'Înscrieri deschise',
+    program: 'Flexibil · min. 15 ore/lună',
+    locatie: 'Corp C, Str. Principală 3',
+    departament: 'IT & Digital',
+    descriere: 'Căutăm voluntari cu cunoștințe IT pentru sprijinirea utilizatorilor în Hub-ul Digital și Mediatecă. Vei ajuta persoane de toate vârstele să acceseze resursele digitale ale bibliotecii, să utilizeze echipamentele și să navigheze în catalogul electronic.',
+    responsabilitati: [
+      'Asistarea utilizatorilor în accesarea resurselor digitale și a catalogului electronic',
+      'Suport tehnic de bază pentru calculatoarele și echipamentele din Hub',
+      'Ajutorarea persoanelor în vârstă sau cu cunoștințe IT limitate',
+      'Menținerea în ordine a spațiului digital și raportarea problemelor tehnice',
+      'Participarea la sesiunile de formare digitală organizate de bibliotecă'
+    ],
+    cerinte: [
+      { req: true, text: 'Cunoștințe solide de utilizare a calculatorului și internet' },
+      { req: true, text: 'Disponibilitate de minimum 15 ore pe lună' },
+      { req: true, text: 'Răbdare și abilități de comunicare cu persoane de toate vârstele' },
+      { req: false, text: 'Cunoștințe de bază în depanare hardware/software' },
+      { req: false, text: 'Experiență cu sisteme Linux sau rețele' },
+      { req: false, text: 'Studii în Informatică, IT sau domeniu conex' }
+    ],
+    oferim: [
+      { label: 'Tip', val: 'Voluntariat neplătit' },
+      { label: 'Program', val: 'Flexibil, minim 15 ore/lună' },
+      { label: 'Beneficii', val: 'Acces gratuit la toate resursele' },
+      { label: 'Extras', val: 'Adeverință de voluntariat + recomandare' }
+    ]
+  }
+};
+
+function afiseazaOferta() {
+  const params = new URLSearchParams(window.location.search);
+  const tip = params.get('tip');
+  const oferta = oferte[tip];
+
+  if (!oferta) {
+    document.getElementById('hero-container').innerHTML = '';
+    document.getElementById('continut').innerHTML = `
+      <div class="not-found">
+        <h2>Ofertă negăsită</h2>
+        <p>Oferta căutată nu există sau a expirat.</p>
+        <a onclick="history.back()" style="cursor:pointer;" class="inapoi" style="justify-content:center;margin-top:1rem;">← Înapoi la anunțuri</a>
+      </div>`;
+    return;
+  }
+
+  document.title = `${oferta.titlu} · Biblioteca Aster`;
+
+  document.getElementById('hero-container').innerHTML = `
+    <div class="hero">
+      <div class="hero-content">
+        <div class="hero-badge">${oferta.emoji} ${oferta.tip}</div>
+        <h1>${oferta.titlu} — <em>${oferta.subtitlu}</em></h1>
+        <div class="hero-meta">
+          <div class="hero-meta-item">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            ${oferta.deadline}
+          </div>
+          <div class="hero-meta-item">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ${oferta.program}
+          </div>
+          <div class="hero-meta-item">
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${oferta.locatie}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  const cerIntro = '<span style="font-size:0.65rem;padding:1px 6px;border-radius:8px;font-weight:500;margin-left:0.5rem;">';
+
+  document.getElementById('continut').innerHTML = `
+    <div class="sectiune">
+      <div class="sectiune-titlu"><span class="icon">📋</span> Despre poziție</div>
+      <p style="font-size:0.87rem;color:var(--text-secundar);line-height:1.7;">${oferta.descriere}</p>
+    </div>
+
+    <div class="sectiune">
+      <div class="sectiune-titlu"><span class="icon">✅</span> Responsabilități</div>
+      <ul class="lista-cerinte">
+        ${oferta.responsabilitati.map(r => `<li>${r}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="sectiune">
+      <div class="sectiune-titlu"><span class="icon">🎯</span> Cerințe</div>
+      <ul class="lista-cerinte">
+        ${oferta.cerinte.map(c => `
+          <li>
+            ${c.text}
+            ${c.req
+              ? `${cerIntro}background:#fce4ec;color:#880e4f;">Obligatoriu</span>`
+              : `${cerIntro}background:#e8f5e9;color:#2e7d32;">Avantaj</span>`
+            }
+          </li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="sectiune">
+      <div class="sectiune-titlu"><span class="icon">🎁</span> Ce oferim</div>
+      <div class="oferta-grid">
+        ${oferta.oferim.map(o => `
+          <div class="oferta-item">
+            <div class="oferta-label">${o.label}</div>
+            <div class="oferta-val">${o.val}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="sectiune">
+      <div class="sectiune-titlu"><span class="icon">📜</span> Regulament de înscriere</div>
+      <div class="reg-articol"><strong>1.</strong> Dosarul de candidatură trebuie să conțină: CV actualizat, scrisoare de intenție și copie după actul de identitate.</div>
+      <div class="reg-articol"><strong>2.</strong> Dosarul se trimite exclusiv pe email la <a href="mailto:hr@aster.ro" style="color:var(--mov-inchis);">hr@aster.ro</a> cu subiectul <em>"Candidatură — ${oferta.titlu}"</em>.</div>
+      <div class="reg-articol"><strong>3.</strong> Candidații selectați vor fi contactați în termen de 5 zile lucrătoare de la depunerea dosarului.</div>
+      <div class="reg-articol"><strong>4.</strong> Procesul de selecție include un interviu față în față la sediul Bibliotecii Aster.</div>
+      <div class="reg-articol"><strong>5.</strong> Dosarele incomplete sau transmise după termenul limită nu vor fi luate în considerare.</div>
+      <div class="reg-articol"><strong>6.</strong> Datele personale transmise vor fi procesate conform GDPR și folosite exclusiv în scopul recrutării.</div>
+    </div>
+
+    <div class="form-sectiune">
+      <div class="form-titlu">Aplică acum — ${oferta.titlu}</div>
+      <div class="form-grid">
+        <div class="form-camp">
+          <label>Nume complet *</label>
+          <input type="text" placeholder="ex: Maria Popescu" id="f-nume">
+        </div>
+        <div class="form-camp">
+          <label>Email *</label>
+          <input type="email" placeholder="adresa@email.com" id="f-email">
+        </div>
+        <div class="form-camp">
+          <label>Telefon</label>
+          <input type="tel" placeholder="07XX XXX XXX" id="f-tel">
+        </div>
+        <div class="form-camp">
+          <label>Experiență relevantă</label>
+          <input type="text" placeholder="ex: 3 ani bibliotecar" id="f-exp">
+        </div>
+        <div class="form-camp full">
+          <label>Scrisoare de intenție *</label>
+          <textarea placeholder="Spune-ne de ce ești potrivit pentru această poziție..." id="f-scrisoare"></textarea>
+        </div>
+        <div class="form-camp full">
+          <label>Link CV sau portofoliu (opțional)</label>
+          <input type="url" placeholder="https://..." id="f-cv">
+        </div>
+      </div>
+      <button class="btn-aplica" onclick="trimiteAplicatie()">Trimite candidatura</button>
+    </div>`;
+}
+
+async function trimiteAplicatie() {
+  const nume = document.getElementById('f-nume').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const scrisoare = document.getElementById('f-scrisoare').value.trim();
+
+  if (!nume || !email || !scrisoare) {
+    alert('Te rugăm să completezi câmpurile obligatorii (nume, email, scrisoare de intenție).');
+    return;
+  }
+  if (!email.includes('@')) {
+    alert('Te rugăm să introduci o adresă de email validă.');
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const tip = params.get('tip') || '';
+
+  const btn = document.querySelector('.btn-aplica');
+  btn.textContent = 'Se trimite...';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch('/api/candidaturi', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        nume,
+        email,
+        telefon: document.getElementById('f-tel').value.trim(),
+        experienta: document.getElementById('f-exp').value.trim(),
+        scrisoare,
+        cv_link: document.getElementById('f-cv').value.trim(),
+        tip_oferta: tip
+      })
+    });
+    const data = await r.json();
+    if (data.succes) {
+      btn.textContent = '✓ Candidatura a fost trimisă!';
+      btn.style.background = '#2e7d32';
+      document.querySelectorAll('.form-camp input, .form-camp textarea').forEach(el => el.disabled = true);
+    } else {
+      btn.textContent = 'Trimite candidatura';
+      btn.disabled = false;
+      alert(data.mesaj || 'Eroare la trimitere.');
+    }
+  } catch(e) {
+    btn.textContent = 'Trimite candidatura';
+    btn.disabled = false;
+    alert('Serverul nu este disponibil.');
+  }
+}
+
+
+afiseazaOferta();
+</script>
+</body>
+</html>

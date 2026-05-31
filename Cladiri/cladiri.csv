@@ -1,4 +1,7 @@
-Nume;Adresa;Contact;Email;Etaje;Angajati;Mese;Scaune;Capacitate;Central
-Corpul A;Str. Principala 1;021-001;admin@bibl.ro;4;30;150;400;100000;1
-Corpul B;Str. Principala 1;021-002;office@bibl.ro;3;15;100;200;60000;0
-Corpul C;Str. Principala 1;021-003;social@bibl.ro;1;8;30;60;5000;0
+nume,adr,angajati,etaje,sali,mese,scaune,cap_max,central,deschidere,inchidere
+Corp A - Administrativ,"Str. Victoriei 10, Bucuresti",150,5,12,60,240,300,1,08:00,18:00
+Corp B - Productie,"Bd. Ferdinand 45, Cluj-Napoca",85,3,8,40,100,120,0,09:00,20:00
+Corp C - Logistica,"Str. Palat 1, Iasi",210,7,20,100,450,500,1,07:30,21:30
+Corp D - R&D,"Calea Floreasca 246, Bucuresti",500,25,45,200,800,1000,1,08:00,22:00
+Corp E - Depozit,"Soseaua de Centura 12, Ilfov",40,1,2,10,30,50,0,06:00,18:00
+Corp F - Evenimente,"Str. Republicii 5, Brasov",25,2,15,150,600,750,1,09:00,23:00

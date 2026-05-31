@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Înscriere Organizare Eveniment · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mov-deschis:#e8e0f5;--mov-pastel:#c9b8e8;--mov-mediu:#9b7dc8;
+  --mov-inchis:#6b4fa0;--mov-profund:#4a3270;--lila:#d4c5ed;
+  --alb-cald:#faf8fd;--text-principal:#2d1f4e;--text-secundar:#7a6a9a;--text-subtil:#b0a0cc;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--alb-cald);color:var(--text-principal);}
+header{display:flex;align-items:center;gap:0.6rem;padding:1rem 2rem;border-bottom:1px solid var(--lila);background:white;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:0.6rem;text-decoration:none;}
+.logo-svg{width:28px;height:28px;}
+.logo-nume{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--mov-profund);}
+.page-wrapper{max-width:700px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.btn-inapoi{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--text-secundar);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color 0.2s;margin-bottom:2rem;}
+.btn-inapoi:hover{color:var(--mov-inchis);}
+.btn-inapoi svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
+.page-hero{background:linear-gradient(135deg,var(--mov-profund),var(--mov-inchis));border-radius:16px;padding:2rem;margin-bottom:2rem;color:white;}
+.page-hero h1{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;margin-bottom:0.4rem;}
+.page-hero p{font-size:0.85rem;color:rgba(255,255,255,0.7);}
+
+/* REGULAMENT */
+.reg-card{background:white;border:1px solid var(--lila);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;}
+.reg-card h2{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--mov-inchis);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--mov-deschis);}
+.reg-item{display:flex;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid var(--alb-cald);font-size:0.84rem;color:var(--text-secundar);line-height:1.6;}
+.reg-item:last-child{border:none;}
+.reg-nr{font-weight:600;color:var(--mov-inchis);flex-shrink:0;min-width:24px;}
+
+/* FORM */
+.form-card{background:white;border:1px solid var(--lila);border-radius:16px;padding:2rem;margin-bottom:1rem;}
+.form-card h2{font-size:0.95rem;font-weight:500;margin-bottom:1.5rem;}
+.camp{margin-bottom:1.25rem;}
+.camp label{display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-subtil);margin-bottom:0.4rem;}
+.camp input,.camp textarea,.camp select{width:100%;padding:0.65rem 0.9rem;border:1px solid var(--lila);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text-principal);outline:none;transition:border-color 0.2s;background:white;}
+.camp input:focus,.camp textarea:focus,.camp select:focus{border-color:var(--mov-mediu);}
+.camp textarea{resize:vertical;min-height:90px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.checkbox-group{display:flex;flex-direction:column;gap:0.5rem;}
+.checkbox-item{display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;color:var(--text-secundar);cursor:pointer;}
+.checkbox-item input{width:16px;height:16px;accent-color:var(--mov-inchis);}
+.btn-submit{width:100%;padding:0.85rem;background:var(--mov-inchis);color:white;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
+.btn-submit:hover{background:var(--mov-profund);}
+.succes-msg{display:none;text-align:center;padding:2rem;background:#e8f5e9;border:1px solid #c8e6c9;border-radius:12px;margin-top:1rem;}
+.succes-msg h3{color:#2e7d32;margin-bottom:0.5rem;}
+.inscrieri-card{background:white;border:1px solid var(--lila);border-radius:16px;padding:1.5rem;margin-top:1rem;}
+.card-inscriere{padding:0.65rem 0;border-bottom:1px solid var(--alb-cald);font-size:0.83rem;}
+.card-inscriere:last-child{border:none;}
+.ins-titlu{font-weight:500;color:var(--text-principal);}
+.ins-sub{font-size:0.72rem;color:var(--text-subtil);margin-top:0.15rem;}
+.ins-status{font-size:0.65rem;padding:2px 7px;border-radius:10px;background:var(--mov-deschis);color:var(--mov-inchis);font-weight:500;}
+footer{text-align:center;padding:1.5rem;font-size:0.75rem;color:var(--text-subtil);border-top:1px solid var(--mov-deschis);}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <a href="/web/primapagina.html" class="logo">
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none">
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(157.5 24 24)"/>
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <span class="logo-nume">Biblioteca Aster</span>
+  </a>
+</header>
+
+<div class="page-wrapper">
+  <button class="btn-inapoi" onclick="history.back()">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Înapoi
+  </button>
+
+  <div class="page-hero">
+    <h1>📋 Înscriere Organizare Eveniment</h1>
+    <p>Înscrie-te ca organizator voluntar pentru evenimentele Bibliotecii Aster.</p>
+  </div>
+
+  <!-- REGULAMENT SCURT -->
+  <div class="reg-card">
+    <h2>Reguli pentru organizatori voluntari</h2>
+    <div class="reg-item"><span class="reg-nr">1.</span><span>Organizatorul voluntar trebuie să fie prezent cu <strong>minimum 30 de minute</strong> înainte de startul evenimentului.</span></div>
+    <div class="reg-item"><span class="reg-nr">2.</span><span>Toate materialele necesare se solicită coordonatorului cu <strong>minimum 48 de ore</strong> înainte.</span></div>
+    <div class="reg-item"><span class="reg-nr">3.</span><span>În cazul imposibilității de participare, voluntarul anunță coordonatorul cu <strong>minimum 24 de ore</strong> înainte.</span></div>
+    <div class="reg-item"><span class="reg-nr">4.</span><span>Organizatorul completează un <strong>raport de activitate</strong> după fiecare eveniment.</span></div>
+    <div class="reg-item"><span class="reg-nr">5.</span><span>Orele de organizare se <strong>adaugă automat</strong> la totalul de ore lunare după confirmarea participării.</span></div>
+    <div class="reg-item"><span class="reg-nr">6.</span><span>Evenimentele obligatorii marcate cu <strong>🔴</strong> necesită confirmare în termen de 24 de ore de la notificare.</span></div>
+  </div>
+
+  <!-- FORMULAR -->
+  <div class="form-card">
+    <h2>Formular de înscriere</h2>
+    <div class="camp">
+      <label>Evenimentul pentru care te înscrii *</label>
+      <select id="ins-eveniment">
+        <option value="">Selectează evenimentul...</option>
+        <option>Ora Poveștilor — 3 Iunie 2026</option>
+        <option>Atelier Creație Vara în Culori — 10 Iunie 2026</option>
+        <option>Club Lectură Copii Sezon Nou — 17 Iunie 2026</option>
+        <option>Ședință voluntari Evaluare — 24 Iunie 2026</option>
+        <option>Alt eveniment</option>
+      </select>
+    </div>
+    <div class="form-grid">
+      <div class="camp">
+        <label>Rolul tău *</label>
+        <select id="ins-rol">
+          <option value="">Selectează rolul...</option>
+          <option>Organizator principal</option>
+          <option>Asistent organizator</option>
+          <option>Animator</option>
+          <option>Suport tehnic</option>
+          <option>Înregistrare participanți</option>
+        </select>
+      </div>
+      <div class="camp">
+        <label>Disponibilitate *</label>
+        <select id="ins-disponibilitate">
+          <option value="">Selectează...</option>
+          <option>Toată ziua</option>
+          <option>Doar dimineața</option>
+          <option>Doar după-amiaza</option>
+          <option>Flexibil</option>
+        </select>
+      </div>
+    </div>
+    <div class="camp">
+      <label>Experiență relevantă</label>
+      <textarea id="ins-experienta" placeholder="Descrie experiența ta anterioară cu evenimente similare..."></textarea>
+    </div>
+    <div class="camp">
+      <label>Competențe oferite</label>
+      <div class="checkbox-group">
+        <label class="checkbox-item"><input type="checkbox" value="animatie"> Animație și lucru cu copiii</label>
+        <label class="checkbox-item"><input type="checkbox" value="tehnic"> Suport tehnic (proiector, sunet)</label>
+        <label class="checkbox-item"><input type="checkbox" value="creativ"> Activități creative (desen, origami)</label>
+        <label class="checkbox-item"><input type="checkbox" value="comunicare"> Comunicare și prezentare</label>
+        <label class="checkbox-item"><input type="checkbox" value="logistica"> Logistică și organizare</label>
+      </div>
+    </div>
+    <div class="camp">
+      <label>Mențiuni suplimentare</label>
+      <input type="text" id="ins-mentiuni" placeholder="Orice alte informații relevante...">
+    </div>
+    <button class="btn-submit" onclick="trimiteInscriere()">Trimite înscrierea →</button>
+  </div>
+
+  <div class="succes-msg" id="succes-ins">
+    <h3>✓ Înscriere trimisă cu succes!</h3>
+    <p>Coordonatorul va confirma participarea ta în cel mai scurt timp.</p>
+  </div>
+
+  <div class="inscrieri-card" id="inscrieri-card" style="display:none;">
+    <h2 style="font-size:0.95rem;font-weight:500;margin-bottom:1rem;">Înscrierile tale</h2>
+    <div id="lista-inscrieri"></div>
+  </div>
+</div>
+
+<footer>© 2026 Biblioteca Aster · Suceava, România</footer>
+
+<script>
+function trimiteInscriere() {
+  const ev = document.getElementById('ins-eveniment').value;
+  const rol = document.getElementById('ins-rol').value;
+  const disp = document.getElementById('ins-disponibilitate').value;
+  if (!ev || !rol || !disp) { alert('Completează câmpurile obligatorii (*)'); return; }
+  
+  const competente = Array.from(document.querySelectorAll('.checkbox-item input:checked')).map(c => c.value);
+  
+  const inscrieri = JSON.parse(localStorage.getItem('inscrieri_org_vol') || '[]');
+  inscrieri.push({
+    eveniment: ev, rol, disponibilitate: disp,
+    competente: competente.join(', '),
+    mentiuni: document.getElementById('ins-mentiuni').value,
+    data: new Date().toLocaleDateString('ro-RO'),
+    status: 'În așteptare'
+  });
+  localStorage.setItem('inscrieri_org_vol', JSON.stringify(inscrieri));
+  
+  const idVol = localStorage.getItem("id_client") || -1;
+  fetch("/api/inscrieri-organizare", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({id_voluntar: parseInt(idVol), eveniment: ins.eveniment, rol: ins.rol, disponibilitate: ins.disponibilitate, competente: ins.competente, mentiuni: ins.mentiuni})
+  }).catch(() => {});
+  
+  document.getElementById('succes-ins').style.display = 'block';
+  document.getElementById('ins-eveniment').value = '';
+  document.getElementById('ins-rol').value = '';
+  document.getElementById('ins-disponibilitate').value = '';
+  document.getElementById('ins-experienta').value = '';
+  document.getElementById('ins-mentiuni').value = '';
+  document.querySelectorAll('.checkbox-item input').forEach(c => c.checked = false);
+  
+  incarcaInscrieri();
+  setTimeout(() => document.getElementById('succes-ins').style.display = 'none', 3000);
+}
+
+function incarcaInscrieri() {
+  const inscrieri = JSON.parse(localStorage.getItem('inscrieri_org_vol') || '[]');
+  const card = document.getElementById('inscrieri-card');
+  const lista = document.getElementById('lista-inscrieri');
+  if (inscrieri.length === 0) { card.style.display = 'none'; return; }
+  card.style.display = 'block';
+  lista.innerHTML = inscrieri.slice().reverse().map(i =>
+    '<div class="card-inscriere"><div style="display:flex;justify-content:space-between;align-items:center;">' +
+    '<div class="ins-titlu">' + i.eveniment + '</div>' +
+    '<span class="ins-status">' + i.status + '</span></div>' +
+    '<div class="ins-sub">Rol: ' + i.rol + ' · ' + i.data + '</div></div>'
+  ).join('');
+}
+
+document.addEventListener('DOMContentLoaded', incarcaInscrieri);
+</script>
+</body>
+</html>

@@ -1,11 +1,11 @@
 #include "Biblioteca.h"
-#include "Carte.h"
-#include "Autor.h"
-#include "Cladiri/Cladire.h"
-#include "Utilizatori/Voluntari/Voluntar.h"
-#include "Utilizatori/Angajati/Angajat.h"
-#include "Utilizatori/Utilizator.h"
-#include "Utilizatori/Clienti/Client.h"
+#include "../Carte/Carte.h"
+#include "../Autor/Autor.h"
+#include "../Cladiri/Cladire.h"
+#include "../Utilizatori/Voluntari/Voluntar.h"
+#include "../Utilizatori/Angajati/Angajat.h"
+#include "../Utilizatori/Utilizator.h"
+#include "../Utilizatori/Clienti/Client.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -23,17 +23,29 @@ bool comparaAni(Carte* a, Carte* b) {
     return a->data_pub < b->data_pub; 
 }
 
-Biblioteca::Biblioteca() {
+Biblioteca::Biblioteca() : db("biblioteca.db") {
+    if (!db.esteDeschisDB()) {
+        std::cerr << "[EROARE] Nu pot deschide baza de date!\n";
+        return;
+    }
+    // Initializeaza schema daca DB-ul e gol
+    db.initializeaza("schema.sql");
+
+    incarcaAutori();
+    incarcaBazaDate();
+    incarcaClienti("angajati.csv");   // pastreaza incarcarea utilizatorilor din CSV
+    incarcaAngajati("angajati.csv");
+    incarcaVoluntari("voluntari.csv");
+    coreleazaAutoriCuCarti();
+    populeazaAutoriDinCarti();
+
+    // Incarca cladirile din DB in lista_filiale
     incarcaLogistica();
     if (lista_filiale.empty()) {
         initializeazaLogisticaA_F();
     }
-    incarcaAutori();
-    incarcaBazaDate();
-
-    coreleazaAutoriCuCarti();
-    populeazaAutoriDinCarti();
 }
+
 
 Biblioteca::~Biblioteca() {
     for (Carte* c : inventar_general) delete c;
@@ -238,27 +250,32 @@ void Biblioteca::afiseazaDisponibilitateExemplare(const std::string& titlu_cauta
     if (!gasit) std::cout << "Nu s-au gasit exemplare pentru cautarea efectuata.\n";
 }
 
-std::vector<Carte*> Biblioteca::cautaDupaTitlu(const std::string& titluCautat) {
-    std::vector<Carte*> rezultate;
-    
-    for (Carte* c : inventar_general) {
-        // Verificăm dacă titlul cărții conține subșirul căutat
-        if (c->titlu.find(titluCautat) != std::string::npos) {
-            rezultate.push_back(c);
+std::vector<Carte*> Biblioteca::cautaDupaTitlu(const std::string& titlu) {
+    auto rezultate_db = db.cautaDupaTitlu(titlu);
+    std::vector<Carte*> rezultat;
+    for (const auto& cdb : rezultate_db) {
+        for (Carte* c : inventar_general) {
+            if (c->id_carte == cdb.id) {
+                rezultat.push_back(c);
+                break;
+            }
         }
     }
-    
-    return rezultate; 
+    return rezultat;
 }
 
 std::vector<Carte*> Biblioteca::cautaDupaAutor(const std::string& autor) {
-    std::vector<Carte*> rezultate;
-    for (Carte* c : inventar_general) {
-        if (c->autor.find(autor) != std::string::npos) {
-            rezultate.push_back(c);
+    auto rezultate_db = db.cautaDupaAutor(autor);
+    std::vector<Carte*> rezultat;
+    for (const auto& cdb : rezultate_db) {
+        for (Carte* c : inventar_general) {
+            if (c->id_carte == cdb.id) {
+                rezultat.push_back(c);
+                break;
+            }
         }
     }
-    return rezultate;
+    return rezultat;
 }
 
 
@@ -326,72 +343,66 @@ void Biblioteca::inregistreazaVoluntar(Voluntar v) {
 }
 
 void Biblioteca::salveazaBazaDate() {
-    std::ofstream f("inventar.txt");
-    if (!f.is_open()) return;
-
-    for (Carte* c : inventar_general) {
-        char tip = 'C';
-        if (dynamic_cast<CarteFictiune*>(c)) tip = 'F';
-        else if (dynamic_cast<CarteNonFictiune*>(c)) tip = 'N';
-        else if (dynamic_cast<CartePeriodica*>(c)) tip = 'P';
-
-        std::string t = c->titlu; std::replace(t.begin(), t.end(), ' ', '_');
-        std::string a = c->autor; std::replace(a.begin(), a.end(), ' ', '_');
-
-        f << tip << " " << c->id_carte << " " << t << " " << a << " " 
-          << c->rating << " " << c->nr_pagini << " " << c->adresa_raft.nume_filiala << " " 
-          << c->tara_provenienta << " " << c->an_aparitie << " " 
-          << c->exemplare_disponibile << " " << (int)c->suport << "\n";
-    }
-    f.close();
+    // SQLite se actualizeaza in timp real la fiecare operatie
+    // Aceasta metoda ramane pentru compatibilitate
+    std::cout << "[DB] Baza de date SQLite este actualizata automat.\n";
 }
 
 void Biblioteca::incarcaBazaDate() {
-    std::ifstream f("inventar.txt");
-    if (!f.is_open()) return;
+    auto carti = db.getToateCartile();
+    std::cout << "[DB] Incarcare " << carti.size() << " carti...\n";
 
-    char tip; 
-    while (f >> tip) {
-        int id, an, pag, stoc, sup_int;
-        float rat;
-        std::string titlu, autor, nume_corp, tara;
-
-        if(!(f >> id >> titlu >> autor >> rat >> pag >> nume_corp >> tara >> an >> stoc >> sup_int)) break;
-
-        std::replace(titlu.begin(), titlu.end(), '_', ' ');
-        std::replace(autor.begin(), autor.end(), '_', ' ');
-        TipSuport sup = static_cast<TipSuport>(sup_int);
+    for (const auto& c : carti) {
+        TipSuport sup = TipSuport::FIZIC;
+        if      (c.suport == "DIGITAL_PDF") sup = TipSuport::DIGITAL_PDF;
+        else if (c.suport == "AUDIOBOOK")   sup = TipSuport::AUDIOBOOK;
+        else if (c.suport == "VIDEO")       sup = TipSuport::VIDEO;
 
         Carte* noua = nullptr;
 
-        if (tip == 'F') {
-            noua = new CarteFictiune(id, titlu, autor, "Editura Default", "ISBN-TEMP", "Romana", "2026-01-01", 
-                                     pag, "Biblioteca", "Disponibil", "Achizitie", tara, an, pag, "SC-"+std::to_string(id), 
-                                     stoc, false, 0.0f, "Rezumat...", rat, sup, 0.0f, 
-                                     "Gen", "Protagonist", "Serie", "Naratiune", 12, "Standard", 0.5f, "Cartonata");
-        } 
-        else if (tip == 'N') {
-            noua = new CarteNonFictiune(id, titlu, autor, "Editura Stiintifica", "ISBN-TEMP", "Romana", "2026-01-01",
-                                        pag, "Cercetare", "Disponibil", "Sursa", tara, an, pag, "SC-"+std::to_string(id),
-                                        stoc, false, 0.0f, "Rezumat...", rat, sup, 0.0f,
-                                        "Subcategorie", "Domeniu", "Institutie", "v1.0", "Standard", 0.7f);
+        if (c.tip == "Fictiune") {
+            noua = new CarteFictiune(
+                c.id, c.titlu, c.autor, c.editura, c.isbn, c.limba, c.data_pub,
+                c.valoare_masurabila, c.destinatar, c.status, c.sursa,
+                c.tara_provenienta, c.an_aparitie, c.nr_pagini, c.serie_contabila,
+                c.exemplare_disponibile, c.este_patrimoniu, c.pret_intrare,
+                c.rezumat, c.rating, sup, c.marime_mb,
+                c.gen_specific, c.personaj_principal, c.serie, c.tip_naratiune,
+                c.varsta_recomandata, c.dimensiuni, c.greutate, c.tip_coperta
+            );
         }
-        else if (tip == 'P') {
+        else if (c.tip == "NonFictiune") {
+            noua = new CarteNonFictiune(
+                c.id, c.titlu, c.autor, c.editura, c.isbn, c.limba, c.data_pub,
+                c.valoare_masurabila, c.destinatar, c.status, c.sursa,
+                c.tara_provenienta, c.an_aparitie, c.nr_pagini, c.serie_contabila,
+                c.exemplare_disponibile, c.este_patrimoniu, c.pret_intrare,
+                c.rezumat, c.rating, sup, c.marime_mb,
+                c.subcategorie, c.domeniu, c.institutie_sursa, c.editie_revizuita,
+                c.dimensiuni, c.greutate
+            );
+        }
+        else if (c.tip == "Periodica") {
             noua = new CartePeriodica(
-                    id, titlu, autor, "Editura Media", "ISSN-TEMP", "Romana", "2026-04-28",
-                    pag, "Public", "Disponibil", "Abonament", tara, an, pag, "SC-"+std::to_string(id),
-                    stoc, false, 0.0f, "Editie periodica...", rat, sup, 0.0f,
-                    1, "Lunar" 
-             );
+                c.id, c.titlu, c.autor, c.editura, c.issn, c.limba, c.data_pub,
+                c.valoare_masurabila, c.destinatar, c.status, c.sursa,
+                c.tara_provenienta, c.an_aparitie, c.nr_pagini, c.serie_contabila,
+                c.exemplare_disponibile, c.este_patrimoniu, c.pret_intrare,
+                c.rezumat, c.rating, sup, c.marime_mb,
+                c.numar_editie, c.frecventa
+            );
         }
 
         if (noua) {
-            noua->adresa_raft.nume_filiala = nume_corp; 
+            // Seteaza locatia
+            noua->adresa_raft.cod_identificare = c.cod_identificare;
+            noua->adresa_raft.nume_filiala = db.getNumeCladire(c.id_cladire);
             inventar_general.push_back(noua);
         }
     }
-    f.close();
+    std::cout << "[DB] " << inventar_general.size() << " carti incarcate.\n";
 }
+
 void Biblioteca::incarcaClienti(const std::string& nume_fisier) {
     std::ifstream fisier(nume_fisier);
     if (!fisier.is_open()) return;
@@ -432,44 +443,84 @@ void Biblioteca::stergeClient(int id_cautat) {
     }
     std::cout << "[EROARE] Clientul cu ID " << id_cautat << " nu a fost gasit.\n";
 }
-void Biblioteca::realizeazaImprumut(int id_c, int id_u, const std::string& data_azi) {
-    for (Carte* c : inventar_general) {
-        if (c->id_carte == id_c) {
-            if (c->este_patrimoniu) {
-                std::cout << "[EROARE] Patrimoniu - Doar consultare sala!\n";
-                return;
-            }
-            if (c->exemplare_disponibile > 0) {
-                c->exemplare_disponibile--;
-                InregistrareImprumut nou = {id_u, id_c, data_azi, "Data+21zile", false};
-                istoric_imprumuturi.push_back(nou);
-                std::cout << "[SUCCES] Imprumutat: " << c->titlu << "\n";
-                salveazaBazaDate();
-            } else std::cout << "[STOC 0]\n";
-            return;
-        }
+Client* Biblioteca::getClientDupaId(int id) {
+    for (Client* cl : lista_clienti) {
+        if (cl->getId() == id) return cl;
     }
+    return nullptr;
+}
+// ── Imprumut prin DB ──────────────────────────────────────────
+void Biblioteca::realizeazaImprumut(int id_carte, int id_utilizator, const std::string& data_azi) {
+    // Verificari
+    Carte* carte_gasita = nullptr;
+    for (Carte* c : inventar_general) {
+        if (c->id_carte == id_carte) { carte_gasita = c; break; }
+    }
+    if (!carte_gasita) {
+        std::cout << "[Imprumut] Cartea cu ID " << id_carte << " nu exista.\n";
+        return;
+    }
+    if (carte_gasita->este_patrimoniu) {
+        std::cout << "[Eroare] Patrimoniu - Doar consultare la sala!\n";
+        return;
+    }
+    if (carte_gasita->exemplare_disponibile <= 0) {
+        std::cout << "[Imprumut] Stoc 0 - niciun exemplar disponibil.\n";
+        return;
+    }
+
+    Client* client_gasit = getClientDupaId(id_utilizator);
+    if (!client_gasit) {
+        std::cout << "[Imprumut] Clientul cu ID " << id_utilizator << " nu exista.\n";
+        return;
+    }
+
+    // Calculeaza data limita (data_azi + 21 zile - simplificat)
+    std::string data_limita = data_azi; // In productie: calculeaza +21 zile
+
+    // Salveaza in DB
+    db.adaugaImprumut(id_utilizator, id_carte, data_azi, data_limita);
+
+    // Actualizeaza obiectul in memorie
+    carte_gasita->exemplare_disponibile--;
+    client_gasit->incepeImprumut(id_carte, carte_gasita->titlu, carte_gasita->nr_pagini);
+
+    std::cout << "[Succes] Imprumutat: " << carte_gasita->titlu << "\n";
 }
 
-void Biblioteca::realizeazaRetur(int id_carte, const std::string& data_retur_reala) {
-    bool gasit = false;
-    for (auto& imp : istoric_imprumuturi) {
-        if (imp.id_carte == id_carte && !imp.returnata) {
-            imp.returnata = true;
-            gasit = true;
+
+void Biblioteca::realizeazaRetur(int id_carte, const std::string& data_retur) {
+    // Gasim imprumutul activ in DB
+    auto imprumuturi = db.getImprumuturiActive();
+    int id_client = -1;
+    for (const auto& imp : imprumuturi) {
+        if (imp.id_carte == id_carte) {
+            id_client = imp.id_client;
             break;
         }
     }
-    if (gasit) {
-        for (Carte* c : inventar_general) {
-            if (c->id_carte == id_carte) {
-                c->exemplare_disponibile++;
-                break;
-            }
-        }
-        salveazaBazaDate();
+    if (id_client == -1) {
+        std::cout << "[Retur] Nu exista imprumut activ pentru cartea " << id_carte << ".\n";
+        return;
     }
+
+    // Actualizeaza DB
+    db.returneazaCarte(id_carte, id_client, data_retur);
+
+    // Actualizeaza obiectele in memorie
+    for (Carte* c : inventar_general) {
+        if (c->id_carte == id_carte) {
+            c->exemplare_disponibile++;
+            break;
+        }
+    }
+    Client* cl = getClientDupaId(id_client);
+    if (cl) cl->finalizeazaCarte(id_carte, 0, "");
+
+    std::cout << "[Retur] Carte returnata cu succes.\n";
 }
+
+
 
 
 void Biblioteca::realizareInventar(const std::string& nume_angajat) {
@@ -552,4 +603,95 @@ void Biblioteca::stergeVoluntar(int id_cautat) {
     }
     std::cout << "[EROARE] Nu s-a gasit voluntarul cu ID " << id_cautat << ".\n";
 }
-void Biblioteca::incarcaAutori() { /* Implementare incarcare autori din fisier daca e cazul */ }
+void Biblioteca::incarcaAutori() {
+    auto autori = db.getToatiAutorii();
+    for (const auto& a : autori) {
+        baza_date_autori.push_back(new Autor(a.nume_complet, a.biografie, a.cale_poza));
+    }
+    std::cout << "[DB] " << baza_date_autori.size() << " autori incarcati.\n";
+}
+
+// Rezerva o carte pentru un client (fara a o ridica fizic)
+void Biblioteca::rezervaCarte(int id_carte, int id_client) {
+    Carte* carte_gasita = nullptr;
+    for (Carte* c : inventar_general) {
+        if (c->id_carte == id_carte) { carte_gasita = c; break; }
+    }
+    if (!carte_gasita || carte_gasita->exemplare_disponibile <= 0) {
+        std::cout << "[Rezervare] Cartea nu e disponibila.\n";
+        return;
+    }
+    if (carte_gasita->este_patrimoniu) {
+        std::cout << "[Rezervare] Cartile de patrimoniu nu pot fi rezervate.\n";
+        return;
+    }
+
+    Client* cl = getClientDupaId(id_client);
+    if (!cl) {
+        std::cout << "[Rezervare] Clientul nu exista.\n";
+        return;
+    }
+
+    db.adaugaRezervare(id_client, id_carte, "2026-01-01", "2026-01-03");
+    carte_gasita->exemplare_disponibile--;
+    cl->rezervaCarte(id_carte);
+    std::cout << "[Rezervare] Rezervare confirmata pentru " << carte_gasita->titlu << ".\n";
+}
+
+
+// Anuleaza rezervarea si elibereaza exemplarul inapoi in stoc
+void Biblioteca::anuleazaRezervare(int id_carte, int id_client) {
+    db.anuleazaRezervare(id_client, id_carte);
+    for (Carte* c : inventar_general) {
+        if (c->id_carte == id_carte) { c->exemplare_disponibile++; break; }
+    }
+    Client* cl = getClientDupaId(id_client);
+    if (cl) cl->anuleazaRezervare(id_carte);
+    std::cout << "[Rezervare] Rezervare anulata.\n";
+}
+Biblioteca::RezultatRecomandari Biblioteca::getRecomandariClient(int id_client) {
+    RezultatRecomandari rez;
+
+    // 1. Genuri favorite
+    auto genuri = db.getGenuriFavoriteClient(id_client);
+    if (!genuri.empty()) {
+        rez.gen_favorit = genuri[0];
+        auto rec_gen = db.getRecomandariDupaGen(genuri[0], id_client, 5);
+        for (const auto& cdb : rec_gen) {
+            for (Carte* c : inventar_general) {
+                if (c->id_carte == cdb.id) {
+                    rez.dupa_gen.push_back(c);
+                    break;
+                }
+            }
+        }
+    }
+
+    // 2. Autori favoriti
+    auto autori = db.getAutoriFavoritiClient(id_client);
+    if (!autori.empty()) {
+        rez.autor_favorit = autori[0];
+        auto rec_autor = db.getRecomandariDupaAutor(autori[0], id_client, 3);
+        for (const auto& cdb : rec_autor) {
+            for (Carte* c : inventar_general) {
+                if (c->id_carte == cdb.id) {
+                    rez.dupa_autor.push_back(c);
+                    break;
+                }
+            }
+        }
+    }
+
+    // 3. Prieteni
+    auto rec_prieteni = db.getRecomandariDupaPrieteni(id_client, 5);
+    for (const auto& cdb : rec_prieteni) {
+        for (Carte* c : inventar_general) {
+            if (c->id_carte == cdb.id) {
+                rez.dupa_prieteni.push_back(c);
+                break;
+            }
+        }
+    }
+
+    return rez;
+}

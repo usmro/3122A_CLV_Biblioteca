@@ -1,5 +1,6 @@
 #ifndef BIBLIOTECA_H
 #define BIBLIOTECA_H
+#include "../src/Database/Database.h"
 
 #include "Utilizatori/Clienti/Client.h"
 #include "Utilizatori/Voluntari/Voluntar.h"
@@ -50,7 +51,7 @@ struct RaportInventar {
 
 class Biblioteca {
 public:
-
+    Database db;
     std::vector<Carte*> inventar_general; 
     std::vector<Autor*> baza_date_autori;
     std::vector<Client*> lista_clienti;
@@ -82,6 +83,8 @@ public:
     void sorteazaDupaAn(std::vector<Carte*>& lista);
 
     // Împrumuturi
+    void rezervaCarte(int id_carte, int id_utilizator);
+void anuleazaRezervare(int id_carte, int id_utilizator);
     void realizeazaImprumut(int id_carte, int id_utilizator, const std::string& data_azi);
     void realizeazaRetur(int id_carte, const std::string& data_retur_reala);
 
@@ -89,7 +92,7 @@ public:
     void inregistreazaClient(Client c);
     void inregistreazaAngajat(Angajat* a);
     void inregistreazaVoluntar(Voluntar v);
-
+    Client* getClientDupaId(int id);
     // Încărcare/Ștergere Utilizatori
     void incarcaClienti(const std::string& fisier_clienti);
     void incarcaAngajati(const std::string& nume_fisier);
@@ -110,6 +113,16 @@ public:
     void salveazaBazaDate();
     void incarcaBazaDate();
     void incarcaAutori();
+
+    struct RezultatRecomandari {
+        std::vector<Carte*> dupa_gen;      // "Ai citit Fantasy, incearca si..."
+        std::vector<Carte*> dupa_autor;    // "Mai multe carti de acelasi autor"
+        std::vector<Carte*> dupa_prieteni; // "Prietenii tai au citit..."
+        std::string gen_favorit;
+        std::string autor_favorit;
+    };
+    RezultatRecomandari getRecomandariClient(int id_client);
+
 };
 
 #endif

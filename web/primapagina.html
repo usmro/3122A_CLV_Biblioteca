@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mov-deschis: #e8e0f5;
+    --mov-pastel: #c9b8e8;
+    --mov-mediu: #9b7dc8;
+    --mov-inchis: #6b4fa0;
+    --mov-profund: #4a3270;
+    --roz-pastel: #f0e6f6;
+    --lila: #d4c5ed;
+    --alb-cald: #faf8fd;
+    --text-principal: #2d1f4e;
+    --text-secundar: #7a6a9a;
+    --text-subtil: #b0a0cc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--alb-cald);
+    color: var(--text-principal);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Fundal decorativ */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #e8e0f580 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #d4c5ed50 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative; z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 3rem;
+    border-bottom: 1px solid var(--lila);
+    background: rgba(250, 248, 253, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky; top: 0;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    text-decoration: none;
+  }
+
+  .logo-svg {
+    width: 48px; height: 48px;
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    display: flex; flex-direction: column;
+  }
+
+  .logo-nume {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--mov-profund);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
+  .logo-subtitlu {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--text-secundar);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  nav {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  nav a {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-secundar);
+    text-decoration: none;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+  }
+
+  nav a:hover {
+    color: var(--mov-inchis);
+    background: var(--mov-deschis);
+  }
+
+  .btn-login {
+    background: var(--mov-inchis) !important;
+    color: white !important;
+    padding: 0.45rem 1.2rem !important;
+    border-radius: 20px;
+    font-weight: 500 !important;
+    transition: all 0.2s ease;
+  }
+
+  .btn-login:hover {
+    background: var(--mov-profund) !important;
+    transform: translateY(-1px);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 5rem 2rem 3rem;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mov-mediu);
+    background: var(--mov-deschis);
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--lila);
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 300;
+    color: var(--text-principal);
+    line-height: 1.05;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--mov-inchis);
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--text-secundar);
+    max-width: 480px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+
+  /* FLOARE ASTER decorativa */
+  .aster-deco {
+    position: absolute;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+  .aster-deco.stanga { left: 4%; top: 50%; transform: translateY(-50%); width: 180px; }
+  .aster-deco.dreapta { right: 4%; top: 40%; width: 220px; }
+
+  /* BUTOANE PRINCIPALE */
+  .butoane-grid {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.5rem 5rem;
+  }
+
+  .card-buton {
+    background: white;
+    border: 1px solid var(--lila);
+    border-radius: 20px;
+    padding: 2rem 1.75rem;
+    text-decoration: none;
+    color: var(--text-principal);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .card-buton::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--mov-deschis) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .card-buton:hover {
+    border-color: var(--mov-pastel);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(107, 79, 160, 0.12);
+  }
+
+  .card-buton:hover::before { opacity: 1; }
+
+  .card-buton:active { transform: translateY(-1px); }
+
+  .card-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    background: var(--mov-deschis);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; z-index: 1;
+    transition: background 0.3s;
+  }
+
+  .card-buton:hover .card-icon {
+    background: var(--lila);
+  }
+
+  .card-icon svg {
+    width: 24px; height: 24px;
+    stroke: var(--mov-inchis);
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .card-titlu {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-principal);
+    position: relative; z-index: 1;
+    line-height: 1.2;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--text-secundar);
+    line-height: 1.5;
+    position: relative; z-index: 1;
+  }
+
+  .card-arrow {
+    margin-top: auto;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--mov-deschis);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; z-index: 1;
+    transition: all 0.3s;
+  }
+
+  .card-buton:hover .card-arrow {
+    background: var(--mov-inchis);
+  }
+
+  .card-arrow svg {
+    width: 14px; height: 14px;
+    stroke: var(--mov-inchis);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.3s;
+  }
+
+  .card-buton:hover .card-arrow svg {
+    stroke: white;
+  }
+
+  /* Accent color pe fiecare card */
+  .card-buton.login .card-icon { background: #ede8f8; }
+  .card-buton.anunturi .card-icon { background: #f0e8f5; }
+  .card-buton.cafenea .card-icon { background: #f5ece0; }
+  .card-buton.despre .card-icon { background: #e8f0f5; }
+
+  .card-buton.login .card-icon svg { stroke: #6b4fa0; }
+  .card-buton.anunturi .card-icon svg { stroke: #9b5faa; }
+  .card-buton.cafenea .card-icon svg { stroke: #a07040; }
+  .card-buton.despre .card-icon svg { stroke: #4070a0; }
+
+  /* FOOTER */
+  footer {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 1.5rem;
+    border-top: 1px solid var(--mov-deschis);
+    font-size: 0.75rem;
+    color: var(--text-subtil);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  footer span { color: var(--mov-mediu); }
+
+  /* Animatii la incarcare */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge  { animation: fadeUp 0.5s ease both; }
+  .hero h1     { animation: fadeUp 0.6s ease 0.1s both; }
+  .hero-desc   { animation: fadeUp 0.6s ease 0.2s both; }
+  .card-buton  { animation: fadeUp 0.6s ease both; }
+  .card-buton:nth-child(1) { animation-delay: 0.3s; }
+  .card-buton:nth-child(2) { animation-delay: 0.38s; }
+  .card-buton:nth-child(3) { animation-delay: 0.46s; }
+  .card-buton:nth-child(4) { animation-delay: 0.54s; }
+
+  @media (max-width: 600px) {
+    header { padding: 1rem 1.25rem; }
+    .hero { padding: 3rem 1.25rem 2rem; }
+    .butoane-grid { grid-template-columns: 1fr; padding: 0 1.25rem 3rem; }
+    .aster-deco { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="/" class="logo">
+    <!-- Logo floare Aster SVG -->
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Petale externe -->
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" opacity="0.9" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" opacity="0.9" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" opacity="0.9" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" opacity="0.9" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" opacity="0.7" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" opacity="0.7" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" opacity="0.7" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" opacity="0.7" transform="rotate(157.5 24 24)"/>
+      <!-- Centru -->
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-nume">Biblioteca Aster</span>
+      <span class="logo-subtitlu">Cunoaștere · Cultură · Comunitate</span>
+    </div>
+  </a>
+
+  <nav>
+    <a href="/web/catalog.html">Catalog</a>
+    <a href="/web/anunturi.html">Evenimente</a>
+    <a href="/web/cafenea.html">Cafenea</a>
+    <a href="/web/despre.html">Contact</a>
+    <a href="/web/login.html" class="btn-login" id="btn-auth">Autentificare</a>
+  </nav>
+</header>
+
+<!-- Flori decorative -->
+<svg class="aster-deco stanga" viewBox="0 0 180 180" fill="none">
+  <ellipse cx="90" cy="30" rx="12" ry="35" fill="#9b7dc8" transform="rotate(0 90 90)"/>
+  <ellipse cx="90" cy="30" rx="12" ry="35" fill="#9b7dc8" transform="rotate(30 90 90)"/>
+  <ellipse cx="90" cy="30" rx="12" ry="35" fill="#9b7dc8" transform="rotate(60 90 90)"/>
+  <ellipse cx="90" cy="30" rx="12" ry="35" fill="#9b7dc8" transform="rotate(90 90 90)"/>
+  <ellipse cx="90" cy="30" rx="12" ry="35" fill="#9b7dc8" transform="rotate(120 90 90)"/>
+  <ellipse cx="90" cy="30" rx="12" ry="35" fill="#9b7dc8" transform="rotate(150 90 90)"/>
+  <circle cx="90" cy="90" r="22" fill="#6b4fa0"/>
+</svg>
+
+<svg class="aster-deco dreapta" viewBox="0 0 220 220" fill="none">
+  <ellipse cx="110" cy="35" rx="14" ry="42" fill="#c9b8e8" transform="rotate(0 110 110)"/>
+  <ellipse cx="110" cy="35" rx="14" ry="42" fill="#c9b8e8" transform="rotate(40 110 110)"/>
+  <ellipse cx="110" cy="35" rx="14" ry="42" fill="#c9b8e8" transform="rotate(80 110 110)"/>
+  <ellipse cx="110" cy="35" rx="14" ry="42" fill="#c9b8e8" transform="rotate(120 110 110)"/>
+  <ellipse cx="110" cy="35" rx="14" ry="42" fill="#c9b8e8" transform="rotate(160 110 110)"/>
+  <ellipse cx="110" cy="35" rx="14" ry="42" fill="#9b7dc8" transform="rotate(20 110 110)"/>
+  <ellipse cx="110" cy="35" rx="14" ry="42" fill="#9b7dc8" transform="rotate(60 110 110)"/>
+  <ellipse cx="110" cy="35" rx="14" ry="42" fill="#9b7dc8" transform="rotate(100 110 110)"/>
+  <ellipse cx="110" cy="35" rx="14" ry="42" fill="#9b7dc8" transform="rotate(140 110 110)"/>
+  <circle cx="110" cy="110" r="28" fill="#6b4fa0"/>
+  <circle cx="110" cy="110" r="14" fill="#9b7dc8"/>
+</svg>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Bun venit la Biblioteca Aster</div>
+  <h1>Un loc pentru <em>fiecare</em><br>poveste</h1>
+  <p class="hero-desc">
+    Șase corpuri, sute de mii de cărți, evenimente culturale și o comunitate 
+    de cititori care te așteaptă.
+  </p>
+</section>
+
+<!-- BUTOANE PRINCIPALE -->
+<div class="butoane-grid">
+
+  <!-- Login -->
+  <a href="/web/login.html" class="card-buton login">
+    <div class="card-icon">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+    <div class="card-titlu">Autentificare</div>
+    <div class="card-desc">Accesează contul tău de client, voluntar sau angajat.</div>
+    <div class="card-arrow">
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <!-- Anunturi -->
+  <a href="/web/anunturi.html" class="card-buton anunturi">
+    <div class="card-icon">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <div class="card-titlu">Anunțuri & Evenimente</div>
+    <div class="card-desc">Noutăți, lansări de carte, cluburi de lectură și activități culturale.</div>
+    <div class="card-arrow">
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <!-- Cafenea -->
+  <a href="/web/cafenea.html" class="card-buton cafenea">
+    <div class="card-icon">
+      <svg viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+    </div>
+    <div class="card-titlu">Cafeneaua Literară</div>
+    <div class="card-desc">Meniu, rezervări de mese și spații pentru evenimente private.</div>
+    <div class="card-arrow">
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <!-- Despre -->
+  <a href="/web/despre.html" class="card-buton despre">
+    <div class="card-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    </div>
+    <div class="card-titlu">Despre Noi</div>
+    <div class="card-desc">Cele șase corpuri, programul de funcționare și regulamentul bibliotecii.</div>
+    <div class="card-arrow">
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+</div>
+
+<footer>
+  © 2026 <span>Biblioteca Aster</span> · Toate drepturile rezervate
+</footer>
+
+
+
+
+<script>
+(function() {
+  const prenume = localStorage.getItem('prenume_user');
+  const nume = localStorage.getItem('nume_user');
+  if (prenume) {
+    const btn = document.getElementById('btn-auth');
+    if (btn) {
+      const initiale = (prenume[0] + (nume?.[0]||'')).toUpperCase();
+      btn.outerHTML = `
+        <div style="position:relative;margin-left:1rem;" id="user-menu-wrap">
+          <div style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;" onclick="toggleUserMenu()">
+            <span style="font-size:0.82rem;color:#7a6a9a;">Bun venit, <strong style="color:#6b4fa0;">${prenume}</strong></span>
+            <div style="width:34px;height:34px;border-radius:50%;background:#6b4fa0;color:white;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:600;">${initiale}</div>
+          </div>
+          <div id="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:white;border:1px solid #d4c5ed;border-radius:12px;padding:0.5rem;min-width:160px;box-shadow:0 8px 24px rgba(107,79,160,0.12);z-index:200;">
+            <a href="/web/dashboard-client.html" style="display:block;padding:0.5rem 0.75rem;font-size:0.82rem;color:#2d1f4e;text-decoration:none;border-radius:8px;" onmouseover="this.style.background='#e8e0f5'" onmouseout="this.style.background=''">📚 Dashboard</a>
+            <a href="/web/profil.html" style="display:block;padding:0.5rem 0.75rem;font-size:0.82rem;color:#2d1f4e;text-decoration:none;border-radius:8px;" onmouseover="this.style.background='#e8e0f5'" onmouseout="this.style.background=''">👤 Profilul meu</a>
+            <div style="border-top:1px solid #e8e0f5;margin:0.4rem 0;"></div>
+            <button onclick="localStorage.clear();location.href='/web/primapagina.html';" style="display:block;width:100%;text-align:left;padding:0.5rem 0.75rem;font-size:0.82rem;color:#880e4f;background:none;border:none;cursor:pointer;border-radius:8px;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='#fce4ec'" onmouseout="this.style.background=''">🚪 Deconectare</button>
+          </div>
+        </div>`;
+    }
+  }
+  
+  function toggleUserMenu() {
+    const dd = document.getElementById('user-dropdown');
+    if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+  }
+  window.toggleUserMenu = toggleUserMenu;
+  
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('user-menu-wrap');
+    const dd = document.getElementById('user-dropdown');
+    if (wrap && dd && !wrap.contains(e.target)) dd.style.display = 'none';
+  });
+})();
+</script>
+</body>
+</html>

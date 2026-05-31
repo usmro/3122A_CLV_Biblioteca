@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mov-deschis: #e8e0f5; --mov-pastel: #c9b8e8; --mov-mediu: #9b7dc8;
+  --mov-inchis: #6b4fa0; --mov-profund: #4a3270; --lila: #d4c5ed;
+  --alb-cald: #faf8fd; --text-principal: #2d1f4e; --text-secundar: #7a6a9a;
+  --text-subtil: #b0a0cc;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--alb-cald); color:var(--text-principal); }
+
+header { display:flex; align-items:center; justify-content:space-between; padding:1rem 2rem; border-bottom:1px solid var(--lila); background:white; position:sticky; top:0; z-index:100; }
+.logo { display:flex; align-items:center; gap:0.6rem; text-decoration:none; }
+.logo-svg { width:28px; height:28px; }
+.logo-nume { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; color:var(--mov-profund); }
+
+.page-wrapper { max-width:700px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+
+.btn-inapoi { display:inline-flex; align-items:center; gap:0.4rem; font-size:0.8rem; color:var(--text-secundar); text-decoration:none; margin-bottom:1.5rem; cursor:pointer; transition:color 0.2s; background:none; border:none; font-family:'DM Sans',sans-serif; }
+.btn-inapoi:hover { color:var(--mov-inchis); }
+.btn-inapoi svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+
+/* PROFIL HEADER */
+.profil-card { background:white; border:1px solid var(--lila); border-radius:20px; padding:2rem; margin-bottom:1.25rem; }
+.profil-top { display:flex; align-items:center; gap:1.5rem; margin-bottom:1.5rem; }
+.profil-avatar-mare { width:80px; height:80px; border-radius:50%; background:var(--mov-inchis); color:white; display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:600; flex-shrink:0; }
+.profil-info-main { flex:1; }
+.profil-nume-mare { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:600; color:var(--text-principal); }
+.profil-username { font-size:0.85rem; color:var(--text-subtil); margin-bottom:0.4rem; }
+.profil-rank { font-size:0.82rem; color:var(--mov-inchis); font-weight:500; }
+
+.profil-stats { display:flex; gap:1.5rem; padding-top:1.25rem; border-top:1px solid var(--mov-deschis); flex-wrap:wrap; }
+.stat-item { text-align:center; }
+.stat-nr { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:600; color:var(--mov-inchis); }
+.stat-label { font-size:0.7rem; color:var(--text-subtil); margin-top:0.1rem; }
+
+.profil-actiuni { display:flex; gap:0.75rem; margin-top:1.25rem; flex-wrap:wrap; }
+.btn-actiune { padding:0.55rem 1.25rem; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.82rem; cursor:pointer; transition:all 0.2s; border:none; font-weight:500; }
+.btn-actiune.primar { background:var(--mov-inchis); color:white; }
+.btn-actiune.primar:hover { background:var(--mov-profund); }
+.btn-actiune.secundar { background:var(--mov-deschis); color:var(--mov-inchis); }
+.btn-actiune.secundar:hover { background:var(--mov-pastel); }
+.btn-actiune.pericol { background:#fce4ec; color:#880e4f; }
+
+/* SECTIUNI */
+.sectiune-card { background:white; border:1px solid var(--lila); border-radius:16px; padding:1.5rem; margin-bottom:1rem; }
+.sec-titlu { font-size:0.85rem; font-weight:500; color:var(--text-principal); margin-bottom:1rem; display:flex; align-items:center; gap:0.4rem; }
+.sec-titlu svg { width:14px; height:14px; stroke:var(--mov-inchis); fill:none; stroke-width:1.5; }
+
+/* BADGES */
+.badges-grid { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.badge { font-size:0.68rem; padding:0.25rem 0.6rem; border-radius:10px; font-weight:500; }
+.badge-mov { background:#ede8f8; color:#6b4fa0; }
+.badge-auriu { background:#fff8e1; color:#f57f17; }
+.badge-roz { background:#fce4ec; color:#880e4f; }
+.badge-verde { background:#e8f5e9; color:#2e7d32; }
+
+/* CARTI */
+.carti-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(90px, 1fr)); gap:0.75rem; }
+.card-carte-mini { text-align:center; cursor:pointer; }
+.coperta-mini { width:100%; aspect-ratio:2/3; border-radius:8px; background:linear-gradient(135deg, var(--mov-deschis), var(--lila)); display:flex; align-items:center; justify-content:center; margin-bottom:0.3rem; font-size:0.5rem; color:var(--mov-inchis); padding:4px; text-align:center; line-height:1.3; transition:transform 0.2s; }
+.card-carte-mini:hover .coperta-mini { transform:translateY(-2px); }
+.titlu-mini { font-size:0.68rem; color:var(--text-secundar); line-height:1.3; }
+
+/* PRIVAT */
+.profil-privat { text-align:center; padding:2rem; color:var(--text-subtil); }
+.profil-privat svg { width:40px; height:40px; stroke:var(--mov-pastel); fill:none; stroke-width:1; margin-bottom:0.75rem; }
+.profil-privat p { font-size:0.85rem; }
+
+/* ACTIVITATE */
+.activitate-item { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 0; border-bottom:1px solid var(--alb-cald); font-size:0.82rem; color:var(--text-secundar); }
+.activitate-item:last-child { border:none; }
+.activitate-item svg { width:14px; height:14px; stroke:var(--mov-mediu); fill:none; stroke-width:1.5; flex-shrink:0; }
+
+footer { text-align:center; padding:1.5rem; font-size:0.75rem; color:var(--text-subtil); border-top:1px solid var(--mov-deschis); }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/web/primapagina.html" class="logo">
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none">
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(157.5 24 24)"/>
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <span class="logo-nume">Biblioteca Aster</span>
+  </a>
+</header>
+
+<div class="page-wrapper">
+  <button class="btn-inapoi" onclick="history.back()">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Înapoi
+  </button>
+
+  <div id="continut-profil">
+    <div style="text-align:center;padding:3rem;color:var(--text-subtil);">Se încarcă profilul...</div>
+  </div>
+</div>
+
+<footer>© 2026 Biblioteca Aster · Suceava, România</footer>
+
+<script>
+function afiseazaProfil() {
+  const params = new URLSearchParams(window.location.search);
+  const username = params.get('username') || 'utilizator';
+  const nume = params.get('nume') || 'Utilizator';
+  const rank = params.get('rank') || 'Cititor';
+  const nrCarti = parseInt(params.get('carti') || '0');
+  const status = params.get('status') || '';
+  const dataInscriere = params.get('data') || '2024';
+  
+  // Verifica daca sunt prieteni din localStorage
+  const prieteniStersi = JSON.parse(localStorage.getItem('prieteni_stersi') || '[]');
+  const cereriTrimise = JSON.parse(localStorage.getItem('cereri_trimise') || '[]');
+  const eParamPrieten = params.get('prieten') === 'true';
+  const eSuprieteni = eParamPrieten && !prieteniStersi.includes(username);
+  const eUtilogat = !!localStorage.getItem('prenume_user');
+  const aCereTrimisa = cereriTrimise.includes(username);
+  
+  const initiale = nume.split(' ').map(x=>x[0]).join('').substring(0,2).toUpperCase();
+  document.title = `${nume} · Biblioteca Aster`;
+
+  let html = `
+    <div class="profil-card">
+      <div class="profil-top">
+        <div class="profil-avatar-mare">${initiale}</div>
+        <div class="profil-info-main">
+          <div class="profil-nume-mare">${nume}</div>
+          <div class="profil-username">@${username}</div>
+          <div class="profil-rank">⭐ ${rank}</div>
+        </div>
+      </div>`;
+
+  if (eSuprieteni) {
+    html += `
+      <div class="profil-stats">
+        <div class="stat-item"><div class="stat-nr">${nrCarti}</div><div class="stat-label">Cărți citite</div></div>
+        <div class="stat-item"><div class="stat-nr">3</div><div class="stat-label">În progres</div></div>
+        <div class="stat-item"><div class="stat-nr">7</div><div class="stat-label">Wishlist</div></div>
+        <div class="stat-item"><div class="stat-nr">${dataInscriere}</div><div class="stat-label">Membru din</div></div>
+      </div>`;
+  }
+
+  if (eUtilogat) {
+    html += `<div class="profil-actiuni">`;
+    if (eSuprieteni) {
+      html += `<button class="btn-actiune secundar" onclick="trimiteMsg('${username}')">💬 Mesaj</button>
+               <button class="btn-actiune pericol" id="btn-sterge" onclick="stergePrivetenie('${username}', this)">Elimină prieten</button>`;
+    } else if (aCereTrimisa) {
+      html += `<button class="btn-actiune secundar" disabled style="cursor:default;">✓ Cerere trimisă</button>`;
+    } else {
+      html += `<button class="btn-actiune primar" id="btn-adauga" onclick="trimitereCerere('${username}', this)">+ Adaugă prieten</button>`;
+    }
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+
+  if (eSuprieteni) {
+    html += `
+      <div class="sectiune-card">
+        <div class="sec-titlu">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Badge-uri câștigate
+        </div>
+        <div class="badges-grid">
+          <span class="badge badge-mov">Monthly Read 2026 ✓</span>
+          <span class="badge badge-auriu">Number the Pages ✓</span>
+          <span class="badge badge-verde">2026 Reading Challenge ✓</span>
+        </div>
+      </div>
+      <div class="sectiune-card">
+        <div class="sec-titlu">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Activitate recentă
+        </div>
+        ${status ? `<div class="activitate-item"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>${status}</div>` : ''}
+        <div class="activitate-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>A citit "Misterul Nopții" de Agatha Christie</div>
+        <div class="activitate-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>S-a alăturat grupului Fantasy & SF</div>
+      </div>
+      <div class="sectiune-card">
+        <div class="sec-titlu">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Cărți partajate cu prietenii
+        </div>
+        <div class="carti-grid">
+          <div class="card-carte-mini"><div class="coperta-mini">Umbra Timpului</div><div class="titlu-mini">Umbra Timpului</div></div>
+          <div class="card-carte-mini"><div class="coperta-mini">Sapiens</div><div class="titlu-mini">Sapiens</div></div>
+          <div class="card-carte-mini"><div class="coperta-mini">The Name of the Wind</div><div class="titlu-mini">Name of the Wind</div></div>
+        </div>
+      </div>`;
+  } else {
+    html += `
+      <div class="sectiune-card">
+        <div class="profil-privat">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <p>Acest profil este privat.<br>Adaugă-l ca prieten pentru a vedea mai multe detalii.</p>
+          ${eUtilogat && !aCereTrimisa ? `<button class="btn-actiune primar" style="margin-top:1rem;" onclick="trimitereCerere('${username}', this)">+ Adaugă prieten</button>` : ''}
+          ${aCereTrimisa ? `<div style="margin-top:1rem;font-size:0.82rem;color:#2e7d32;">✓ Cerere de prietenie trimisă</div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  document.getElementById('continut-profil').innerHTML = html;
+}
+
+function trimitereCerere(username, btn) {
+  // Salveaza in localStorage
+  const cereri = JSON.parse(localStorage.getItem('cereri_trimise') || '[]');
+  if (!cereri.includes(username)) {
+    cereri.push(username);
+    localStorage.setItem('cereri_trimise', JSON.stringify(cereri));
+  }
+  btn.textContent = '✓ Cerere trimisă';
+  btn.style.background = '#2e7d32';
+  btn.style.color = 'white';
+  btn.disabled = true;
+}
+
+function stergePrivetenie(username, btn) {
+  if (!confirm(`Ești sigur că vrei să elimini @${username} din lista de prieteni?`)) return;
+  // Salveaza in localStorage
+  const stersi = JSON.parse(localStorage.getItem('prieteni_stersi') || '[]');
+  if (!stersi.includes(username)) {
+    stersi.push(username);
+    localStorage.setItem('prieteni_stersi', JSON.stringify(stersi));
+  }
+  btn.textContent = '✓ Eliminat';
+  btn.disabled = true;
+  setTimeout(() => history.back(), 1000);
+}
+
+function trimiteMsg(username) {
+  alert(`Funcționalitate de mesagerie în curând! (@${username})`);
+}
+
+afiseazaProfil();
+</script>
+</body>
+</html>

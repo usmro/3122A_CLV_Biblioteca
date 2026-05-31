@@ -1,8 +1,8 @@
 #ifndef VOLUNTAR_H
 #define VOLUNTAR_H
 
-#include "Client.h" 
-#include "Cladire.h"
+#include "../Clienti/Client.h" 
+#include "../../Cladiri/Cladire.h"
 #include <map>
 #include <vector>
 #include <string>
@@ -35,6 +35,8 @@ protected:
     // ---Feedback---
     std::vector<Feedback> lista_feedback;
     double rating_mediu;
+    std::string observatii_activitate;          // note lasate de coordonator
+    std::map<std::string, std::string> program_saptamanal_personal;
 
     public:
     Voluntar(int id, std::string n, std::string p, std::string e, std::string tel,
@@ -49,6 +51,13 @@ protected:
     void afiseazaCalendar();
     void adaugaOre(int nr_ore);
     int getOre() const { return ore_lucrate; }
+     // Program personal
+    void seteazaZiLucru(std::string zi, std::string interval);
+    void afiseazaProgramPersonal() const;
+
+    // Observatii
+    void adaugaObservatie(const std::string& obs);
+    void afiseazaObservatii() const;
 
     void primesteAnuntSedinta(const std::string& data, const std::string& titlu);
     std::string getLinkIdei() const { return link_idei_eveniment; }

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalog Cărți · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mov-deschis: #e8e0f5; --mov-pastel: #c9b8e8; --mov-mediu: #9b7dc8;
+  --mov-inchis: #6b4fa0; --mov-profund: #4a3270; --lila: #d4c5ed;
+  --alb-cald: #faf8fd; --text-principal: #2d1f4e; --text-secundar: #7a6a9a;
+  --text-subtil: #b0a0cc;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--alb-cald); color:var(--text-principal); }
+
+/* HEADER */
+header { display:flex; align-items:center; justify-content:space-between; padding:1.2rem 3rem; border-bottom:1px solid var(--lila); background:white; position:sticky; top:0; z-index:100; }
+.logo { display:flex; align-items:center; gap:0.8rem; text-decoration:none; }
+.logo-svg { width:36px; height:36px; }
+.logo-nume { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; color:var(--mov-profund); }
+nav { display:flex; gap:0.5rem; align-items:center; }
+nav a { font-size:0.83rem; color:var(--text-secundar); text-decoration:none; padding:0.4rem 0.9rem; border-radius:20px; transition:all 0.2s; }
+nav a:hover { background:var(--mov-deschis); color:var(--mov-inchis); }
+.btn-login-nav { background:var(--mov-inchis) !important; color:white !important; font-weight:500 !important; }
+
+/* HERO MIC */
+.hero-mic { background:linear-gradient(135deg, var(--mov-profund), var(--mov-inchis)); padding:2.5rem 3rem; position:relative; overflow:hidden; }
+.hero-mic::before { content:''; position:absolute; right:-80px; top:-80px; width:280px; height:280px; border-radius:50%; background:rgba(255,255,255,0.04); }
+.hero-mic-content { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.hero-mic h1 { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:300; color:white; margin-bottom:0.4rem; }
+.hero-mic h1 em { font-style:italic; color:var(--mov-pastel); }
+.hero-mic p { font-size:0.88rem; color:rgba(255,255,255,0.6); font-weight:300; }
+
+/* LAYOUT */
+.page-wrapper { max-width:1100px; margin:0 auto; padding:2rem; }
+
+/* BARA FILTRE */
+.bara-filtre {
+  display:flex; gap:1rem; align-items:center; flex-wrap:wrap;
+  margin-bottom:2rem; padding:1.25rem 1.5rem;
+  background:white; border:1px solid var(--lila); border-radius:16px;
+}
+.bara-filtre-grup { display:flex; align-items:center; gap:0.5rem; }
+.bara-filtre-grup label { font-size:0.75rem; color:var(--text-subtil); font-weight:500; white-space:nowrap; }
+.bara-filtre select {
+  padding:0.45rem 0.85rem; border:1px solid var(--lila); border-radius:10px;
+  font-family:'DM Sans',sans-serif; font-size:0.82rem; color:var(--text-principal);
+  background:var(--alb-cald); outline:none; cursor:pointer; transition:border-color 0.2s;
+}
+.bara-filtre select:focus { border-color:var(--mov-mediu); }
+.search-catalog {
+  flex:1; min-width:200px; display:flex; gap:0.5rem;
+}
+.search-catalog input {
+  flex:1; padding:0.5rem 0.85rem; border:1px solid var(--lila); border-radius:10px;
+  font-family:'DM Sans',sans-serif; font-size:0.82rem; outline:none;
+  transition:border-color 0.2s;
+}
+.search-catalog input:focus { border-color:var(--mov-mediu); }
+.btn-cauta {
+  padding:0.5rem 1.1rem; background:var(--mov-inchis); color:white; border:none;
+  border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.82rem;
+  cursor:pointer; transition:background 0.2s; white-space:nowrap;
+}
+.btn-cauta:hover { background:var(--mov-profund); }
+.btn-reset {
+  padding:0.5rem 0.85rem; background:var(--mov-deschis); color:var(--mov-inchis);
+  border:none; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.82rem;
+  cursor:pointer; transition:all 0.2s; white-space:nowrap;
+}
+.btn-reset:hover { background:var(--mov-pastel); }
+
+/* REZULTATE INFO */
+.rezultate-info {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:1.25rem; font-size:0.82rem; color:var(--text-subtil);
+}
+.rezultate-info strong { color:var(--mov-inchis); }
+
+/* LISTA CARTI */
+.lista-carti { display:flex; flex-direction:column; gap:1rem; }
+
+/* CARD CARTE */
+.card-carte {
+  background:white; border:1px solid var(--lila); border-radius:16px;
+  overflow:hidden; transition:all 0.25s;
+  display:flex; flex-direction:column;
+}
+.card-carte:hover { border-color:var(--mov-pastel); box-shadow:0 6px 24px rgba(107,79,160,0.1); transform:translateY(-1px); }
+
+.card-carte-body { display:flex; gap:1.25rem; padding:1.25rem; flex:1; }
+
+.carte-coperta {
+  width:80px; height:110px; border-radius:8px; flex-shrink:0;
+  background:linear-gradient(135deg, var(--mov-deschis), var(--lila));
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+}
+.carte-coperta img { width:100%; height:100%; object-fit:cover; border-radius:8px; }
+.carte-coperta-placeholder {
+  font-size:0.55rem; color:var(--mov-inchis); text-align:center;
+  padding:4px; line-height:1.3; font-weight:500;
+}
+
+.carte-info { flex:1; }
+.carte-titlu { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; color:var(--text-principal); margin-bottom:0.2rem; line-height:1.3; }
+.carte-autor { font-size:0.82rem; color:var(--mov-inchis); margin-bottom:0.5rem; font-style:italic; }
+.carte-meta { display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.5rem; }
+.carte-meta-item { font-size:0.72rem; color:var(--text-subtil); display:flex; align-items:center; gap:0.25rem; }
+.carte-meta-item svg { width:11px; height:11px; stroke:var(--text-subtil); fill:none; stroke-width:1.5; stroke-linecap:round; }
+.carte-corp { font-size:0.78rem; color:var(--text-secundar); display:flex; align-items:center; gap:0.4rem; }
+.carte-corp svg { width:12px; height:12px; stroke:var(--mov-mediu); fill:none; stroke-width:1.5; stroke-linecap:round; }
+.badge-disponibil { font-size:0.65rem; padding:2px 8px; border-radius:10px; font-weight:500; }
+.badge-disponibil.da { background:#e8f5e9; color:#2e7d32; }
+.badge-disponibil.nu { background:#fce4ec; color:#880e4f; }
+
+.card-carte-footer {
+  padding:0.85rem 1.25rem; border-top:1px solid var(--alb-cald);
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--alb-cald);
+}
+.carte-rating { font-size:0.78rem; color:var(--text-subtil); display:flex; align-items:center; gap:0.3rem; }
+.carte-rating span { color:#f0c040; font-size:0.85rem; }
+.btn-imprumuta {
+  padding:0.45rem 1.1rem; background:var(--mov-inchis); color:white;
+  border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.78rem;
+  cursor:pointer; transition:all 0.2s; font-weight:500;
+}
+.btn-imprumuta:hover { background:var(--mov-profund); transform:translateY(-1px); }
+.btn-imprumuta:disabled { background:var(--text-subtil); cursor:not-allowed; transform:none; }
+
+/* LOADING / EMPTY */
+.loading { text-align:center; padding:3rem; color:var(--text-subtil); font-size:0.88rem; }
+.loading-spinner {
+  width:32px; height:32px; border:3px solid var(--mov-deschis);
+  border-top-color:var(--mov-inchis); border-radius:50%;
+  animation:spin 0.8s linear infinite; margin:0 auto 1rem;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.empty { text-align:center; padding:4rem 2rem; color:var(--text-subtil); }
+.empty svg { width:48px; height:48px; stroke:var(--mov-pastel); fill:none; stroke-width:1; margin-bottom:1rem; }
+.empty h3 { font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--text-secundar); margin-bottom:0.5rem; }
+
+/* PAGINARE */
+.paginare { display:flex; justify-content:center; gap:0.5rem; margin-top:2rem; flex-wrap:wrap; }
+.btn-pag {
+  padding:0.4rem 0.85rem; border:1px solid var(--lila); border-radius:8px;
+  background:white; font-family:'DM Sans',sans-serif; font-size:0.82rem;
+  cursor:pointer; color:var(--text-secundar); transition:all 0.2s;
+}
+.btn-pag:hover { background:var(--mov-deschis); color:var(--mov-inchis); border-color:var(--mov-pastel); }
+.btn-pag.activ { background:var(--mov-inchis); color:white; border-color:var(--mov-inchis); }
+
+footer { text-align:center; padding:2rem; border-top:1px solid var(--mov-deschis); font-size:0.75rem; color:var(--text-subtil); margin-top:3rem; }
+footer span { color:var(--mov-mediu); }
+
+@media(max-width:768px) {
+  header { padding:1rem 1.25rem; }
+  .hero-mic { padding:2rem 1.25rem; }
+  .page-wrapper { padding:1.25rem; }
+  .bara-filtre { flex-direction:column; align-items:stretch; }
+  .search-catalog { min-width:100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/web/primapagina.html" class="logo">
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none">
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(157.5 24 24)"/>
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <span class="logo-nume">Biblioteca Aster</span>
+  </a>
+  <nav>
+    <a href="/web/primapagina.html">Acasă</a>
+    <a href="/web/anunturi.html">Evenimente</a>
+    <a href="/web/cafenea.html">Cafenea</a>
+    <a href="/web/despre.html">Despre</a>
+    <a href="/web/login.html" class="btn-login-nav" id="btn-auth">Autentificare</a>
+  </nav>
+</header>
+
+<div class="hero-mic">
+  <div class="hero-mic-content">
+    <h1>Catalogul <em>Bibliotecii</em></h1>
+    <p>Explorează colecția noastră de peste 1.600 de titluri — cărți fizice, digitale, audiobook-uri și periodice.</p>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <!-- BARA FILTRE -->
+  <div class="bara-filtre">
+    <div class="search-catalog">
+      <input type="text" id="input-cautare" placeholder="Caută după titlu..." onkeydown="if(event.key==='Enter') incarcaCarti()">
+      <button class="btn-cauta" onclick="incarcaCarti()">Caută</button>
+    </div>
+    <div class="bara-filtre-grup">
+      <label>Gen</label>
+      <select id="filtru-gen" onchange="incarcaCarti()">
+        <option value="">Toate genurile</option>
+        <option>Copii</option>
+        <option>Drama</option>
+        <option>Fantasy</option>
+        <option>Istoric</option>
+        <option>Mister</option>
+        <option>Nuvela</option>
+        <option>Poezie</option>
+        <option>Roman</option>
+        <option>Romantic</option>
+        <option>SF</option>
+        <option>Thriller</option>
+      </select>
+    </div>
+    <div class="bara-filtre-grup">
+      <label>Sortare</label>
+      <select id="sortare" onchange="sorteazaSiAfiseaza()">
+        <option value="titlu_az">Titlu A→Z</option>
+        <option value="titlu_za">Titlu Z→A</option>
+        <option value="autor_az">Autor A→Z</option>
+        <option value="autor_za">Autor Z→A</option>
+        <option value="rating">Rating ↓</option>
+      </select>
+    </div>
+    <button class="btn-reset" onclick="resetFiltre()">✕ Resetează</button>
+  </div>
+
+  <!-- REZULTATE INFO -->
+  <div class="rezultate-info">
+    <span id="info-rezultate">Se încarcă...</span>
+  </div>
+
+  <!-- LISTA -->
+  <div class="lista-carti" id="lista-carti">
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      Se încarcă catalogul...
+    </div>
+  </div>
+
+  <!-- PAGINARE -->
+  <div class="paginare" id="paginare"></div>
+
+</div>
+
+<footer>© 2026 <span>Biblioteca Aster</span> · Toate drepturile rezervate · Suceava, România</footer>
+
+<script>
+const PER_PAGINA = 20;
+let toateCartile = [];
+let cartiAfisate = [];
+let paginaCurenta = 1;
+
+// ── INCARCARE DATE ────────────────────────────────────────────
+async function incarcaCarti() {
+  const q = document.getElementById('input-cautare').value.trim();
+  const gen = document.getElementById('filtru-gen').value;
+  paginaCurenta = 1;
+
+  document.getElementById('lista-carti').innerHTML = `
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      Se caută...
+    </div>`;
+
+  try {
+    let url = q ? '/api/carti/cauta?q=' + encodeURIComponent(q) : '/api/carti';
+    if (gen) url += (q ? '&' : '?') + 'gen=' + encodeURIComponent(gen);
+    if (gen) url += '&gen=' + encodeURIComponent(gen);
+
+    const r = await fetch(url);
+    const date = await r.json();
+    toateCartile = date;
+    sorteazaSiAfiseaza();
+  } catch(e) {
+    document.getElementById('lista-carti').innerHTML = `
+      <div class="empty">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <h3>Serverul nu răspunde</h3>
+        <p>Asigură-te că serverul C++ rulează.</p>
+      </div>`;
+  }
+}
+
+// ── SORTARE ───────────────────────────────────────────────────
+function sorteazaSiAfiseaza() {
+  const tip = document.getElementById('sortare').value;
+  cartiAfisate = [...toateCartile];
+
+  cartiAfisate.sort((a, b) => {
+    switch(tip) {
+      case 'titlu_az': return (a.titlu||'').localeCompare(b.titlu||'', 'ro');
+      case 'titlu_za': return (b.titlu||'').localeCompare(a.titlu||'', 'ro');
+      case 'autor_az': return (a.autor||'').localeCompare(b.autor||'', 'ro');
+      case 'autor_za': return (b.autor||'').localeCompare(a.autor||'', 'ro');
+      case 'rating': return (b.rating||0) - (a.rating||0);
+      default: return 0;
+    }
+  });
+
+  paginaCurenta = 1;
+  afiseazaPagina();
+}
+
+// ── AFISARE ───────────────────────────────────────────────────
+function afiseazaPagina() {
+  const start = (paginaCurenta - 1) * PER_PAGINA;
+  const end = start + PER_PAGINA;
+  const pagina = cartiAfisate.slice(start, end);
+  const total = cartiAfisate.length;
+  const nrPagini = Math.ceil(total / PER_PAGINA);
+  const logat = !!localStorage.getItem('nume_client') || !!localStorage.getItem('prenume_user');
+
+  document.getElementById('info-rezultate').innerHTML =
+    total === 0 ? 'Nicio carte găsită.' :
+    `<strong>${total}</strong> cărți găsite · pagina <strong>${paginaCurenta}</strong> din <strong>${nrPagini}</strong>`;
+
+  if (pagina.length === 0) {
+    document.getElementById('lista-carti').innerHTML = `...`;
+  } else {
+    document.getElementById('lista-carti').innerHTML = pagina.map(c => cardCarte(c, logat)).join('');
+  }
+     
+
+  // Paginare
+  let pagHtml = '';
+  if (nrPagini > 1) {
+    if (paginaCurenta > 1) pagHtml += `<button class="btn-pag" onclick="mergiLaPagina(${paginaCurenta-1})">‹</button>`;
+    for (let i = Math.max(1, paginaCurenta-2); i <= Math.min(nrPagini, paginaCurenta+2); i++) {
+      pagHtml += `<button class="btn-pag ${i===paginaCurenta?'activ':''}" onclick="mergiLaPagina(${i})">${i}</button>`;
+    }
+    if (paginaCurenta < nrPagini) pagHtml += `<button class="btn-pag" onclick="mergiLaPagina(${paginaCurenta+1})">›</button>`;
+  }
+  document.getElementById('paginare').innerHTML = pagHtml;
+}
+
+function mergiLaPagina(p) {
+  paginaCurenta = p;
+  afiseazaPagina();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── CARD CARTE HTML ───────────────────────────────────────────
+function cardCarte(c, logat) {
+  const disponibil = c.exemplare_disponibile > 0;
+  const stele = c.rating ? '★'.repeat(Math.round(c.rating)) + '☆'.repeat(5-Math.round(c.rating)) : '—';
+  const corp = c.id_cladire ? `Corpul ${c.id_cladire}` : '—';
+  const titluScurt = (c.titlu||'').substring(0, 25);
+  const imprumuturi = JSON.parse(localStorage.getItem('imprumuturi_locale') || '[]');
+  const eImprumutata = imprumuturi.some(i => i.id_carte === c.id);
+
+  let btnImprumuta;
+  if (eImprumutata) {
+    btnImprumuta = `<button class="btn-imprumuta" disabled style="background:#2e7d32;">✓ Împrumutat</button>`;
+  } else if (logat) {
+    btnImprumuta = `<button class="btn-imprumuta" onclick="imprumuta(${c.id},'${(c.titlu||'').replace(/'/g,"\\'")}',this)" ${disponibil?'':'disabled'}>
+        ${disponibil ? '📖 Împrumută' : 'Indisponibil'}
+       </button>`;
+  } else {
+    btnImprumuta = `<button class="btn-imprumuta" onclick="window.location.href='/web/login.html'">
+        🔐 Autentifică-te
+       </button>`;
+  }
+
+  return `
+    <div class="card-carte">
+      <div class="card-carte-body">
+        <div class="carte-coperta">
+          <div class="carte-coperta-placeholder">${titluScurt}</div>
+        </div>
+        <div class="carte-info">
+          <div class="carte-titlu">${c.titlu || '—'}</div>
+          <div class="carte-autor">${c.autor || '—'}</div>
+          <div class="carte-meta">
+            ${c.gen_specific ? `<div class="carte-meta-item"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${c.gen_specific}</div>` : ''}
+            ${c.tip ? `<div class="carte-meta-item"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>${c.tip}</div>` : ''}
+            ${c.suport ? `<div class="carte-meta-item">${c.suport}</div>` : ''}
+            <span class="badge-disponibil ${disponibil?'da':'nu'}">${disponibil?`${c.exemplare_disponibile} disponibile`:'Indisponibil'}</span>
+          </div>
+          <div class="carte-corp">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            ${corp}${c.id_sala ? ` · Sala ${c.id_sala}` : ''}${c.id_raft ? ` · Raft ${c.id_raft}` : ''}
+          </div>
+        </div>
+      </div>
+      <div class="card-carte-footer">
+        <div class="carte-rating">
+          <span>${stele}</span>
+          ${c.rating ? `<span style="color:var(--text-subtil)">${parseFloat(c.rating).toFixed(1)}</span>` : ''}
+        </div>
+        ${btnImprumuta}
+      </div>
+    </div>`;
+}
+
+// ── IMPRUMUTA ─────────────────────────────────────────────────
+async function imprumuta(idCarte, titlu, btn) {
+  const idClient = localStorage.getItem('id_client');
+  if (!idClient) { window.location.href = '/web/login.html'; return; }
+
+  btn.textContent = 'Se procesează...';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch('/api/imprumuturi', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id_client: parseInt(idClient), id_carte: idCarte})
+    });
+    const d = await r.json();
+    if (d.succes) {
+      btn.textContent = '✓ Împrumutat!';
+      btn.style.background = '#2e7d32';
+      // Salveaza in localStorage
+      const imprumuturi = JSON.parse(localStorage.getItem('imprumuturi_locale') || '[]');
+      imprumuturi.push({id_carte: idCarte, titlu, data: new Date().toLocaleDateString('ro-RO')});
+      localStorage.setItem('imprumuturi_locale', JSON.stringify(imprumuturi));
+    } else {
+      btn.textContent = '📖 Împrumută';
+      btn.disabled = false;
+      alert(d.mesaj || 'Eroare la împrumut.');
+    }
+  } catch(e) {
+    btn.textContent = '📖 Împrumută';
+    btn.disabled = false;
+    alert('Serverul nu răspunde.');
+  }
+}
+
+// ── RESET ─────────────────────────────────────────────────────
+function resetFiltre() {
+  document.getElementById('input-cautare').value = '';
+  document.getElementById('filtru-gen').value = '';
+  document.getElementById('sortare').value = 'titlu_az';
+  incarcaCarti();
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', incarcaCarti);
+</script>
+
+
+<script>
+(function() {
+  const prenume = localStorage.getItem('prenume_user');
+  const nume = localStorage.getItem('nume_user');
+  if (prenume) {
+    const btn = document.getElementById('btn-auth');
+    if (btn) {
+      const initiale = (prenume[0] + (nume?.[0]||'')).toUpperCase();
+      btn.outerHTML = `
+        <div style="position:relative;margin-left:1rem;" id="user-menu-wrap">
+          <div style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;" onclick="toggleUserMenu()">
+            <span style="font-size:0.82rem;color:#7a6a9a;">Bun venit, <strong style="color:#6b4fa0;">${prenume}</strong></span>
+            <div style="width:34px;height:34px;border-radius:50%;background:#6b4fa0;color:white;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:600;">${initiale}</div>
+          </div>
+          <div id="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:white;border:1px solid #d4c5ed;border-radius:12px;padding:0.5rem;min-width:160px;box-shadow:0 8px 24px rgba(107,79,160,0.12);z-index:200;">
+            <a href="/web/dashboard-client.html" style="display:block;padding:0.5rem 0.75rem;font-size:0.82rem;color:#2d1f4e;text-decoration:none;border-radius:8px;" onmouseover="this.style.background='#e8e0f5'" onmouseout="this.style.background=''">📚 Dashboard</a>
+            <a href="/web/profil.html" style="display:block;padding:0.5rem 0.75rem;font-size:0.82rem;color:#2d1f4e;text-decoration:none;border-radius:8px;" onmouseover="this.style.background='#e8e0f5'" onmouseout="this.style.background=''">👤 Profilul meu</a>
+            <div style="border-top:1px solid #e8e0f5;margin:0.4rem 0;"></div>
+            <button onclick="localStorage.clear();location.href='/web/primapagina.html';" style="display:block;width:100%;text-align:left;padding:0.5rem 0.75rem;font-size:0.82rem;color:#880e4f;background:none;border:none;cursor:pointer;border-radius:8px;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='#fce4ec'" onmouseout="this.style.background=''">🚪 Deconectare</button>
+          </div>
+        </div>`;
+    }
+  }
+  
+  function toggleUserMenu() {
+    const dd = document.getElementById('user-dropdown');
+    if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+  }
+  window.toggleUserMenu = toggleUserMenu;
+  
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('user-menu-wrap');
+    const dd = document.getElementById('user-dropdown');
+    if (wrap && dd && !wrap.contains(e.target)) dd.style.display = 'none';
+  });
+})();
+</script>
+</body>
+</html>

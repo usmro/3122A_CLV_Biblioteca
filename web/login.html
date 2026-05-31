@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autentificare · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mov-deschis: #e8e0f5;
+    --mov-pastel: #c9b8e8;
+    --mov-mediu: #9b7dc8;
+    --mov-inchis: #6b4fa0;
+    --mov-profund: #4a3270;
+    --roz-pastel: #f0e6f6;
+    --lila: #d4c5ed;
+    --alb-cald: #faf8fd;
+    --text-principal: #2d1f4e;
+    --text-secundar: #7a6a9a;
+    --text-subtil: #b0a0cc;
+    --eroare: #c0392b;
+    --succes: #27ae60;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--alb-cald);
+    color: var(--text-principal);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #e8e0f570 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #d4c5ed40 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative; z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid var(--lila);
+    background: rgba(250, 248, 253, 0.85);
+    backdrop-filter: blur(12px);
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 0.8rem;
+    text-decoration: none;
+  }
+  .logo-svg { width: 38px; height: 38px; }
+  .logo-nume {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--mov-profund);
+  }
+
+  .inapoi {
+    font-size: 0.82rem; color: var(--text-secundar);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+  .inapoi:hover { background: var(--mov-deschis); color: var(--mov-inchis); }
+  .inapoi svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* MAIN LAYOUT */
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    position: relative; z-index: 1;
+  }
+
+  .auth-wrapper {
+    width: 100%;
+    max-width: 440px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: white;
+    border: 1px solid var(--lila);
+    border-radius: 16px;
+    padding: 4px;
+    margin-bottom: 1.5rem;
+    gap: 4px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 0.6rem;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-secundar);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab.activ {
+    background: var(--mov-inchis);
+    color: white;
+    font-weight: 500;
+  }
+
+  .tab:not(.activ):hover {
+    background: var(--mov-deschis);
+    color: var(--mov-inchis);
+  }
+
+  /* CARD FORMULAR */
+  .card {
+    background: white;
+    border: 1px solid var(--lila);
+    border-radius: 24px;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--mov-pastel), var(--mov-inchis), var(--mov-pastel));
+  }
+
+  /* PASI (steps) */
+  .step { display: none; }
+  .step.activ { display: block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(10px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Indicator pas */
+  .pas-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .pas-nr {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--mov-deschis);
+    color: var(--mov-inchis);
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .pas-nr.facut {
+    background: var(--mov-inchis);
+    color: white;
+  }
+
+  .pas-linie {
+    flex: 1; height: 1px;
+    background: var(--lila);
+  }
+
+  .pas-text {
+    font-size: 0.75rem;
+    color: var(--text-subtil);
+  }
+
+  /* Titlu formular */
+  .form-titlu {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-principal);
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+  }
+
+  .form-subtitlu {
+    font-size: 0.82rem;
+    color: var(--text-secundar);
+    margin-bottom: 1.75rem;
+    font-weight: 300;
+  }
+
+  /* INPUTS */
+  .camp {
+    margin-bottom: 1rem;
+  }
+
+  .camp label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secundar);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.03em;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .input-wrapper svg {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 16px; height: 16px;
+    stroke: var(--text-subtil);
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+    transition: stroke 0.2s;
+  }
+
+  .camp input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.6rem;
+    border: 1px solid var(--lila);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-principal);
+    background: var(--alb-cald);
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .camp input:focus {
+    border-color: var(--mov-mediu);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(155, 125, 200, 0.12);
+  }
+
+  .camp input:focus + svg,
+  .input-wrapper:focus-within svg {
+    stroke: var(--mov-mediu);
+  }
+
+  /* Toggle parola */
+  .toggle-parola {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none;
+    cursor: pointer; padding: 4px;
+    color: var(--text-subtil);
+    transition: color 0.2s;
+  }
+  .toggle-parola:hover { color: var(--mov-inchis); }
+  .toggle-parola svg {
+    position: static; transform: none;
+    width: 16px; height: 16px;
+    stroke: currentColor;
+  }
+
+  /* Mesaj eroare */
+  .mesaj-eroare {
+    font-size: 0.78rem;
+    color: var(--eroare);
+    margin-top: 0.35rem;
+    display: none;
+  }
+  .mesaj-eroare.vizibil { display: block; }
+
+  /* Alert general */
+  .alert {
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+  .alert.eroare {
+    background: #fdf0f0;
+    border: 1px solid #f5c6c6;
+    color: var(--eroare);
+    display: block;
+  }
+  .alert.succes {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: var(--succes);
+    display: block;
+  }
+  .alert.info {
+    background: var(--mov-deschis);
+    border: 1px solid var(--lila);
+    color: var(--mov-profund);
+    display: block;
+  }
+
+  /* Cont profesional badge */
+  .badge-profesional {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    background: var(--mov-deschis);
+    color: var(--mov-inchis);
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    border: 1px solid var(--lila);
+    margin-bottom: 1.25rem;
+  }
+  .badge-profesional svg {
+    width: 13px; height: 13px;
+    stroke: var(--mov-inchis);
+    fill: none; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* Tip cont buttons */
+  .tip-cont-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .tip-cont-btn {
+    padding: 0.85rem;
+    border: 1.5px solid var(--lila);
+    border-radius: 14px;
+    background: white;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .tip-cont-btn:hover {
+    border-color: var(--mov-pastel);
+    background: var(--mov-deschis);
+  }
+
+  .tip-cont-btn.selectat {
+    border-color: var(--mov-inchis);
+    background: var(--mov-deschis);
+  }
+
+  .tip-cont-btn svg {
+    width: 22px; height: 22px;
+    stroke: var(--mov-mediu);
+    fill: none; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    display: block; margin: 0 auto 0.4rem;
+  }
+
+  .tip-cont-btn span {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-principal);
+    display: block;
+  }
+
+  .tip-cont-btn small {
+    font-size: 0.7rem;
+    color: var(--text-secundar);
+    font-weight: 300;
+  }
+
+  /* BUTOANE */
+  .btn-primary {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--mov-inchis);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary:hover {
+    background: var(--mov-profund);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(107, 79, 160, 0.25);
+  }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 0.75rem;
+    background: transparent;
+    color: var(--text-secundar);
+    border: 1px solid var(--lila);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+  }
+  .btn-secondary:hover {
+    background: var(--mov-deschis);
+    color: var(--mov-inchis);
+    border-color: var(--mov-pastel);
+  }
+
+  /* Link-uri */
+  .link-text {
+    text-align: center;
+    margin-top: 1.25rem;
+    font-size: 0.82rem;
+    color: var(--text-secundar);
+  }
+  .link-text a {
+    color: var(--mov-inchis);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .link-text a:hover { text-decoration: underline; }
+
+  .link-uitat {
+    text-align: right;
+    margin-top: 0.3rem;
+    margin-bottom: 0.75rem;
+  }
+  .link-uitat a {
+    font-size: 0.78rem;
+    color: var(--mov-mediu);
+    text-decoration: none;
+  }
+  .link-uitat a:hover { text-decoration: underline; }
+
+  /* Separator */
+  .separator {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 1.25rem 0;
+    color: var(--text-subtil);
+    font-size: 0.78rem;
+  }
+  .separator::before, .separator::after {
+    content: ''; flex: 1;
+    height: 1px; background: var(--lila);
+  }
+
+  /* Loading spinner */
+  .spinner {
+    display: none;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 1.25rem;
+    border-top: 1px solid var(--mov-deschis);
+    font-size: 0.72rem;
+    color: var(--text-subtil);
+  }
+  footer span { color: var(--mov-mediu); }
+
+  @media (max-width: 500px) {
+    header { padding: 1rem 1.25rem; }
+    .card { padding: 1.75rem 1.25rem; }
+    .tip-cont-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="/web/primapagina.html" class="logo">
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none">
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(157.5 24 24)"/>
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <span class="logo-nume">Biblioteca Aster</span>
+  </a>
+  <a href="/web/primapagina.html" class="inapoi">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Înapoi
+  </a>
+</header>
+
+<main>
+  <div class="auth-wrapper">
+
+    <!-- TABS Login / Înregistrare -->
+    <div class="tabs">
+      <button class="tab activ" onclick="schimbaTab('login')">Autentificare</button>
+      <button class="tab" onclick="schimbaTab('inregistrare')">Cont nou</button>
+    </div>
+
+    <!-- ═══ CARD LOGIN ═══ -->
+    <div class="card" id="card-login">
+
+      <!-- PAS 1: Email + Parola -->
+      <div class="step activ" id="pas1-login">
+        <h1 class="form-titlu">Bun venit</h1>
+        <p class="form-subtitlu">Introdu datele contului tău</p>
+
+        <div id="alert-login" class="alert"></div>
+
+        <div class="camp">
+          <label>Adresă email</label>
+          <div class="input-wrapper">
+            <input type="email" id="email-login" placeholder="exemplu@email.com" autocomplete="email"/>
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+          </div>
+        </div>
+
+        <div class="camp">
+          <label>Parolă</label>
+          <div class="input-wrapper">
+            <input type="password" id="parola-login" placeholder="Parola ta" autocomplete="current-password"/>
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <button class="toggle-parola" onclick="toggleParola('parola-login')" type="button" tabindex="-1">
+              <svg id="eye-login" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="link-uitat">
+          <a href="#" onclick="schimbaTab('resetare'); return false;">Am uitat parola</a>
+        </div>
+
+        <button class="btn-primary" onclick="handleLogin()">
+          <span id="btn-login-text">Autentificare</span>
+          <div class="spinner" id="spinner-login"></div>
+        </button>
+      </div>
+
+      <!-- PAS 2: Cont profesional -->
+      <div class="step" id="pas2-login">
+        <div class="pas-indicator">
+          <div class="pas-nr facut">✓</div>
+          <div class="pas-linie"></div>
+          <div class="pas-nr activ-nr">2</div>
+          <span class="pas-text">Cont profesional</span>
+        </div>
+
+        <h1 class="form-titlu">Cont profesional</h1>
+        <p class="form-subtitlu">Ai și un cont de angajat sau voluntar?</p>
+
+        <div id="alert-profesional" class="alert info">
+          Ești autentificat ca <strong id="nume-client-display"></strong>. 
+          Dacă ai și un cont profesional, introdu parola de acces.
+        </div>
+
+        <div class="tip-cont-grid">
+          <button class="tip-cont-btn" onclick="selecteazaTip('angajat')" id="btn-angajat">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Angajat</span>
+            <small>Acces admin & HR</small>
+          </button>
+          <button class="tip-cont-btn" onclick="selecteazaTip('voluntar')" id="btn-voluntar">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Voluntar</span>
+            <small>Program & activități</small>
+          </button>
+        </div>
+
+        <div class="camp" id="camp-parola-pro" style="display:none;">
+          <label>Parolă profesională</label>
+          <div class="input-wrapper">
+            <input type="password" id="parola-pro" placeholder="Parola contului profesional"/>
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <button class="toggle-parola" onclick="toggleParola('parola-pro')" type="button" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div id="eroare-pro" class="mesaj-eroare"></div>
+        </div>
+
+        <button class="btn-primary" id="btn-continua-pro" style="display:none;" onclick="handleParolaPro()">
+          Accesează contul profesional
+        </button>
+
+        <button class="btn-secondary" onclick="mergiLaClient()">
+          Continuă ca simplu cititor
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ═══ CARD ÎNREGISTRARE ═══ -->
+    <div class="card" id="card-inregistrare" style="display:none;">
+      <h1 class="form-titlu">Cont nou</h1>
+      <p class="form-subtitlu">Creează-ți contul de cititor</p>
+
+      <div id="alert-reg" class="alert"></div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+        <div class="camp">
+          <label>Nume</label>
+          <div class="input-wrapper">
+            <input type="text" id="reg-nume" placeholder="Popescu"/>
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </div>
+        <div class="camp">
+          <label>Prenume</label>
+          <div class="input-wrapper">
+            <input type="text" id="reg-prenume" placeholder="Maria"/>
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="camp">
+        <label>Username</label>
+        <div class="input-wrapper">
+          <input type="text" id="reg-username" placeholder="maria_p"/>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg>
+        </div>
+      </div>
+
+      <div class="camp">
+        <label>Email</label>
+        <div class="input-wrapper">
+          <input type="email" id="reg-email" placeholder="maria@email.com"/>
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+        </div>
+      </div>
+
+      <div class="camp">
+        <label>Parolă</label>
+        <div class="input-wrapper">
+          <input type="password" id="reg-parola" placeholder="Minim 6 caractere"/>
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <button class="toggle-parola" onclick="toggleParola('reg-parola')" type="button" tabindex="-1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap: round; stroke-linejoin: round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div id="putere-parola" style="margin-top:0.4rem; font-size:0.72rem; color:var(--text-subtil);"></div>
+      </div>
+
+      <div class="camp">
+        <label>Confirmă parola</label>
+        <div class="input-wrapper">
+          <input type="password" id="reg-parola2" placeholder="Repetă parola"/>
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div id="eroare-parola2" class="mesaj-eroare"></div>
+      </div>
+
+      <button class="btn-primary" onclick="handleInregistrare()">Creează contul</button>
+
+      <p class="link-text">
+        Ai deja cont? <a href="#" onclick="schimbaTab('login'); return false;">Autentifică-te</a>
+      </p>
+    </div>
+
+    <!-- ═══ CARD RESETARE PAROLĂ ═══ -->
+    <div class="card" id="card-resetare" style="display:none;">
+      <h1 class="form-titlu">Resetare parolă</h1>
+      <p class="form-subtitlu">Îți trimitem un link de resetare pe email</p>
+
+      <div id="alert-reset" class="alert"></div>
+
+      <div class="camp">
+        <label>Adresă email</label>
+        <div class="input-wrapper">
+          <input type="email" id="reset-email" placeholder="emailul contului tău"/>
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="handleResetare()">Trimite link de resetare</button>
+      <button class="btn-secondary" onclick="schimbaTab('login')">Înapoi la autentificare</button>
+    </div>
+
+  </div>
+</main>
+
+<footer>© 2026 <span>Biblioteca Aster</span> · Toate drepturile rezervate</footer>
+
+<script>
+  let tipSelectat = null;
+
+  function schimbaTab(tab) {
+    document.getElementById('card-login').style.display = 'none';
+    document.getElementById('card-inregistrare').style.display = 'none';
+    document.getElementById('card-resetare').style.display = 'none';
+
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('activ'));
+
+    if (tab === 'login') {
+      document.getElementById('card-login').style.display = 'block';
+      document.querySelectorAll('.tab')[0].classList.add('activ');
+    } else if (tab === 'inregistrare') {
+      document.getElementById('card-inregistrare').style.display = 'block';
+      document.querySelectorAll('.tab')[1].classList.add('activ');
+    } else if (tab === 'resetare') {
+      document.getElementById('card-resetare').style.display = 'block';
+    }
+  }
+
+  function toggleParola(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+
+  function selecteazaTip(tip) {
+    tipSelectat = tip;
+    document.getElementById('btn-angajat').classList.toggle('selectat', tip === 'angajat');
+    document.getElementById('btn-voluntar').classList.toggle('selectat', tip === 'voluntar');
+    if (tip === 'voluntar') {
+        document.getElementById('camp-parola-pro').style.display = 'none';
+        document.getElementById('btn-continua-pro').style.display = 'block';
+        document.getElementById('btn-continua-pro').textContent = 'Accesează contul de voluntar';
+        document.getElementById('btn-continua-pro').onclick = function() {
+            localStorage.setItem('nume_voluntar', localStorage.getItem('prenume_user') + ' ' + localStorage.getItem('nume_user'));
+            localStorage.setItem('email_voluntar', localStorage.getItem('email_user'));
+            window.location.href = '/web/dashboard-voluntar.html';
+        };
+    } else {
+        document.getElementById('camp-parola-pro').style.display = 'block';
+        document.getElementById('btn-continua-pro').style.display = 'block';
+        document.getElementById('btn-continua-pro').textContent = 'Accesează contul profesional';
+    }
+   }
+
+  async function handleLogin() {
+    console.log('[DEBUG] tip:', tipSelectat, 'id_client:', window.idClientLogat);
+    const email = document.getElementById('email-login').value.trim();
+    const parola = document.getElementById('parola-login').value;
+    const alert = document.getElementById('alert-login');
+    const btnText = document.getElementById('btn-login-text');
+    const spinner = document.getElementById('spinner-login');
+
+    alert.className = 'alert';
+
+    if (!email || !parola) {
+      alert.className = 'alert eroare';
+      alert.textContent = 'Completează toate câmpurile.';
+      return;
+    }
+
+    // Loading
+    btnText.style.display = 'none';
+    spinner.style.display = 'block';
+
+    try {
+      const resp = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, parola })
+      });
+      const date = await resp.json();
+
+      if (date.succes) {
+         localStorage.setItem('id_user', date.id);
+    localStorage.setItem('nume_user', date.nume);
+    localStorage.setItem('prenume_user', date.prenume);
+    localStorage.setItem('email_user', date.email);
+        window.idClientLogat = date.id;
+        document.getElementById('nume-client-display').textContent = date.prenume + ' ' + date.nume;
+        // Trece la pasul 2
+        document.getElementById('pas1-login').classList.remove('activ');
+        document.getElementById('pas2-login').classList.add('activ');
+      } else {
+        alert.className = 'alert eroare';
+        alert.textContent = date.mesaj || 'Email sau parolă incorectă.';
+      }
+    } catch(e) {
+      // Simulare pentru test fara server
+      document.getElementById('nume-client-display').textContent = 'Utilizator Test';
+      document.getElementById('pas1-login').classList.remove('activ');
+      document.getElementById('pas2-login').classList.add('activ');
+    } finally {
+      btnText.style.display = 'block';
+      spinner.style.display = 'none';
+    }
+  }
+
+  async function handleParolaPro() {
+    if (!tipSelectat) {
+        // Daca nu a selectat nimic, selecteaza automat in functie de DB
+        tipSelectat = 'voluntar'; // default
+    }
+    const parola = document.getElementById('parola-pro').value;
+    const eroare = document.getElementById('eroare-pro');
+
+    if (!parola) {
+      eroare.textContent = 'Introdu parola profesională.';
+      eroare.classList.add('vizibil');
+      return;
+    }
+
+    try {
+      const resp = await fetch('/api/login-profesional', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ tip: tipSelectat, parola_resursa: parola, id_client: window.idClientLogat })      });
+      const date = await resp.json();
+      console.log('[DEBUG]', date);
+      if (date.succes) {
+    localStorage.setItem('rol_angajat', date.tip_angajat || 'specialist');
+    localStorage.setItem('nume_angajat', localStorage.getItem('prenume_user') + ' ' + localStorage.getItem('nume_user'));
+    localStorage.setItem('email_angajat', localStorage.getItem('email_user'));
+    
+    if (tipSelectat === 'angajat')
+        window.location.href = '/web/dashboard-angajat.html';
+    else {
+        localStorage.setItem('nume_voluntar', localStorage.getItem('prenume_user') + ' ' + localStorage.getItem('nume_user'));
+        localStorage.setItem('email_voluntar', localStorage.getItem('email_user'));
+        window.location.href = '/web/dashboard-voluntar.html';
+    }
+    }else {
+        eroare.textContent = 'Parolă profesională incorectă.';
+        eroare.classList.add('vizibil');
+      }
+    } catch(e) {
+      // Simulare pentru test
+      if (tipSelectat === 'angajat') window.location.href = '/web/dashboard-angajat.html';
+      else window.location.href = '/web/dashboard-voluntar.html';
+    }
+  }
+
+  function mergiLaClient() {
+    localStorage.setItem('nume_client', localStorage.getItem('prenume_user') + ' ' + localStorage.getItem('nume_user'));
+    localStorage.setItem('email_client', localStorage.getItem('email_user'));
+    localStorage.setItem('id_client', localStorage.getItem('id_user'));
+    window.location.href = '/web/dashboard-client.html';
+  }
+
+  async function handleInregistrare() {
+    const nume = document.getElementById('reg-nume').value.trim();
+    const prenume = document.getElementById('reg-prenume').value.trim();
+    const username = document.getElementById('reg-username').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const parola = document.getElementById('reg-parola').value;
+    const parola2 = document.getElementById('reg-parola2').value;
+    const alert = document.getElementById('alert-reg');
+
+    alert.className = 'alert';
+
+    if (!nume || !prenume || !username || !email || !parola) {
+      alert.className = 'alert eroare';
+      alert.textContent = 'Completează toate câmpurile obligatorii.';
+      return;
+    }
+    if (parola !== parola2) {
+      document.getElementById('eroare-parola2').textContent = 'Parolele nu coincid.';
+      document.getElementById('eroare-parola2').classList.add('vizibil');
+      return;
+    }
+    if (parola.length < 6) {
+      alert.className = 'alert eroare';
+      alert.textContent = 'Parola trebuie să aibă cel puțin 6 caractere.';
+      return;
+    }
+
+    try {
+      const resp = await fetch('/api/inregistrare', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nume, prenume, username, email, parola })
+      });
+      const date = await resp.json();
+      if (date.succes) {
+        alert.className = 'alert succes';
+        alert.textContent = 'Cont creat cu succes! Te redirecționăm...';
+        setTimeout(() => window.location.href = '/web/dashboard-client.html', 1500);
+      } else {
+        alert.className = 'alert eroare';
+        alert.textContent = date.mesaj || 'Eroare la înregistrare.';
+      }
+    } catch(e) {
+      alert.className = 'alert succes';
+      alert.textContent = 'Cont creat! (mod demonstrativ)';
+    }
+  }
+
+  async function handleResetare() {
+    const email = document.getElementById('reset-email').value.trim();
+    const alert = document.getElementById('alert-reset');
+
+    if (!email) {
+      alert.className = 'alert eroare';
+      alert.textContent = 'Introdu adresa de email.';
+      return;
+    }
+
+    alert.className = 'alert succes';
+    alert.textContent = 'Dacă există un cont cu acest email, vei primi un link de resetare în câteva minute.';
+  }
+
+  // Indicator putere parolă
+  document.addEventListener('DOMContentLoaded', () => {
+    const parolaInput = document.getElementById('reg-parola');
+    if (parolaInput) {
+      parolaInput.addEventListener('input', () => {
+        const val = parolaInput.value;
+        const el = document.getElementById('putere-parola');
+        if (!val) { el.textContent = ''; return; }
+        if (val.length < 6) { el.textContent = '🔴 Parolă slabă'; el.style.color = '#c0392b'; }
+        else if (val.length < 10) { el.textContent = '🟡 Parolă medie'; el.style.color = '#e67e22'; }
+        else { el.textContent = '🟢 Parolă puternică'; el.style.color = '#27ae60'; }
+      });
+    }
+
+    // Enter pe câmpuri
+    document.getElementById('parola-login')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleLogin();
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+#include <iomanip>
 #include "Voluntar.h"
 #include <iostream>
 
@@ -108,4 +109,37 @@ std::string Voluntar::exportaInCSV() const {
        << cale_contract << ";" << data_start_contract << ";" << data_end_contract << ";"
        << ore_lucrate << ";" << rating_mediu;
     return ss.str();
+}
+void Voluntar::seteazaZiLucru(std::string zi, std::string interval) {
+    program_saptamanal_personal[zi] = interval;
+    std::cout << "[Program] " << prenume << ": " << zi << " -> " << interval << "\n";
+}
+
+void Voluntar::afiseazaProgramPersonal() const {
+    std::cout << "\n--- PROGRAM PERSONAL: " << prenume << " " << nume << " ---\n";
+    if (program_saptamanal_personal.empty()) {
+        std::cout << "  Niciun program setat inca.\n";
+    } else {
+        for (const auto& [zi, interval] : program_saptamanal_personal) {
+            std::cout << "  " << std::left << std::setw(10) << zi << ": " << interval << "\n";
+        }
+    }
+    std::cout << "  Total ore lucrate cumulativ: " << ore_lucrate << " ore\n";
+    std::cout << "  Contract: " << data_start_contract << " - " << data_end_contract << "\n";
+    std::cout << "---------------------------------------\n";
+}
+void Voluntar::adaugaObservatie(const std::string& obs) {
+    if (!observatii_activitate.empty())
+        observatii_activitate += " | ";
+    observatii_activitate += obs;
+    std::cout << "[Observatie] Adaugata pentru " << prenume << ": " << obs << "\n";
+}
+
+void Voluntar::afiseazaObservatii() const {
+    std::cout << "\n--- OBSERVATII: " << prenume << " " << nume << " ---\n";
+    if (observatii_activitate.empty())
+        std::cout << "  Nicio observatie inregistrata.\n";
+    else
+        std::cout << "  " << observatii_activitate << "\n";
+    std::cout << "---------------------------------------\n";
 }

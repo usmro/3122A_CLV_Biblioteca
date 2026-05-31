@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idei de Eveniment · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mov-deschis:#e8e0f5;--mov-pastel:#c9b8e8;--mov-mediu:#9b7dc8;
+  --mov-inchis:#6b4fa0;--mov-profund:#4a3270;--lila:#d4c5ed;
+  --alb-cald:#faf8fd;--text-principal:#2d1f4e;--text-secundar:#7a6a9a;--text-subtil:#b0a0cc;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--alb-cald);color:var(--text-principal);}
+header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--lila);background:white;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:0.6rem;text-decoration:none;}
+.logo-svg{width:28px;height:28px;}
+.logo-nume{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--mov-profund);}
+.page-wrapper{max-width:700px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.btn-inapoi{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--text-secundar);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color 0.2s;margin-bottom:2rem;}
+.btn-inapoi:hover{color:var(--mov-inchis);}
+.btn-inapoi svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
+.page-hero{background:linear-gradient(135deg,var(--mov-profund),var(--mov-inchis));border-radius:16px;padding:2rem;margin-bottom:2rem;color:white;}
+.page-hero h1{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;margin-bottom:0.4rem;}
+.page-hero p{font-size:0.85rem;color:rgba(255,255,255,0.7);}
+.form-card{background:white;border:1px solid var(--lila);border-radius:16px;padding:2rem;margin-bottom:1rem;}
+.form-card h2{font-size:0.95rem;font-weight:500;margin-bottom:1.5rem;color:var(--text-principal);}
+.camp{margin-bottom:1.25rem;}
+.camp label{display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-subtil);margin-bottom:0.4rem;}
+.camp input,.camp textarea,.camp select{width:100%;padding:0.65rem 0.9rem;border:1px solid var(--lila);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text-principal);outline:none;transition:border-color 0.2s;background:white;}
+.camp input:focus,.camp textarea:focus,.camp select:focus{border-color:var(--mov-mediu);}
+.camp textarea{resize:vertical;min-height:100px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.btn-submit{width:100%;padding:0.85rem;background:var(--mov-inchis);color:white;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
+.btn-submit:hover{background:var(--mov-profund);transform:translateY(-1px);}
+.succes-msg{display:none;text-align:center;padding:2rem;background:#e8f5e9;border:1px solid #c8e6c9;border-radius:12px;margin-top:1rem;}
+.succes-msg h3{color:#2e7d32;font-size:1.1rem;margin-bottom:0.5rem;}
+.succes-msg p{font-size:0.85rem;color:#4caf50;}
+.idei-trimise{background:white;border:1px solid var(--lila);border-radius:16px;padding:1.5rem;}
+.idei-trimise h2{font-size:0.95rem;font-weight:500;margin-bottom:1rem;}
+.card-idee{padding:0.75rem 0;border-bottom:1px solid var(--alb-cald);font-size:0.85rem;}
+.card-idee:last-child{border:none;}
+.idee-titlu{font-weight:500;color:var(--text-principal);margin-bottom:0.2rem;}
+.idee-data{font-size:0.72rem;color:var(--text-subtil);}
+.idee-status{font-size:0.68rem;padding:2px 8px;border-radius:10px;background:var(--mov-deschis);color:var(--mov-inchis);font-weight:500;}
+footer{text-align:center;padding:1.5rem;font-size:0.75rem;color:var(--text-subtil);border-top:1px solid var(--mov-deschis);}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <a href="/web/primapagina.html" class="logo">
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none">
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(157.5 24 24)"/>
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <span class="logo-nume">Biblioteca Aster</span>
+  </a>
+</header>
+
+<div class="page-wrapper">
+  <button class="btn-inapoi" onclick="history.back()">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Înapoi
+  </button>
+
+  <div class="page-hero">
+    <h1>💡 Idei de Eveniment</h1>
+    <p>Propune o idee pentru un eveniment viitor la Biblioteca Aster. Ideile tale contează!</p>
+  </div>
+
+  <div class="form-card">
+    <h2>Formular propunere eveniment</h2>
+    <div class="camp">
+      <label>Titlul evenimentului *</label>
+      <input type="text" id="idee-titlu" placeholder="ex: Seară de poezie română contemporană">
+    </div>
+    <div class="camp">
+      <label>Tipul evenimentului *</label>
+      <select id="idee-tip">
+        <option value="">Selectează tipul...</option>
+        <option>Atelier pentru copii</option>
+        <option>Club de lectură</option>
+        <option>Lansare de carte</option>
+        <option>Conferință</option>
+        <option>Expoziție</option>
+        <option>Seară culturală</option>
+        <option>Altul</option>
+      </select>
+    </div>
+    <div class="form-grid">
+      <div class="camp">
+        <label>Data propusă</label>
+        <input type="date" id="idee-data">
+      </div>
+      <div class="camp">
+        <label>Locație sugerată</label>
+        <select id="idee-corp">
+          <option value="">Selectează corpul...</option>
+          <option>Corp A — Sediu Central</option>
+          <option>Corp B — Studiu</option>
+          <option>Corp C — Digital</option>
+          <option>Corp D — Ficțiune</option>
+          <option>Corp E — Știință</option>
+          <option>Corp F — Copii</option>
+        </select>
+      </div>
+    </div>
+    <div class="camp">
+      <label>Descriere și detalii *</label>
+      <textarea id="idee-desc" placeholder="Descrie ideea ta în detaliu. Ce activități ar implica? Cui se adresează? Ce materiale ar fi necesare?"></textarea>
+    </div>
+    <div class="camp">
+      <label>Resurse necesare (opțional)</label>
+      <input type="text" id="idee-resurse" placeholder="ex: proiector, materiale de desen, cărți specifice...">
+    </div>
+    <button class="btn-submit" onclick="trimiteIdee()">Trimite ideea →</button>
+  </div>
+
+  <div class="succes-msg" id="succes-idee">
+    <h3>✓ Idee trimisă cu succes!</h3>
+    <p>Coordonatorul va analiza propunerea ta și te va contacta în curând.</p>
+  </div>
+
+  <div class="idei-trimise" id="idei-trimise-card" style="display:none;">
+    <h2>Ideile tale trimise</h2>
+    <div id="lista-idei-trimise"></div>
+  </div>
+</div>
+
+<footer>© 2026 Biblioteca Aster · Suceava, România</footer>
+
+<script>
+function trimiteIdee() {
+  const titlu = document.getElementById('idee-titlu').value.trim();
+  const tip = document.getElementById('idee-tip').value;
+  const desc = document.getElementById('idee-desc').value.trim();
+  if (!titlu || !tip || !desc) { alert('Completează câmpurile obligatorii (*)'); return; }
+  
+  const idei = JSON.parse(localStorage.getItem('idei_ev_vol') || '[]');
+  const noua = {
+    titlu, tip, desc,
+    data: document.getElementById('idee-data').value,
+    corp: document.getElementById('idee-corp').value,
+    resurse: document.getElementById('idee-resurse').value,
+    trimisa: new Date().toLocaleDateString('ro-RO'),
+    status: 'În analiză'
+  };
+  idei.push(noua);
+  localStorage.setItem('idei_ev_vol', JSON.stringify(idei));
+  
+  // Trimite la server
+  const idVol = localStorage.getItem("id_client") || -1;
+  fetch("/api/idei-evenimente", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({id_voluntar: parseInt(idVol), titlu: noua.titlu, tip: noua.tip, data_propusa: noua.data, corp: noua.corp, descriere: noua.desc, resurse: noua.resurse})
+  }).catch(() => {});
+  
+  document.getElementById('succes-idee').style.display = 'block';
+  document.getElementById('idee-titlu').value = '';
+  document.getElementById('idee-tip').value = '';
+  document.getElementById('idee-desc').value = '';
+  document.getElementById('idee-data').value = '';
+  document.getElementById('idee-resurse').value = '';
+  
+  incarcaIdeiTrimise();
+  setTimeout(() => document.getElementById('succes-idee').style.display = 'none', 3000);
+}
+
+function incarcaIdeiTrimise() {
+  const idei = JSON.parse(localStorage.getItem('idei_ev_vol') || '[]');
+  const card = document.getElementById('idei-trimise-card');
+  const lista = document.getElementById('lista-idei-trimise');
+  if (idei.length === 0) { card.style.display = 'none'; return; }
+  card.style.display = 'block';
+  lista.innerHTML = idei.slice().reverse().map(i =>
+    '<div class="card-idee"><div style="display:flex;justify-content:space-between;align-items:center;">' +
+    '<div class="idee-titlu">' + i.titlu + '</div>' +
+    '<span class="idee-status">' + i.status + '</span></div>' +
+    '<div class="idee-data">' + i.tip + (i.data ? ' · ' + i.data : '') + ' · Trimis ' + i.trimisa + '</div></div>'
+  ).join('');
+}
+
+document.addEventListener('DOMContentLoaded', incarcaIdeiTrimise);
+</script>
+</body>
+</html>

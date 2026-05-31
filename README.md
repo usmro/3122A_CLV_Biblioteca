@@ -1,36 +1,26 @@
-Tema: Dezvoltarea unei aplicații în C++ pentru administrarea unei biblioteci și a bazei de date a utilizatorilor unei biblioteci.
+Biblioteca Aster 📚
+Sistem de management pentru bibliotecă — backend C++ cu interfață web și bază de date SQLite.
 
-Motivare: Proiectul a fost ales pentru a demonstra aplicarea conceptelor fundamentale de Programare Orientată pe Obiecte (POO). Tema permite utilizarea moștenirii pentru a diferenția tipurile de publicații și a polimorfismului pentru gestionarea uniformă a acestora. Sistemul urmărește automatizarea procesului de împrumut și asigurarea consistenței datelor între entități.
+Tehnologii
 
-Structura Logică a Datelor
+C++17 + cpp-httplib + nlohmann/json
+SQLite3
+HTML / CSS / JavaScript
 
-Clasa: Cărți
+Compilare
+bash g++ src/server.cpp src/Database/Database.cpp Biblioteca/Biblioteca.cpp \
+    Carte/Carte.cpp Autor/Autor.cpp Cladiri/Cladire.cpp \
+    Utilizatori/Utilizator.cpp Utilizatori/Clienti/Client.cpp \
+    Utilizatori/Voluntari/Voluntar.cpp Utilizatori/Angajati/Angajat.cpp \
+    -I. -Ilib -lsqlite3 -lpthread -std=c++17 -O2 -o server
 
-Câmp		Tip		Dimensiune		Descriere
-Id_carte	Întreg		10			Identificator unic (necesar pentru legături) 
-Titlu		Caracter	50			Titlul complet al cărții
-Autor		Caracter	50			Numele autorului
-Editura		Caracter	30			Casa de editură
-ISBN		Caracter	20			Codul unic internațional
-Limba		Caracter	20			Limba în care este scrisă
-Data_pub	Caracter	12			Format 'yyyy-mm-dd' 
-Nr_pagini	Întreg		5			Numărul de pagini
-Destinatar	Caracter	30			Publicul țintă (Ex: Copii, Academic) 
-Sursa		Caracter	30			Proveniența (Editură/Donator)
-Status		Caracter	15			Disponibilă / Împrumutată
+Pornire
+bash./server
 
-Clasa: Utilizator
+Accesează: http://localhost:8080/web/primapagina.html
 
-Câmp		        Tip		        Dimensiune		    Descriere
-Id_utilizator	    Întreg(Long)	10			        Identificator unic (Primary Key)
-Nume		        Caracter	    30			        Numele de familie
-Prenume		        Caracter	    30			        Prenumele
-Email		        Caracter	    50			        Adresa de mail (Username)
-//Parola	        Caracter	    64
-Telefon		        Caracter	    15			        Număr de contact
-Data_nasterii	    Caracter	    12			        Format 'yyyy-mm-dd'
-Gen		            Caracter	    1			        M / F / N		
-Tip_Utilizator	    Caracter	    15			        Student, Adult, Elev
-Status		        Caracter	    15			        Activ, Penalizat, Suspendat
-Data_Inscriere	    Caracter	    12			        Data creării contului	
-Carti_Active	    Întreg		    2			        Numărul de cărți deținute în prezent
+Conturi de test
+Tip        Email                  Parolă    
+Client    maria@test.ro           test123
+Director  director@aster.ro       test123 + admin123
+Voluntar  radu.voluntar@aster.ro  test123

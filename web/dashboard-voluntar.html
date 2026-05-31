@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Voluntar · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mov-deschis: #e8e0f5; --mov-pastel: #c9b8e8; --mov-mediu: #9b7dc8;
+  --mov-inchis: #6b4fa0; --mov-profund: #4a3270; --lila: #d4c5ed;
+  --alb-cald: #faf8fd; --text-principal: #2d1f4e; --text-secundar: #7a6a9a;
+  --text-subtil: #b0a0cc; --sidebar-w: 260px;
+  --verde: #2e7d32; --verde-deschis: #e8f5e9;
+  --rosu: #c62828; --rosu-deschis: #fce4ec;
+  --galben: #f57f17; --galben-deschis: #fff8e1;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--alb-cald); color:var(--text-principal); display:flex; height:100vh; overflow:hidden; }
+
+/* SIDEBAR */
+.sidebar { width:var(--sidebar-w); background:var(--mov-profund); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:50; overflow-y:auto; }
+.sidebar-profil { padding:1.5rem 1.25rem 1rem; border-bottom:1px solid rgba(255,255,255,0.1); }
+.profil-row { display:flex; align-items:center; gap:0.85rem; margin-bottom:0.75rem; }
+.profil-av { width:44px; height:44px; border-radius:50%; background:var(--mov-mediu); color:white; display:flex; align-items:center; justify-content:center; font-size:1rem; font-weight:500; flex-shrink:0; overflow:hidden; }
+.profil-av img { width:100%; height:100%; object-fit:cover; }
+.profil-text { flex:1; min-width:0; }
+.profil-nm { font-size:0.88rem; font-weight:500; color:white; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.profil-email { font-size:0.7rem; color:rgba(255,255,255,0.5); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.profil-badge { display:inline-flex; align-items:center; gap:0.4rem; font-size:0.65rem; font-weight:500; padding:3px 10px; border-radius:10px; margin-top:0.25rem; background:rgba(155,125,200,0.3); color:var(--mov-pastel); letter-spacing:0.05em; text-transform:uppercase; }
+.rating-badge { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
+.rating-stele { color:#f0c040; font-size:0.75rem; }
+.rating-nr { font-size:0.72rem; color:rgba(255,255,255,0.5); }
+
+.sidebar-nav { padding:0.75rem; flex:1; }
+.nav-btn { width:100%; display:flex; align-items:center; gap:0.65rem; padding:0.65rem 0.75rem; border-radius:10px; border:none; background:transparent; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.83rem; color:rgba(255,255,255,0.65); text-align:left; transition:all 0.18s; margin-bottom:2px; }
+.nav-btn:hover { background:rgba(255,255,255,0.08); color:white; }
+.nav-btn.activ { background:rgba(155,125,200,0.25); color:white; font-weight:500; }
+.nav-btn svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+.nav-btn .badge { margin-left:auto; background:var(--mov-mediu); color:white; font-size:0.62rem; padding:1px 6px; border-radius:10px; }
+
+.sidebar-footer { padding:1rem 1.25rem; border-top:1px solid rgba(255,255,255,0.1); }
+.btn-logout { width:100%; display:flex; align-items:center; gap:0.6rem; padding:0.6rem 0.75rem; border-radius:10px; border:none; background:transparent; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.82rem; color:rgba(255,255,255,0.4); transition:all 0.2s; }
+.btn-logout:hover { background:rgba(255,100,100,0.15); color:#ff9999; }
+.btn-logout svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; }
+
+/* CONTENT */
+.content { margin-left:var(--sidebar-w); flex:1; overflow-y:auto; padding:2rem 2.5rem; }
+.sectiune { display:none; }
+.sectiune.activa { display:block; animation:fadeIn 0.25s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.page-titlu { font-family:'Cormorant Garamond',serif; font-size:1.7rem; font-weight:600; color:var(--text-principal); margin-bottom:0.3rem; }
+.page-sub { font-size:0.82rem; color:var(--text-subtil); margin-bottom:1.75rem; font-weight:300; }
+.sec-titlu { font-size:0.95rem; font-weight:500; margin-bottom:0.9rem; margin-top:1.75rem; color:var(--text-principal); }
+.divider { height:1px; background:var(--lila); margin:1.5rem 0; }
+
+/* CARDS */
+.card { background:white; border:1px solid var(--lila); border-radius:16px; padding:1.25rem 1.5rem; margin-bottom:1rem; }
+.card-titlu { font-size:0.9rem; font-weight:500; color:var(--text-principal); margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem; }
+.card-titlu svg { width:15px; height:15px; stroke:var(--mov-inchis); fill:none; stroke-width:1.5; stroke-linecap:round; }
+
+/* STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+.stat-card { background:white; border:1px solid var(--lila); border-radius:14px; padding:1.1rem 1.25rem; }
+.stat-label { font-size:0.72rem; color:var(--text-subtil); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.4rem; }
+.stat-val { font-size:1.6rem; font-weight:600; color:var(--mov-inchis); font-family:'Cormorant Garamond',serif; line-height:1; }
+.stat-sub { font-size:0.72rem; color:var(--text-secundar); margin-top:0.3rem; font-weight:300; }
+
+/* NOTIFICARI */
+.notif-card { display:flex; gap:0.85rem; align-items:flex-start; padding:0.9rem 1.1rem; background:white; border:1px solid var(--lila); border-radius:12px; margin-bottom:0.6rem; position:relative; }
+.notif-icon { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.notif-icon svg { width:17px; height:17px; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.n-urgenta .notif-icon { background:var(--rosu-deschis); } .n-urgenta .notif-icon svg { stroke:var(--rosu); }
+.n-info .notif-icon { background:var(--mov-deschis); } .n-info .notif-icon svg { stroke:var(--mov-inchis); }
+.n-succes .notif-icon { background:var(--verde-deschis); } .n-succes .notif-icon svg { stroke:var(--verde); }
+.n-warn .notif-icon { background:var(--galben-deschis); } .n-warn .notif-icon svg { stroke:var(--galben); }
+.notif-corp { flex:1; }
+.notif-titlu { font-size:0.85rem; font-weight:500; margin-bottom:0.15rem; }
+.notif-text { font-size:0.78rem; color:var(--text-secundar); font-weight:300; line-height:1.4; }
+.notif-timp { font-size:0.7rem; color:var(--text-subtil); margin-top:0.25rem; }
+.notif-necitita::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:60%; background:var(--mov-inchis); border-radius:0 2px 2px 0; }
+.btn-sm { padding:0.35rem 0.8rem; background:var(--mov-inchis); color:white; border:none; border-radius:8px; font-size:0.72rem; cursor:pointer; margin-top:0.4rem; font-family:'DM Sans',sans-serif; }
+
+/* CALENDAR */
+.luna-selector { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.25rem; }
+.luna-btn { padding:0.35rem 0.8rem; border:1px solid var(--lila); border-radius:20px; background:white; font-family:'DM Sans',sans-serif; font-size:0.78rem; cursor:pointer; color:var(--text-secundar); transition:all 0.2s; }
+.luna-btn.activ { background:var(--mov-inchis); color:white; border-color:var(--mov-inchis); }
+.calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:1rem; }
+.cal-zi-hdr { text-align:center; font-size:0.68rem; color:var(--text-subtil); text-transform:uppercase; padding:0.4rem 0; letter-spacing:0.05em; }
+.cal-zi { text-align:center; padding:0.5rem 0.3rem; border-radius:8px; font-size:0.82rem; cursor:pointer; transition:all 0.15s; min-height:38px; position:relative; }
+.cal-zi:hover { background:var(--mov-deschis); }
+.cal-zi.azi { background:var(--mov-inchis); color:white; font-weight:500; }
+.cal-zi.lucrat { background:var(--mov-deschis); color:var(--mov-inchis); }
+.cal-zi.liber { color:var(--text-subtil); }
+.cal-zi.zi-libera { background:var(--verde-deschis); color:var(--verde); }
+.cal-zi .dot { width:4px; height:4px; border-radius:50%; background:var(--mov-mediu); margin:2px auto 0; }
+
+/* PROGRAM */
+.program-row { display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid var(--alb-cald); font-size:0.85rem; }
+.prog-data { color:var(--text-secundar); font-weight:300; }
+.prog-ore { font-weight:500; }
+.prog-total { font-size:0.72rem; color:var(--mov-mediu); }
+
+/* CONTRACT */
+.contract-card { background:white; border:1px solid var(--lila); border-radius:14px; overflow:hidden; margin-bottom:1rem; }
+.contract-header { background:var(--mov-profund); padding:1.25rem 1.5rem; display:flex; align-items:center; justify-content:space-between; }
+.contract-header h3 { font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:white; font-weight:400; }
+.contract-header p { font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:0.2rem; }
+.btn-download { padding:0.4rem 1rem; background:rgba(255,255,255,0.15); color:white; border:1px solid rgba(255,255,255,0.2); border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.78rem; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:0.4rem; }
+.btn-download:hover { background:rgba(255,255,255,0.25); }
+.btn-download svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+.contract-body { padding:1.25rem 1.5rem; }
+.contract-row { display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid var(--alb-cald); font-size:0.85rem; }
+.c-label { color:var(--text-secundar); font-weight:300; }
+.c-val { font-weight:400; color:var(--text-principal); }
+.contract-status { display:inline-flex; align-items:center; gap:0.3rem; font-size:0.75rem; padding:3px 10px; border-radius:10px; }
+.cs-activ { background:var(--verde-deschis); color:var(--verde); }
+.cs-expirat { background:var(--rosu-deschis); color:var(--rosu); }
+
+/* ORE LUCRATE */
+.ore-summary { display:flex; gap:2rem; padding:1rem 1.25rem; background:var(--mov-deschis); border-radius:12px; margin-bottom:1rem; }
+.ore-item { text-align:center; }
+.ore-nr { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:600; color:var(--mov-inchis); line-height:1; }
+.ore-lbl { font-size:0.72rem; color:var(--text-subtil); text-transform:uppercase; letter-spacing:0.05em; margin-top:0.2rem; }
+.bara-ore { height:8px; background:white; border-radius:4px; overflow:hidden; margin-top:1rem; }
+.bara-ore-fill { height:100%; background:var(--mov-inchis); border-radius:4px; transition:width 0.5s; }
+.bara-ore-lbl { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-subtil); margin-top:0.3rem; }
+
+/* EVENIMENTE */
+.card-ev { background:white; border:1px solid var(--lila); border-radius:12px; padding:1rem 1.25rem; display:flex; gap:1rem; align-items:flex-start; margin-bottom:0.6rem; transition:all 0.2s; }
+.card-ev:hover { border-color:var(--mov-pastel); }
+.ev-data-mic { background:var(--mov-deschis); border-radius:8px; padding:0.4rem 0.6rem; text-align:center; flex-shrink:0; min-width:44px; }
+.ev-zi-mic { font-size:1rem; font-weight:500; color:var(--mov-inchis); line-height:1; }
+.ev-luna-mic { font-size:0.6rem; text-transform:uppercase; color:var(--text-secundar); }
+.ev-info { flex:1; }
+.ev-titlu { font-size:0.88rem; font-weight:500; margin-bottom:0.2rem; }
+.ev-desc { font-size:0.75rem; color:var(--text-secundar); font-weight:300; line-height:1.4; }
+.ev-tag { font-size:0.65rem; background:var(--mov-deschis); color:var(--mov-inchis); padding:2px 7px; border-radius:10px; margin-left:0.5rem; }
+.ev-participat { font-size:0.65rem; background:var(--verde-deschis); color:var(--verde); padding:2px 7px; border-radius:10px; }
+.ev-actiuni { display:flex; gap:0.4rem; flex-shrink:0; }
+.btn-ev { padding:0.3rem 0.65rem; border:1px solid var(--lila); border-radius:8px; background:white; font-size:0.7rem; cursor:pointer; font-family:'DM Sans',sans-serif; color:var(--text-secundar); transition:all 0.2s; white-space:nowrap; }
+.btn-ev:hover { background:var(--mov-deschis); color:var(--mov-inchis); }
+.btn-ev.confirmat { background:var(--verde-deschis); color:var(--verde); border-color:#c8e6c9; }
+
+/* FEEDBACK */
+.rating-medie { display:flex; align-items:center; gap:1rem; padding:1rem 1.25rem; background:var(--mov-deschis); border-radius:12px; margin-bottom:1rem; }
+.rating-nr-mare { font-family:'Cormorant Garamond',serif; font-size:2.5rem; font-weight:600; color:var(--mov-inchis); line-height:1; }
+.rating-stele-mare { color:#f0c040; font-size:1rem; display:block; }
+.rating-sub { font-size:0.75rem; color:var(--text-secundar); }
+.card-feedback { background:white; border:1px solid var(--lila); border-radius:12px; padding:0.9rem 1.1rem; margin-bottom:0.6rem; }
+.fb-header { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.4rem; }
+.fb-av { width:28px; height:28px; border-radius:50%; background:var(--mov-pastel); color:var(--mov-profund); font-size:0.7rem; font-weight:500; display:flex; align-items:center; justify-content:center; }
+.fb-user { font-size:0.82rem; font-weight:500; }
+.fb-stele { color:#f0c040; font-size:0.78rem; margin-left:auto; }
+.fb-data { font-size:0.7rem; color:var(--text-subtil); }
+.fb-text { font-size:0.82rem; color:var(--text-secundar); font-weight:300; line-height:1.5; }
+
+/* ANUNTURI */
+.card-sedinta { background:white; border:1px solid var(--lila); border-radius:12px; padding:1rem 1.25rem; margin-bottom:0.6rem; border-left:3px solid var(--mov-inchis); }
+.card-sedinta.urgent { border-left-color:var(--rosu); }
+.card-sedinta.inventar { border-left-color:var(--galben); }
+.sed-titlu { font-size:0.9rem; font-weight:500; margin-bottom:0.25rem; }
+.sed-meta { display:flex; gap:1rem; font-size:0.75rem; color:var(--text-secundar); margin-bottom:0.4rem; flex-wrap:wrap; }
+.sed-desc { font-size:0.8rem; color:var(--text-secundar); font-weight:300; line-height:1.5; }
+
+/* LINKURI UTILE */
+.grid-linkuri { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:0.75rem; margin-bottom:1.5rem; }
+.card-link { background:white; border:1px solid var(--lila); border-radius:14px; padding:1.1rem 1.25rem; text-decoration:none; color:var(--text-principal); display:flex; align-items:center; gap:0.85rem; transition:all 0.2s; cursor:pointer; }
+.card-link:hover { border-color:var(--mov-pastel); background:var(--mov-deschis); transform:translateY(-2px); box-shadow:0 4px 16px rgba(107,79,160,0.08); }
+.link-icon { width:38px; height:38px; border-radius:10px; background:var(--mov-deschis); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.link-icon svg { width:18px; height:18px; stroke:var(--mov-inchis); fill:none; stroke-width:1.5; stroke-linecap:round; }
+.link-info { flex:1; }
+.link-titlu { font-size:0.85rem; font-weight:500; margin-bottom:0.15rem; }
+.link-desc { font-size:0.72rem; color:var(--text-subtil); font-weight:300; }
+.link-arrow { width:20px; height:20px; stroke:var(--text-subtil); fill:none; stroke-width:2; stroke-linecap:round; }
+
+/* ZILE LIBERE */
+.form-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.75rem; }
+.fc label { font-size:0.72rem; color:var(--text-subtil); text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:0.35rem; }
+.fc input,.fc select,.fc textarea { width:100%; padding:0.6rem 0.8rem; border:1px solid var(--lila); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.85rem; outline:none; background:white; color:var(--text-principal); }
+.fc input:focus,.fc select:focus,.fc textarea:focus { border-color:var(--mov-mediu); }
+.fc.full { grid-column:span 2; }
+.fc textarea { resize:vertical; min-height:70px; }
+.btn-primary { padding:0.75rem 1.5rem; background:var(--mov-inchis); color:white; border:none; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.88rem; cursor:pointer; transition:background 0.2s; }
+.btn-primary:hover { background:var(--mov-profund); }
+.cerere-status { display:inline-flex; align-items:center; gap:0.3rem; font-size:0.72rem; padding:3px 10px; border-radius:10px; flex-shrink:0; }
+.cs-asteptare { background:var(--galben-deschis); color:var(--galben); }
+.cs-aprobat { background:var(--verde-deschis); color:var(--verde); }
+.cs-respins { background:var(--rosu-deschis); color:var(--rosu); }
+.card-cerere-vol { display:flex; align-items:center; gap:1rem; padding:0.85rem 1.1rem; background:white; border:1px solid var(--lila); border-radius:12px; margin-bottom:0.5rem; }
+.cerere-info { flex:1; }
+.cerere-titlu { font-size:0.88rem; font-weight:500; }
+.cerere-detalii { font-size:0.75rem; color:var(--text-secundar); font-weight:300; }
+
+/* MODAL */
+.modal-ov { position:fixed; inset:0; background:rgba(45,31,78,0.4); z-index:200; display:none; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+.modal-ov.viz { display:flex; }
+.modal { background:white; border-radius:20px; padding:2rem; width:440px; max-width:90vw; }
+.modal h3 { font-family:'Cormorant Garamond',serif; font-size:1.5rem; margin-bottom:0.3rem; }
+.modal p { font-size:0.82rem; color:var(--text-secundar); margin-bottom:1.25rem; }
+.modal-btns { display:flex; gap:0.6rem; margin-top:1rem; }
+.modal-btns button { flex:1; padding:0.65rem; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.85rem; cursor:pointer; border:none; }
+.btn-m-an { background:var(--mov-deschis); color:var(--mov-inchis); }
+.btn-m-ok { background:var(--mov-inchis); color:white; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-profil">
+    <div class="profil-row">
+      <div class="profil-av" id="sidebar-av">AM</div>
+      <div class="profil-text">
+        <div class="profil-nm" id="sidebar-nm">Ana Mihai</div>
+        <div class="profil-email" id="sidebar-email">ana.mihai@aster.ro</div>
+      </div>
+    </div>
+    <div class="profil-badge">🌟 Voluntar</div>
+    <div class="rating-badge">
+      <span class="rating-stele">★★★★★</span>
+      <span class="rating-nr">4.9 · 12 recenzii</span>
+    </div>
+  </div>
+
+  <div class="sidebar-nav">
+    <button class="nav-btn activ" onclick="nav('notificari');marcheazaCitite()" id="nav-notificari">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Notificări <span class="badge">3</span>
+    </button>
+    <button class="nav-btn" onclick="nav('program')" id="nav-program">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Program Personal
+    </button>
+    <button class="nav-btn" onclick="nav('ore')" id="nav-ore">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Ore Lucrate
+    </button>
+    <button class="nav-btn" onclick="nav('contract')" id="nav-contract">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Contract
+    </button>
+    <button class="nav-btn" onclick="nav('evenimente')" id="nav-evenimente">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Evenimente & Calendar
+    </button>
+    <button class="nav-btn" onclick="nav('anunturi')" id="nav-anunturi">
+      <svg viewBox="0 0 24 24"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg>
+      Anunțuri & Ședințe <span class="badge">2</span>
+    </button>
+    <button class="nav-btn" onclick="nav('feedback')" id="nav-feedback">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Feedback Primit
+    </button>
+    <button class="nav-btn" onclick="nav('zile-libere')" id="nav-zile-libere">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Zile Libere
+    </button>
+    <button class="nav-btn" onclick="nav('linkuri')" id="nav-linkuri">
+      <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      Linkuri Utile
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="/web/primapagina.html" style="text-decoration:none;">
+      <button class="btn-logout">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Deconectare
+      </button>
+    </a>
+  </div>
+</aside>
+
+<main class="content">
+
+  <!-- ═══ NOTIFICĂRI ═══ -->
+  <div class="sectiune activa" id="sec-notificari">
+    <p class="page-titlu">Bună ziua, Radu 👋</p>
+    <p class="page-sub">Miercuri, 3 Iunie 2026 · Voluntar · Corpul F</p>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Ore lucrate luna asta</div><div class="stat-val">16</div><div class="stat-sub">din 80 planificate</div></div>
+      <div class="stat-card"><div class="stat-label">Evenimente participate</div><div class="stat-val">0</div><div class="stat-sub">luna aceasta</div></div>
+      <div class="stat-card"><div class="stat-label">Rating mediu</div><div class="stat-val">4.9</div><div class="stat-sub">din 12 recenzii</div></div>
+      <div class="stat-card"><div class="stat-label">Contract expiră în</div><div class="stat-val">27</div><div class="stat-sub">zile</div></div>
+    </div>
+
+    <div class="sec-titlu">Notificări recente</div>
+
+    <div class="notif-card n-warn notif-necitita">
+      <div class="notif-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <div class="notif-corp">
+        <div class="notif-titlu">Ședință voluntari </div>
+        <div class="notif-text">Ședință obligatorie Luni, 15 Iunie, ora 11:00, Sala Mare, Corp F. Ordinea de zi: Planificarea activităților de vară.</div>
+        <div class="notif-timp">Ieri, 16:00</div>
+      </div>
+    </div>
+
+    <div class="notif-card n-info notif-necitita">
+      <div class="notif-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="notif-corp">
+        <div class="notif-titlu">Eveniment — Ora Poveștilor</div>
+        <div class="notif-text">Ești programată să ajuți la "Ora Poveștilor pentru Copii" pe 27 Iunie, ora 10:00, Corp F. Confirmă participarea.</div>
+        <button class="btn-sm" onclick="confirmaParticipare(this)" data-ev-id="ev2">Confirmă participarea</button>
+        <div class="notif-timp">Acum 2 ore</div>
+      </div>
+    </div>
+
+    <div class="notif-card n-succes notif-necitita">
+      <div class="notif-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="notif-corp">
+        <div class="notif-titlu">Cerere zi liberă aprobată</div>
+        <div class="notif-text">Cererea ta de zi liberă pentru 20 Iunie a fost aprobată de coordonatorul de voluntari.</div>
+        <div class="notif-timp">Acum 1 zi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PROGRAM PERSONAL ═══ -->
+  <div class="sectiune" id="sec-program">
+    <p class="page-titlu">Program Personal</p>
+    <p class="page-sub">Programul tău de activitate pentru luna curentă și lunile anterioare</p>
+
+    <div class="luna-selector">
+      <button class="luna-btn" onclick="setLuna(this)">Ian</button>
+      <button class="luna-btn" onclick="setLuna(this)">Feb</button>
+      <button class="luna-btn" onclick="setLuna(this)">Mar</button>
+      <button class="luna-btn" onclick="setLuna(this)">Apr</button>
+      <button class="luna-btn activ" onclick="setLuna(this)">Mai</button>
+      <button class="luna-btn" onclick="setLuna(this)">Iun</button>
+    </div>
+
+    <div class="card">
+      <div class="card-titlu"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Iunie 2026</div>
+      <div class="calendar-grid" id="cal-grid-program">
+        <div class="cal-zi-hdr">Lu</div><div class="cal-zi-hdr">Ma</div><div class="cal-zi-hdr">Mi</div>
+        <div class="cal-zi-hdr">Jo</div><div class="cal-zi-hdr">Vi</div><div class="cal-zi-hdr">Sâ</div><div class="cal-zi-hdr">Du</div>
+        <div class="cal-zi liber"></div><div class="cal-zi liber"></div><div class="cal-zi liber"></div>
+        <div class="cal-zi liber">1</div><div class="cal-zi liber">2</div><div class="cal-zi liber">3</div><div class="cal-zi liber">4</div>
+        <div class="cal-zi lucrat">5<div class="dot"></div></div>
+        <div class="cal-zi lucrat">6<div class="dot"></div></div>
+        <div class="cal-zi liber">7</div><div class="cal-zi liber">8</div>
+        <div class="cal-zi lucrat">9<div class="dot"></div></div>
+        <div class="cal-zi liber">10</div><div class="cal-zi liber">11</div>
+        <div class="cal-zi lucrat">12<div class="dot"></div></div>
+        <div class="cal-zi lucrat">13<div class="dot"></div></div>
+        <div class="cal-zi azi">14</div>
+        <div class="cal-zi liber">15</div><div class="cal-zi liber">16</div><div class="cal-zi liber">17</div><div class="cal-zi liber">18</div>
+        <div class="cal-zi liber">19</div>
+        <div class="cal-zi zi-libera">20</div>
+        <div class="cal-zi liber">21</div>
+        <div class="cal-zi lucrat">22<div class="dot"></div></div>
+        <div class="cal-zi liber">23</div><div class="cal-zi liber">24</div><div class="cal-zi liber">25</div>
+        <div class="cal-zi liber">26</div><div class="cal-zi liber">27</div><div class="cal-zi liber">28</div><div class="cal-zi liber">29</div>
+        <div class="cal-zi liber">30</div><div class="cal-zi liber">31</div>
+        <div class="cal-zi liber"></div><div class="cal-zi liber"></div>
+      </div>
+      <div style="display:flex;gap:1rem;font-size:0.72rem;color:var(--text-subtil);margin-top:0.75rem;flex-wrap:wrap;">
+        <span style="display:flex;align-items:center;gap:0.3rem;"><span style="width:10px;height:10px;background:var(--mov-deschis);border-radius:3px;display:inline-block;"></span>Lucrat</span>
+        <span style="display:flex;align-items:center;gap:0.3rem;"><span style="width:10px;height:10px;background:var(--verde-deschis);border-radius:3px;display:inline-block;"></span>Zi liberă</span>
+        <span style="display:flex;align-items:center;gap:0.3rem;"><span style="width:10px;height:10px;background:var(--mov-inchis);border-radius:3px;display:inline-block;"></span>Azi</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titlu"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Program săptămânal curent</div>
+      <div class="program-row"><span class="prog-data">Luni</span><span class="prog-ore">—</span><span class="prog-total" style="color:var(--text-subtil);">liber</span></div>
+      <div class="program-row"><span class="prog-data">Marți</span><span class="prog-ore">09:00 — 13:00</span><span class="prog-total">4 ore</span></div>
+      <div class="program-row"><span class="prog-data">Miercuri</span><span class="prog-ore">—</span><span class="prog-total" style="color:var(--text-subtil);">liber</span></div>
+      <div class="program-row"><span class="prog-data">Joi</span><span class="prog-ore">—</span><span class="prog-total" style="color:var(--text-subtil);">liber</span></div>
+      <div class="program-row"><span class="prog-data">Vineri</span><span class="prog-ore">14:00 — 18:00</span><span class="prog-total">4 ore</span></div>
+      <div class="program-row"><span class="prog-data">Sâmbătă</span><span class="prog-ore">10:00 — 14:00</span><span class="prog-total">4 ore</span></div>
+      <div class="program-row"><span class="prog-data">Duminică</span><span class="prog-ore">10:00 — 14:00</span><span class="prog-total">4 ore</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ ORE LUCRATE ═══ -->
+  <div class="sectiune" id="sec-ore">
+    <p class="page-titlu">Ore Lucrate</p>
+    <p class="page-sub">Evidența orelor de activitate voluntară</p>
+
+    <div class="luna-selector">
+      <button class="luna-btn" onclick="setLunaOre(this,'Apr 2026')">Apr 2026</button>
+      <button class="luna-btn" onclick="setLunaOre(this,'Mai 2026')">Mai 2026</button>
+      <button class="luna-btn activ" onclick="setLunaOre(this,'Iun 2026')">Iun 2026</button>
+      
+    </div>
+
+    <div class="ore-summary">
+      <div class="ore-item"><div class="ore-nr" id="ore-luna-nr">4</div><div class="ore-lbl">Ore luna asta</div></div>
+      <div class="ore-item"><div class="ore-nr" id="ore-planif-nr">40</div><div class="ore-lbl">Ore minime/lună</div></div>
+      <div class="ore-item"><div class="ore-nr" id="ore-total-nr">80</div><div class="ore-lbl">Total contract</div></div>
+    </div>
+    <div class="bara-ore"><div class="bara-ore-fill" id="bara-ore-fill" style="width:100%"></div></div>
+    <div class="bara-ore-lbl"><span>0 ore</span><span id="label-ore-detaliu">4 / 40 ore (105%)</span><span>40 ore</span></div>
+
+    <div class="card" style="margin-top:1.25rem;" id="card-detaliu-ore">
+      <div class="card-titlu" id="titlu-detaliu-ore"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Detaliu ore — Mai 2026</div>
+      <div id="rows-detaliu-ore">
+        <div class="program-row"><span class="prog-data">Luni, 5 Mai</span><span class="prog-ore">-</span><span class="prog-total">0</span></div>
+        <div class="program-row"><span class="prog-data">Marți, 6 Mai</span><span class="prog-ore">09:00 — 13:00</span><span class="prog-total">4 ore</span></div>
+        <div class="program-row"><span class="prog-data">Vineri, 9 Mai</span><span class="prog-ore">14:00 — 18:00</span><span class="prog-total">4 ore</span></div>
+        <div class="program-row"><span class="prog-data">Sâmbătă, 10 Mai — Eveniment</span><span class="prog-ore">09:00 — 21:00</span><span class="prog-total">12 ore</span></div>
+        <div class="program-row"><span class="prog-data">Luni, 12 Mai</span><span class="prog-ore">09:00 — 13:00</span><span class="prog-total">4 ore</span></div>
+        <div class="program-row"><span class="prog-data">Marți, 13 Mai</span><span class="prog-ore">09:00 — 13:00</span><span class="prog-total">4 ore</span></div>
+        <div class="program-row" style="border:none;"><span class="prog-data" style="font-weight:500;">Total luna Mai</span><span class="prog-ore" style="color:var(--mov-inchis);font-weight:600;" id="total-luna-ore">42 ore</span><span class="prog-total"></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titlu">Istoric — Contract curent (Apr 2026 — Iun 2026)</div>
+      <div class="program-row"><span class="prog-data">Aprilie 2026</span><span class="prog-ore">30 ore</span><span class="prog-total">✓ Complet</span></div>
+      <div class="program-row"><span class="prog-data">Mai 2026</span><span class="prog-ore" id="mai-ore-istoric">42 ore</span><span class="prog-total">În desfășurare</span></div>
+      <div class="program-row"><span class="prog-data">Iunie 2026</span><span class="prog-ore" id="iun-ore-istoric">8 ore</span><span class="prog-total">În desfășurare</span></div>
+      <div class="program-row" style="border:none;"><span class="prog-data" style="font-weight:500;">Total contract (până acum)</span><span class="prog-ore" style="color:var(--mov-inchis);font-weight:600;" id="ore-total-contract">80 ore</span><span class="prog-total"></span></div>
+    </div>
+  </div>
+
+  <!-- ═══ CONTRACT ═══ -->
+  <div class="sectiune" id="sec-contract">
+    <p class="page-titlu">Contract de Voluntariat</p>
+    <p class="page-sub">Detaliile contractului tău de voluntariat cu Biblioteca Aster</p>
+
+    <div class="contract-card">
+      <div class="contract-header">
+        <div>
+          <h3>Contract de voluntariat</h3>
+          <p id="contract-sub">Voluntar · Biblioteca Aster · 2026</p>
+        </div>
+        <button class="btn-download" onclick="descarcaContract()">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Descarcă PDF
+        </button>
+      </div>
+      <div class="contract-body">
+        <div class="contract-row"><span class="c-label">Voluntar</span><span class="c-val" id="contract-voluntar-nm">Voluntar</span></div>
+        <div class="contract-row"><span class="c-label">Organizație</span><span class="c-val">Biblioteca Aster</span></div>
+        <div class="contract-row"><span class="c-label">Corp de activitate</span><span class="c-val">Corpul F — Copii & Evenimente</span></div>
+        <div class="contract-row"><span class="c-label">Data început</span><span class="c-val" id="contract-start">01.04.2026 2026</span></div>
+        <div class="contract-row"><span class="c-label">Data sfârșit</span><span class="c-val" id="contract-end">30.06.2026 2026</span></div>
+        <div class="contract-row"><span class="c-label">Ore minime/lună</span><span class="c-val">40 ore</span></div>
+        <div class="contract-row" style="border:none;"><span class="c-label">Status</span><span class="c-val"><span class="contract-status cs-activ">● Activ</span></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titlu">Contracte anterioare</div>
+      <div class="contract-row"><span class="c-label">Oct 2025 — Mar 2026</span><span class="c-val">Contract voluntariat · Corpul A</span><span class="contract-status cs-expirat">Expirat</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ EVENIMENTE & CALENDAR ═══ -->
+  <div class="sectiune" id="sec-evenimente">
+    <p class="page-titlu">Evenimente & Calendar</p>
+    <p class="page-sub">Evenimentele la care participi și istoricul activității tale</p>
+
+  
+
+    <div class="sec-titlu">Evenimente viitoare — Iunie 2026</div>
+    <div class="card-ev" data-ev-id="ev7">
+      <div class="ev-data-mic"><div class="ev-zi-mic">27</div><div class="ev-luna-mic">Iun</div></div>
+      <div class="ev-info"><div class="ev-titlu">Ora Poveștilor — Ediție Specială <span class="ev-tag">Cultural</span></div><div class="ev-sub">Corp F · Sala Poveștilor · 10:00 — 12:00</div></div>
+      <div class="ev-actiuni"><button class="btn-ev" onclick="confirmaParticipare(this)" data-ev-id="ev7">Confirmă</button></div>
+    </div>
+    <div class="card-ev" data-ev-id="ev8">
+      <div class="ev-data-mic"><div class="ev-zi-mic">16</div><div class="ev-luna-mic">Iun</div></div>
+      <div class="ev-info"><div class="ev-titlu">Atelier Creație — Vara în Culori <span class="ev-tag">Atelier</span></div><div class="ev-sub">Corp F · Atelier Creație · 10:00 — 13:00</div></div>
+      <div class="ev-actiuni"><button class="btn-ev" onclick="confirmaParticipare(this)" data-ev-id="ev8">Confirmă</button></div>
+    </div>
+    <div class="card-ev" data-ev-id="ev9">
+      <div class="ev-data-mic"><div class="ev-zi-mic">17</div><div class="ev-luna-mic">Iun</div></div>
+      <div class="ev-info"><div class="ev-titlu">Club Lectură Copii — Sezon Nou <span class="ev-tag">Cultural</span></div><div class="ev-sub">Corp F · Biblioteca Părinților · 16:00 — 17:30</div></div>
+      <div class="ev-actiuni"><button class="btn-ev" onclick="confirmaParticipare(this)" data-ev-id="ev9">Confirmă</button></div>
+    </div>
+    <div class="card-ev" data-ev-id="ev10">
+      <div class="ev-data-mic"><div class="ev-zi-mic">15</div><div class="ev-luna-mic">Iun</div></div>
+      <div class="ev-info"><div class="ev-titlu">Ședință voluntari — Evaluare semestru <span class="ev-tag ev-tag-obligatoriu">Obligatorie</span></div><div class="ev-sub">Corp F · Sala Mare · 11:00 — 13:00</div></div>
+      <div class="ev-actiuni"><button class="btn-ev" onclick="confirmaParticipare(this)" data-ev-id="ev10">Confirmă</button></div>
+    </div>
+
+   
+
+    <div class="sec-titlu">Evenimente la care ai participat</div>
+    <div id="ev-participate-dinamice"></div>
+    <div class="card-ev"><div class="ev-data-mic"><div class="ev-zi-mic">10</div><div class="ev-luna-mic">Mai</div></div><div class="ev-info"><div class="ev-titlu">Festivalul Cărții pentru Copii <span class="ev-participat">✓ Participat</span></div><div class="ev-desc">Corp F · 09:00 — 21:00 · 12 ore</div></div></div>
+    <div class="card-ev"><div class="ev-data-mic"><div class="ev-zi-mic">28</div><div class="ev-luna-mic">Apr</div></div><div class="ev-info"><div class="ev-titlu">Lansare colecție primăvară <span class="ev-participat">✓ Participat</span></div><div class="ev-desc">Corp A · 17:00 — 20:00</div></div></div>
+    <div class="card-ev"><div class="ev-data-mic"><div class="ev-zi-mic">5</div><div class="ev-luna-mic">Apr</div></div><div class="ev-info"><div class="ev-titlu">Ora Poveștilor — Ediție specială <span class="ev-participat">✓ Participat</span></div><div class="ev-desc">Corp F · 10:00 — 12:00</div></div></div>
+  </div>
+
+  <!-- ═══ ANUNȚURI & ȘEDINȚE ═══ -->
+  <div class="sectiune" id="sec-anunturi">
+    <p class="page-titlu">Anunțuri & Ședințe</p>
+    <p class="page-sub">Comunicări oficiale și anunțuri despre activitatea de voluntariat</p>
+
+    <div class="sec-titlu">Urgente</div>
+    <div class="card-sedinta urgent">
+      <div class="sed-titlu">⚠️ Ședință obligatorie — 15 Iunie</div>
+      <div class="sed-meta"><span>📅 Luni, 15 Iunie · 11:00</span><span>📍 Sala Mare, Corp F</span><span>⏱️ 90 min</span></div>
+      <div class="sed-desc">Participare obligatorie pentru toți voluntarii activi din Corp F. Ordinea de zi: planificarea activităților de vară, noi proceduri de lucru cu copiii.</div>
+    </div>
+
+    <div class="sec-titlu">Anunțuri generale</div>
+    <div class="card-sedinta">
+      <div class="sed-titlu">📋 Program nou voluntari — Vara 2026</div>
+      <div class="sed-meta"><span>📅 Din 1 Iunie 2026</span><span>👤 Coordonator voluntari</span></div>
+      <div class="sed-desc">Programul de voluntariat se extinde în vara 2026. Vor fi disponibile mai multe ture și ore suplimentare pentru evenimentele de vară. Detalii complete pe linkul de înscriere.</div>
+    </div>
+    <div class="card-sedinta inventar">
+      <div class="sed-titlu">📦 Inventar Corp F — 20 Iunie</div>
+      <div class="sed-meta"><span>📅 20 Iunie 2026</span><span>📍 Corp F</span></div>
+      <div class="sed-desc">Voluntarii din Corp F sunt invitați să participe la inventarul semestrial. Participarea este voluntară dar apreciată.</div>
+    </div>
+  </div>
+
+  <!-- ═══ FEEDBACK PRIMIT ═══ -->
+  <div class="sectiune" id="sec-feedback">
+    <p class="page-titlu">Feedback Primit</p>
+    <p class="page-sub">Evaluările și recenziile primite de la clienți și coordonatori</p>
+
+    <div class="rating-medie">
+      <div class="rating-nr-mare">4.9</div>
+      <div>
+        <span class="rating-stele-mare">★★★★★</span>
+        <div style="font-size:0.82rem;font-weight:500;color:var(--mov-inchis);margin-top:0.2rem;">Excelent</div>
+        <div class="rating-sub">12 recenzii · Ultimele 3 luni</div>
+      </div>
+    </div>
+
+    <div class="card-feedback"><div class="fb-header"><div class="fb-av">MP</div><span class="fb-user">maria_p</span><span class="fb-stele">★★★★★</span><span class="fb-data" style="margin-left:0.5rem;">10 Mai 2026</span></div><div class="fb-text">Ana este absolut minunată cu copiii! Ora Poveștilor a fost magică datorită ei. Fiica mea a cerut să venim din nou săptămâna viitoare!</div></div>
+    <div class="card-feedback"><div class="fb-header"><div class="fb-av">IC</div><span class="fb-user">ion_c</span><span class="fb-stele">★★★★★</span><span class="fb-data" style="margin-left:0.5rem;">6 Mai 2026</span></div><div class="fb-text">Foarte dedicată și entuziastă. A făcut atelierul de creație extrem de distractiv pentru copii.</div></div>
+    <div class="card-feedback"><div class="fb-header"><div class="fb-av">EM</div><span class="fb-user">elena_m</span><span class="fb-stele">★★★★☆</span><span class="fb-data" style="margin-left:0.5rem;">29 Apr 2026</span></div><div class="fb-text">Foarte amabilă și răbdătoare. Ne-a ajutat să găsim cărți potrivite pentru băiețelul nostru de 6 ani.</div></div>
+  </div>
+
+  <!-- ═══ ZILE LIBERE ═══ -->
+  <div class="sectiune" id="sec-zile-libere">
+    <p class="page-titlu">Zile Libere</p>
+    <p class="page-sub">Solicită zile libere și urmărește cererile tale</p>
+
+    <div class="card">
+      <div class="card-titlu"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Cerere nouă</div>
+      <div class="form-grid-2">
+        <div class="fc"><label>Data</label><input type="date" id="zi-libera-data"/></div>
+        <div class="fc"><label>Tip</label><select><option>Zi liberă</option><option>Absență motivată</option><option>Urgență personală</option></select></div>
+        <div class="fc full"><label>Motiv</label><textarea placeholder="Descrie motivul cererii tale..."></textarea></div>
+      </div>
+      <button class="btn-primary" style="margin-top:0.5rem;" onclick="trimiteCerere()">Trimite cererea</button>
+    </div>
+
+    <div class="sec-titlu">Cereri recente</div>
+    <div class="card-cerere-vol">
+      <div class="cerere-info"><div class="cerere-titlu">Zi liberă — 20 Mai 2026</div><div class="cerere-detalii">Motiv personal · Depusă pe 10 Mai</div></div>
+      <span class="cerere-status cs-aprobat">✓ Aprobată</span>
+    </div>
+    <div class="card-cerere-vol">
+      <div class="cerere-info"><div class="cerere-titlu">Absență motivată — 3 Aprilie 2026</div><div class="cerere-detalii">Examen universitar · Depusă pe 28 Mar</div></div>
+      <span class="cerere-status cs-aprobat">✓ Aprobată</span>
+    </div>
+    <div class="card-cerere-vol" id="cereri-noi"></div>
+  </div>
+
+  <!-- ═══ LINKURI UTILE ═══ -->
+  <div class="sectiune" id="sec-linkuri">
+    <p class="page-titlu">Linkuri Utile</p>
+    <p class="page-sub">Resurse și instrumente pentru activitatea ta de voluntariat</p>
+
+    <div class="grid-linkuri">
+      <div class="card-link" onclick="window.location.href='/web/idei-eveniment.html'">
+        <div class="link-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <div class="link-info"><div class="link-titlu">Idei de Eveniment</div><div class="link-desc">Propune idei pentru activități și evenimente viitoare</div></div>
+        <svg class="link-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="card-link" onclick="window.location.href='/web/inscriere-organizare.html'">
+        <div class="link-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="link-info"><div class="link-titlu">Înscriere Organizată</div><div class="link-desc">Formularul de înscriere pentru activități organizate</div></div>
+        <svg class="link-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      
+      
+      <div class="card-link" onclick="window.location.href='/web/regulament-voluntari.html'">
+        <div class="link-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="link-info"><div class="link-titlu">Regulament Voluntari</div><div class="link-desc">Regulamentul intern și ghidul de activitate</div></div>
+        <svg class="link-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      
+    </div>
+
+    <div class="card">
+      <div class="card-titlu">Contact rapid</div>
+      <div class="program-row"><span class="prog-data">Coordonator voluntari</span><span class="prog-ore">Maria Ionescu</span><span class="prog-total">hr@aster.ro</span></div>
+      <div class="program-row" style="border:none;"><span class="prog-data">Urgențe</span><span class="prog-ore">021-001-0001</span><span class="prog-total">Corp A</span></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL CERERE TRIMISA -->
+<div class="modal-ov" id="modal-cerere">
+  <div class="modal">
+    <h3>Cerere trimisă ✓</h3>
+    <p>Cererea ta de zi liberă a fost trimisă coordonatorului. Vei primi o notificare când va fi procesată.</p>
+    <div class="modal-btns">
+      <button class="btn-m-ok" onclick="document.getElementById('modal-cerere').classList.remove('viz')">Ok</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function nav(s) {
+  document.querySelectorAll('.sectiune').forEach(x => x.classList.remove('activa'));
+  document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('activ'));
+  const sec = document.getElementById('sec-' + s);
+  if (sec) sec.classList.add('activa');
+  const nb = document.getElementById('nav-' + s);
+  if (nb) nb.classList.add('activ');
+}
+
+function setLuna(btn) {
+  btn.closest('.luna-selector').querySelectorAll('.luna-btn').forEach(b => b.classList.remove('activ'));
+  btn.classList.add('activ');
+  const luni = ['Ian','Feb','Mar','Apr','Mai','Iun'];
+  const idx = luni.indexOf(btn.textContent.trim());
+  if (idx >= 0) { calLuna = idx; calAn = 2026; genereazaCalendarVol(); }
+}
+
+// ── NOTIFICARI ────────────────────────────────────────────────
+function marcheazaCitite() {
+  localStorage.setItem('notif_vol_citite', 'true');
+  const badge = document.querySelector('#nav-notificari .badge');
+  if (badge) badge.style.display = 'none';
+}
+
+function adaugaNotifVol(titlu, text) {
+  const notif = JSON.parse(localStorage.getItem('notif_voluntar') || '[]');
+  notif.unshift({titlu, text, timp: new Date().toLocaleTimeString('ro-RO', {hour:'2-digit',minute:'2-digit'})});
+  localStorage.setItem('notif_voluntar', JSON.stringify(notif.slice(0, 10)));
+  localStorage.removeItem('notif_vol_citite');
+  const badge = document.querySelector('#nav-notificari .badge');
+  if (badge) badge.style.display = 'inline-block';
+}
+
+function incarcaNotificariVol() {
+  const notif = JSON.parse(localStorage.getItem('notif_voluntar') || '[]');
+  const container = document.getElementById('notif-vol-dinamice');
+  if (!container) return;
+  if (notif.length === 0) { container.innerHTML = ''; return; }
+  container.innerHTML = '<div class="sec-titlu" style="margin-top:1rem;">Activitate recenta</div>' + notif.map(n =>
+    '<div style="padding:0.6rem 0;border-bottom:1px solid var(--alb-cald);"><div style="font-weight:500;font-size:0.82rem;">' + n.titlu + '</div><div style="font-size:0.75rem;color:var(--text-secundar);">' + n.text + '</div><div style="font-size:0.68rem;color:var(--text-subtil);">' + n.timp + '</div></div>'
+  ).join('');
+}
+
+// ── CONFIRMA PARTICIPARE ──────────────────────────────────────
+function confirmaParticipare(btn) {
+  const card = btn.closest('.card-ev');
+  const evId = card ? card.dataset.evId || ('ev_' + Date.now()) : ('ev_' + Date.now());
+  const titlu = card ? (card.querySelector('.ev-titlu') ? card.querySelector('.ev-titlu').textContent.replace(/Obligatorie|Cultural|Atelier/g,'').trim() : 'Eveniment') : 'Eveniment';
+  
+  const confirmate = JSON.parse(localStorage.getItem('ev_confirmate_vol') || '[]');
+  if (!confirmate.includes(evId)) {
+    confirmate.push(evId);
+    localStorage.setItem('ev_confirmate_vol', JSON.stringify(confirmate));
+  }
+  
+  btn.textContent = '\u2713 Confirmat';
+  btn.classList.add('confirmat');
+  btn.onclick = null;
+  
+  const oreNoi = parseInt(localStorage.getItem('ore_lucrate_vol') || '58') + 4;
+  localStorage.setItem('ore_lucrate_vol', String(oreNoi));
+  actualizeazaStatistici();
+  adaugaNotifVol('Participare confirmata', 'Ai confirmat participarea la "' + titlu + '".');
+}
+
+function incarcaStareaEvenimente() {
+  const confirmate = JSON.parse(localStorage.getItem('ev_confirmate_vol') || '[]');
+  // Carduri cu data-ev-id
+  document.querySelectorAll('.card-ev[data-ev-id]').forEach(function(card) {
+    if (confirmate.includes(card.dataset.evId)) {
+      const btn = card.querySelector('.btn-ev');
+      if (btn && !btn.classList.contains('confirmat')) {
+        btn.textContent = '\u2713 Confirmat';
+        btn.classList.add('confirmat');
+        btn.onclick = null;
+      }
+    }
+  });
+  // Butoane cu data-ev-id direct (notificari)
+  document.querySelectorAll('button[data-ev-id]').forEach(function(btn) {
+    if (confirmate.includes(btn.dataset.evId) && !btn.classList.contains('confirmat')) {
+      btn.textContent = '\u2713 Confirmat';
+      btn.classList.add('confirmat');
+      btn.onclick = null;
+    }
+  });
+}
+
+// ── STATISTICI ────────────────────────────────────────────────
+function actualizeazaStatistici() {
+  const ore = parseInt(localStorage.getItem('ore_lucrate_vol') || '58');
+  document.querySelectorAll('.stat-nr-vol').forEach(function(el, i) {
+    if (i === 0) el.textContent = ore;
+  });
+  const bara = document.getElementById('bara-ore');
+  const label = document.getElementById('label-ore');
+  const procent = Math.min(Math.round(ore / 20 * 100), 100);
+  if (bara) bara.style.width = procent + '%';
+  if (label) label.textContent = ore + ' / 20 ore (' + procent + '%)';
+}
+
+// ── CALENDAR ─────────────────────────────────────────────────
+let calLuna = 4;
+let calAn = 2026;
+const LUNI_CAL = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];
+const ZILE_CAL = ['Lu','Ma','Mi','Jo','Vi','Sa','Du'];
+const ZILE_LUCRATE = {'2026-4':[5,6,9,12,13,22,26,27],'2026-3':[1,2,8,9,15,16,22,23],'2026-2':[3,4,10,11,17,18]};
+
+function genereazaCalendarVol() {
+  const grid = document.getElementById('cal-grid-program');
+  if (!grid) return;
+  const titlu = document.getElementById('cal-titlu-vol');
+  if (titlu) titlu.textContent = LUNI_CAL[calLuna] + ' ' + calAn;
+  const azi = new Date();
+  const primaZi = new Date(calAn, calLuna, 1).getDay();
+  const offset = primaZi === 0 ? 6 : primaZi - 1;
+  const zileLuna = new Date(calAn, calLuna + 1, 0).getDate();
+  const cheie = calAn + '-' + calLuna;
+  const zileLucrate = ZILE_LUCRATE[cheie] || [];
+  let html = ZILE_CAL.map(function(z) { return '<div class="cal-zi-hdr">' + z + '</div>'; }).join('');
+  for (let i = 0; i < offset; i++) html += '<div class="cal-zi liber"></div>';
+  for (let z = 1; z <= zileLuna; z++) {
+    const eAzi = z === azi.getDate() && calLuna === azi.getMonth() && calAn === azi.getFullYear();
+    const eLucrat = zileLucrate.includes(z);
+    const cls = eAzi ? 'azi' : eLucrat ? 'lucrat' : 'liber';
+    const dot = eLucrat ? '<div class="dot"></div>' : '';
+    const onclick = eLucrat ? ' onclick="arataProgramZi(' + z + ')"' : '';
+    html += '<div class="cal-zi ' + cls + '"' + onclick + '>' + z + dot + '</div>';
+  }
+  grid.innerHTML = html;
+  const popup = document.getElementById('popup-cal-vol');
+  if (popup) popup.style.display = 'none';
+}
+
+function navLunaVol(dir) {
+  calLuna += dir;
+  if (calLuna > 11) { calLuna = 0; calAn++; }
+  if (calLuna < 0) { calLuna = 11; calAn--; }
+  genereazaCalendarVol();
+}
+
+function arataProgramZi(zi) {
+  const popup = document.getElementById('popup-cal-vol');
+  if (popup) {
+    popup.textContent = zi + ' ' + LUNI_CAL[calLuna] + ' - Activitate Corp F - 09:00-13:00';
+    popup.style.display = 'block';
+  }
+}
+
+// ── CONTRACT ─────────────────────────────────────────────────
+function descarcaContract() {
+  const nume = localStorage.getItem('nume_voluntar') || 'Voluntar';
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>Contract Voluntariat - ${nume}</title>
+  <style>
+    body{font-family:Arial,sans-serif;max-width:700px;margin:40px auto;color:#2d1f4e;font-size:13px;line-height:1.6;}
+    h1{text-align:center;font-size:18px;margin-bottom:4px;}
+    .sub{text-align:center;color:#7a6a9a;margin-bottom:30px;font-size:12px;}
+    .sect{margin-bottom:20px;}
+    .sect h2{font-size:13px;border-bottom:1px solid #d4c5ed;padding-bottom:4px;margin-bottom:8px;color:#6b4fa0;}
+    .rand{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #faf8fd;}
+    .label{color:#7a6a9a;}.val{font-weight:bold;}
+    .status{background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:10px;}
+    .footer{text-align:center;margin-top:40px;padding-top:20px;border-top:1px solid #d4c5ed;font-size:11px;color:#b0a0cc;}
+    .semnaturi{display:flex;justify-content:space-between;margin-top:40px;}
+    .semnatura{text-align:center;}
+    .linie{width:180px;border-top:1px solid #2d1f4e;margin:30px auto 4px;}
+  </style></head><body>
+  <h1>CONTRACT DE VOLUNTARIAT</h1>
+  <div class="sub">Biblioteca Aster · Suceava · Nr. CV-2025/047</div>
+  <div class="sect"><h2>Date voluntar</h2>
+    <div class="rand"><span class="label">Voluntar</span><span class="val">${nume}</span></div>
+    <div class="rand"><span class="label">Corp de activitate</span><span class="val">Corp F — Activități pentru Copii</span></div>
+  </div>
+  <div class="sect"><h2>Detalii contract</h2>
+    <div class="rand"><span class="label">Organizație</span><span class="val">Biblioteca Aster</span></div>
+    <div class="rand"><span class="label">Data început</span><span class="val">01.10.2025</span></div>
+    <div class="rand"><span class="label">Data sfârșit</span><span class="val">30.09.2026</span></div>
+    <div class="rand"><span class="label">Ore minime / lună</span><span class="val">20 ore</span></div>
+    <div class="rand"><span class="label">Status</span><span class="val"><span class="status">Activ</span></span></div>
+  </div>
+  <div class="sect"><h2>Clauze principale</h2>
+    <p>Voluntarul se angajează să desfășoare activitățile stabilite de comun acord, în conformitate cu Legea Nr. 78/2014 privind reglementarea activității de voluntariat în România.</p>
+  </div>
+  <div class="semnaturi">
+    <div class="semnatura"><div class="linie"></div><div>Voluntar</div><div style="font-size:11px;color:#7a6a9a;">${nume}</div></div>
+    <div class="semnatura"><div class="linie"></div><div>Reprezentant Biblioteca Aster</div><div style="font-size:11px;color:#7a6a9a;">Director</div></div>
+  </div>
+  <div class="footer">Biblioteca Aster · Suceava · Document generat electronic</div>
+  <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`);
+  win.document.close();
+  adaugaNotifVol('Contract descarcat', 'Contractul tau de voluntariat a fost descarcat.');
+}
+
+// ── ZILE LIBERE ───────────────────────────────────────────────
+function trimiteCerere() {
+  const data = document.getElementById('zi-libera-data').value;
+  if (!data) { alert('Selecteaza o data!'); return; }
+  const motiv = document.getElementById('zi-libera-motiv') ? document.getElementById('zi-libera-motiv').value : '';
+  const cereri = JSON.parse(localStorage.getItem('cereri_zile_libere') || '[]');
+  cereri.push({data: data, motiv: motiv, status: 'In asteptare', id: Date.now()});
+  localStorage.setItem('cereri_zile_libere', JSON.stringify(cereri));
+  document.getElementById('modal-cerere').classList.add('viz');
+  incarcaCereriZileLibere();
+  adaugaNotifVol('Cerere trimisa', 'Cerere de zi libera pentru ' + data + ' trimisa coordonatorului.');
+}
+
+function incarcaCereriZileLibere() {
+  const cereri = JSON.parse(localStorage.getItem('cereri_zile_libere') || '[]');
+  const container = document.getElementById('cereri-noi');
+  if (!container || cereri.length === 0) return;
+  container.innerHTML = cereri.map(function(c) {
+    return '<div class="card-cerere-vol"><div class="cerere-info"><div class="cerere-titlu">Zi libera ' + c.data + '</div></div><span class="cerere-status status-asteptare">' + c.status + '</span></div>';
+  }).join('');
+}
+
+// ── LINKURI ───────────────────────────────────────────────────
+function deschideLink(tip) {
+  const m = document.getElementById('modal-' + tip.replace('-','_'));
+  if (m) m.classList.add('viz');
+}
+
+// ── MODAL CLOSE ───────────────────────────────────────────────
+document.querySelectorAll('.modal-ov').forEach(function(m) {
+  m.addEventListener('click', function(e) { if (e.target === m) m.classList.remove('viz'); });
+});
+
+// ── INIT ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  const nm = localStorage.getItem('nume_voluntar');
+  const em = localStorage.getItem('email_voluntar');
+  if (nm) {
+    const el = document.getElementById('sidebar-nm');
+    if (el) el.textContent = nm;
+    const initiale = nm.split(' ').map(function(x) { return x[0]; }).join('').substring(0,2).toUpperCase();
+    const av = document.getElementById('sidebar-av');
+    if (av) av.textContent = initiale;
+  }
+  if (em) {
+    const el = document.getElementById('sidebar-email');
+    if (el) el.textContent = em;
+  }
+  
+  genereazaCalendarVol();
+  actualizeazaStatistici();
+  incarcaNotificariVol();
+  incarcaCereriZileLibere();
+  
+  // Adauga nav pentru calendar
+  const card = document.querySelector('#sec-program .card');
+  if (card) {
+    const navDiv = document.createElement('div');
+    navDiv.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;';
+    navDiv.innerHTML = '<button onclick="navLunaVol(-1)" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--text-subtil);">\u2039</button><span id="cal-titlu-vol" style="font-size:0.82rem;font-weight:500;">Mai 2026</span><button onclick="navLunaVol(1)" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--text-subtil);">\u203a</button>';
+    const grid = document.getElementById('cal-grid-program');
+    if (grid) card.insertBefore(navDiv, grid);
+    
+    const popup = document.createElement('div');
+    popup.id = 'popup-cal-vol';
+    popup.style.cssText = 'display:none;margin-top:0.5rem;padding:0.5rem 0.75rem;background:var(--mov-deschis);border-radius:8px;font-size:0.78rem;color:var(--mov-profund);';
+    card.appendChild(popup);
+  }
+  
+  // Adauga id-uri la carduri evenimente
+  const evIds = ['ev1','ev2','ev3','ev4','ev5','ev6','ev7','ev8','ev9','ev10'];
+  document.querySelectorAll('.card-ev').forEach(function(card, i) {
+    if (evIds[i]) card.dataset.evId = evIds[i];
+  });
+  incarcaStareaEvenimente();
+  actualizeazaEvenimenteParticipate();
+  
+  // Adauga container notificari dinamice
+  const secNotif = document.getElementById('sec-notificari');
+  if (secNotif && !document.getElementById('notif-vol-dinamice')) {
+    const div = document.createElement('div');
+    div.id = 'notif-vol-dinamice';
+    secNotif.appendChild(div);
+  }
+  
+  // Citite badge
+  const citite = localStorage.getItem('notif_vol_citite');
+  const badge = document.querySelector('#nav-notificari .badge');
+  const notif = JSON.parse(localStorage.getItem('notif_voluntar') || '[]');
+  if (badge && notif.length > 0 && !citite) badge.style.display = 'inline-block';
+});
+</script>
+
+<!-- MODAL IDEI -->
+<div class="modal-ov" id="modal-idei">
+  <div class="modal">
+    <h3>Idei de Eveniment</h3>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.75rem;">
+      <div><label style="font-size:0.75rem;color:var(--text-subtil);">Titlu</label><br><input type="text" id="idee-titlu" style="width:100%;padding:0.5rem;border:1px solid var(--lila);border-radius:8px;font-family:inherit;font-size:0.85rem;" placeholder="Titlul ideii tale..."></div>
+      <div><label style="font-size:0.75rem;color:var(--text-subtil);">Descriere</label><br><textarea id="idee-desc" style="width:100%;padding:0.5rem;border:1px solid var(--lila);border-radius:8px;font-family:inherit;font-size:0.85rem;" rows="3" placeholder="Descrie ideea..."></textarea></div>
+    </div>
+    <div class="modal-btns" style="margin-top:1rem;">
+      <button class="btn-m-ok" onclick="trimiteIdee()">Trimite</button>
+      <button class="btn-m-cancel" onclick="document.getElementById('modal-idei').classList.remove('viz')">Anuleaza</button>
+    </div>
+    <div id="idee-succes" style="display:none;color:#2e7d32;font-size:0.82rem;margin-top:0.5rem;">Ideea a fost trimisa!</div>
+  </div>
+</div>
+
+<!-- MODAL PROGRAM COLEGI -->
+<div class="modal-ov" id="modal-program_colegi">
+  <div class="modal" style="max-width:500px;">
+    <h3>Program Colegi Voluntari</h3>
+    <table style="width:100%;font-size:0.82rem;border-collapse:collapse;margin-top:0.75rem;">
+      <tr style="background:var(--mov-deschis);"><th style="padding:0.4rem;text-align:left;">Voluntar</th><th style="padding:0.4rem;">Lu</th><th style="padding:0.4rem;">Ma</th><th style="padding:0.4rem;">Mi</th><th style="padding:0.4rem;">Jo</th><th style="padding:0.4rem;">Vi</th></tr>
+      <tr><td style="padding:0.4rem;">Ana V.</td><td style="padding:0.4rem;text-align:center;">09-13</td><td style="padding:0.4rem;text-align:center;">—</td><td style="padding:0.4rem;text-align:center;">09-13</td><td style="padding:0.4rem;text-align:center;">—</td><td style="padding:0.4rem;text-align:center;">—</td></tr>
+      <tr style="background:var(--alb-cald);"><td style="padding:0.4rem;">Radu M.</td><td style="padding:0.4rem;text-align:center;">14-18</td><td style="padding:0.4rem;text-align:center;">09-13</td><td style="padding:0.4rem;text-align:center;">—</td><td style="padding:0.4rem;text-align:center;">14-18</td><td style="padding:0.4rem;text-align:center;">—</td></tr>
+      <tr><td style="padding:0.4rem;">Ioana P.</td><td style="padding:0.4rem;text-align:center;">—</td><td style="padding:0.4rem;text-align:center;">14-18</td><td style="padding:0.4rem;text-align:center;">14-18</td><td style="padding:0.4rem;text-align:center;">—</td><td style="padding:0.4rem;text-align:center;">09-13</td></tr>
+    </table>
+    <div class="modal-btns" style="margin-top:1rem;"><button class="btn-m-ok" onclick="document.getElementById('modal-program_colegi').classList.remove('viz')">Inchide</button></div>
+  </div>
+</div>
+
+<!-- MODAL CONTACT -->
+<div class="modal-ov" id="modal-contact">
+  <div class="modal">
+    <h3>Contact Coordonator</h3>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.75rem;">
+      <div><label style="font-size:0.75rem;color:var(--text-subtil);">Subiect</label><br><input type="text" id="contact-subiect" style="width:100%;padding:0.5rem;border:1px solid var(--lila);border-radius:8px;font-family:inherit;font-size:0.85rem;" placeholder="Subiect..."></div>
+      <div><label style="font-size:0.75rem;color:var(--text-subtil);">Mesaj</label><br><textarea id="contact-mesaj" style="width:100%;padding:0.5rem;border:1px solid var(--lila);border-radius:8px;font-family:inherit;font-size:0.85rem;" rows="4" placeholder="Mesajul tau..."></textarea></div>
+    </div>
+    <div class="modal-btns" style="margin-top:1rem;">
+      <button class="btn-m-ok" onclick="trimiteContact()">Trimite</button>
+      <button class="btn-m-cancel" onclick="document.getElementById('modal-contact').classList.remove('viz')">Anuleaza</button>
+    </div>
+    <div id="contact-succes" style="display:none;color:#2e7d32;font-size:0.82rem;margin-top:0.5rem;">Mesaj trimis coordonatorului!</div>
+  </div>
+</div>
+
+<script>
+function trimiteIdee() {
+  const titlu = document.getElementById('idee-titlu').value.trim();
+  const desc = document.getElementById('idee-desc').value.trim();
+  if (!titlu) { alert('Adauga un titlu!'); return; }
+  document.getElementById('idee-succes').style.display = 'block';
+  document.getElementById('idee-titlu').value = '';
+  document.getElementById('idee-desc').value = '';
+  adaugaNotifVol('Idee trimisa', '"' + titlu + '" trimisa coordonatorului.');
+  setTimeout(function() {
+    document.getElementById('idee-succes').style.display = 'none';
+    document.getElementById('modal-idei').classList.remove('viz');
+  }, 1500);
+}
+function trimiteContact() {
+  const s = document.getElementById('contact-subiect').value.trim();
+  const m = document.getElementById('contact-mesaj').value.trim();
+  if (!s || !m) { alert('Completeaza toate campurile!'); return; }
+  document.getElementById('contact-succes').style.display = 'block';
+  adaugaNotifVol('Mesaj trimis', '"' + s + '" trimis coordonatorului.');
+  setTimeout(function() {
+    document.getElementById('contact-succes').style.display = 'none';
+    document.getElementById('modal-contact').classList.remove('viz');
+    document.getElementById('contact-subiect').value = '';
+    document.getElementById('contact-mesaj').value = '';
+  }, 1500);
+}
+</script>
+
+</body>
+</html>

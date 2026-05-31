@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regulament · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mov-deschis: #e8e0f5;
+  --mov-pastel: #c9b8e8;
+  --mov-mediu: #9b7dc8;
+  --mov-inchis: #6b4fa0;
+  --mov-profund: #4a3270;
+  --lila: #d4c5ed;
+  --alb-cald: #faf8fd;
+  --text-principal: #2d1f4e;
+  --text-secundar: #7a6a9a;
+  --text-subtil: #b0a0cc;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'DM Sans',sans-serif;
+  background:var(--alb-cald);
+  color:var(--text-principal);
+  min-height:100vh;
+}
+
+/* HEADER */
+.header {
+  height:60px; background:white; border-bottom:1px solid var(--lila);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 1.5rem; position:sticky; top:0; z-index:100;
+}
+.logo { display:flex; align-items:center; gap:0.6rem; text-decoration:none; }
+.logo-nume { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; color:var(--mov-profund); }
+.logo svg { width:28px; height:28px; }
+.header-btns { display:flex; gap:0.6rem; }
+.btn-print, .btn-download {
+  display:flex; align-items:center; gap:0.4rem;
+  padding:0.45rem 1rem; border-radius:20px; font-family:'DM Sans',sans-serif;
+  font-size:0.8rem; cursor:pointer; border:none; transition:all 0.2s;
+}
+.btn-print { background:var(--mov-deschis); color:var(--mov-inchis); }
+.btn-print:hover { background:var(--mov-pastel); }
+.btn-download { background:var(--mov-inchis); color:white; }
+.btn-download:hover { background:var(--mov-profund); }
+.btn-print svg, .btn-download svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+
+/* CONTENT */
+.page-wrapper {
+  max-width:760px; margin:0 auto; padding:2.5rem 1.5rem 4rem;
+}
+.doc-header {
+  text-align:center; margin-bottom:2.5rem; padding-bottom:2rem;
+  border-bottom:2px solid var(--lila);
+}
+.doc-logo { font-size:2rem; margin-bottom:0.5rem; }
+.doc-titlu {
+  font-family:'Cormorant Garamond',serif; font-size:1.8rem;
+  font-weight:600; color:var(--mov-profund); margin-bottom:0.4rem;
+}
+.doc-subtitlu { font-size:0.82rem; color:var(--text-subtil); }
+
+.sectiune {
+  margin-bottom:2rem;
+}
+.sectiune-titlu {
+  font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600;
+  color:var(--mov-inchis); margin-bottom:1rem; padding-bottom:0.4rem;
+  border-bottom:1px solid var(--mov-deschis);
+  display:flex; align-items:center; gap:0.5rem;
+}
+.sectiune-titlu .nr {
+  width:24px; height:24px; border-radius:50%; background:var(--mov-inchis);
+  color:white; font-size:0.72rem; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-family:'DM Sans',sans-serif;
+}
+.articol {
+  margin-bottom:0.75rem; padding-left:1.2rem;
+  font-size:0.88rem; line-height:1.7; color:var(--text-principal);
+  position:relative;
+}
+.articol::before {
+  content:''; position:absolute; left:0; top:0.65rem;
+  width:5px; height:5px; border-radius:50%; background:var(--mov-pastel);
+}
+.articol strong { color:var(--mov-inchis); font-weight:500; }
+
+.doc-footer {
+  margin-top:2.5rem; padding-top:1.5rem; border-top:2px solid var(--lila);
+  text-align:center;
+}
+.doc-footer p { font-size:0.82rem; color:var(--text-secundar); line-height:1.8; }
+.doc-footer strong { color:var(--mov-inchis); }
+
+.inapoi { 
+  display:inline-flex; align-items:center; gap:0.4rem;
+  font-size:0.8rem; color:var(--text-secundar); text-decoration:none;
+  margin-bottom:1.5rem; transition:color 0.2s;
+}
+.inapoi:hover { color:var(--mov-inchis); }
+.inapoi svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+
+@media print {
+  .header { display:none; }
+  .inapoi { display:none; }
+  body { background:white; }
+  .page-wrapper { padding:1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="/web/despre.html" class="logo">
+    <svg viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="14" fill="#e8e0f5"/>
+      <path d="M10 22V10l6 3 6-3v12l-6-3-6 3z" fill="#6b4fa0"/>
+    </svg>
+    <span class="logo-nume">Biblioteca Aster</span>
+  </a>
+  <div class="header-btns">
+    <button class="btn-print" onclick="window.print()">
+      <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Printează
+    </button>
+    <button class="btn-download" onclick="descarca()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      Descarcă
+    </button>
+  </div>
+</header>
+
+<div class="page-wrapper">
+  <a onclick="history.back()" style="cursor:pointer;" class="inapoi">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Înapoi 
+  </a>
+
+  <div class="doc-header">
+    <div class="doc-logo">📚</div>
+    <div class="doc-titlu">Regulament pentru Utilizatori</div>
+    <div class="doc-subtitlu">Biblioteca Aster · În vigoare de la 16 aprilie 2026</div>
+  </div>
+
+  <div class="sectiune">
+    <div class="sectiune-titlu"><span class="nr">1</span> Accesul și Înscrierea</div>
+    <div class="articol"><strong>1.1.</strong> Accesul la serviciile Bibliotecii se face în baza Permisului de acces, eliberat în urma semnării Contractului de utilizare.</div>
+    <div class="articol"><strong>1.2.</strong> Pentru înscriere, utilizatorul trebuie să prezinte un act de identitate valid (BI/CI/Pașaport).</div>
+    <div class="articol"><strong>1.3.</strong> Înscrierea minorilor sub 14 ani se face pe baza actului de identitate al unuia dintre părinți sau tutori.</div>
+    <div class="articol"><strong>1.4.</strong> Permisul de acces este valabil în toate filialele Bibliotecii timp de 5 ani de la data înscrierii.</div>
+  </div>
+
+  <div class="sectiune">
+    <div class="sectiune-titlu"><span class="nr">2</span> Servicii Oferite</div>
+    <div class="articol"><strong>2.1.</strong> Serviciile de bază sunt gratuite: accesul la colecții, împrumutul la domiciliu, consultarea la sală și accesul la internet.</div>
+    <div class="articol"><strong>2.2.</strong> Utilizatorii au acces la catalogul electronic al Bibliotecii și la programele culturale organizate (ateliere, cursuri, lansări).</div>
+  </div>
+
+  <div class="sectiune">
+    <div class="sectiune-titlu"><span class="nr">3</span> Reguli de Împrumut și Consultare</div>
+    <div class="articol"><strong>3.1.</strong> Se pot împrumuta maxim 6 unități biblioteconomice (cărți, filme, muzică) pentru o perioadă de 21 de zile calendaristice.</div>
+    <div class="articol"><strong>3.2.</strong> Termenul de restituire poate fi prelungit la cerere, dacă pentru respectiva unitate nu există o rezervare activă.</div>
+    <div class="articol"><strong>3.3.</strong> Rezervarea unui document este valabilă maxim 3 zile lucrătoare.</div>
+    <div class="articol"><strong>3.4.</strong> Este interzisă adnotarea, sublinierea, îndoirea sau decuparea paginilor din publicațiile consultate ori împrumutate.</div>
+  </div>
+
+  <div class="sectiune">
+    <div class="sectiune-titlu"><span class="nr">4</span> Reguli de Conduită</div>
+    <div class="articol"><strong>4.1.</strong> Accesul este permis persoanelor care au o ținută decentă și un comportament civilizat față de personal și ceilalți vizitatori.</div>
+    <div class="articol"><strong>4.2.</strong> Consumul de alimente și băuturi este permis doar în spațiile special amenajate și marcate corespunzător.</div>
+    <div class="articol"><strong>4.3.</strong> Folosirea telefoanelor mobile este permisă doar dacă nu deranjează ordinea și liniștea publică din sălile de lectură.</div>
+  </div>
+
+  <div class="sectiune">
+    <div class="sectiune-titlu"><span class="nr">5</span> Sancțiuni și Responsabilități</div>
+    <div class="articol"><strong>5.1.</strong> Depășirea termenului de restituire se sancționează conform procedurilor interne, putând duce la suspendarea permisului de acces.</div>
+    <div class="articol"><strong>5.2.</strong> Sustragerea de documente atrage retragerea definitivă a permisului și sesizarea organelor de poliție.</div>
+    <div class="articol"><strong>5.3.</strong> Distrugerea sau pierderea documentelor se sancționează prin recuperarea fizică a acestora sau achitarea valorii de inventar.</div>
+  </div>
+
+  <div class="doc-footer">
+    <p>Prezentul regulament este în vigoare de la <strong>16 aprilie 2026</strong>.<br>
+    Biblioteca Aster · Toate drepturile rezervate.</p>
+  </div>
+</div>
+
+<script>
+function descarca() {
+  const continut = document.querySelector('.page-wrapper').innerText;
+  const blob = new Blob([continut], {type: 'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Regulament_Biblioteca_Aster.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+
+<script>
+(function() {
+  const prenume = localStorage.getItem('prenume_user');
+  const nume = localStorage.getItem('nume_user');
+  if (prenume) {
+    const btn = document.getElementById('btn-auth');
+    if (btn) {
+      const initiale = (prenume[0] + (nume?.[0]||'')).toUpperCase();
+      btn.outerHTML = `
+        <div style="position:relative;margin-left:1rem;" id="user-menu-wrap">
+          <div style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;" onclick="toggleUserMenu()">
+            <span style="font-size:0.82rem;color:#7a6a9a;">Bun venit, <strong style="color:#6b4fa0;">${prenume}</strong></span>
+            <div style="width:34px;height:34px;border-radius:50%;background:#6b4fa0;color:white;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:600;">${initiale}</div>
+          </div>
+          <div id="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:white;border:1px solid #d4c5ed;border-radius:12px;padding:0.5rem;min-width:160px;box-shadow:0 8px 24px rgba(107,79,160,0.12);z-index:200;">
+            <a href="/web/dashboard-client.html" style="display:block;padding:0.5rem 0.75rem;font-size:0.82rem;color:#2d1f4e;text-decoration:none;border-radius:8px;" onmouseover="this.style.background='#e8e0f5'" onmouseout="this.style.background=''">📚 Dashboard</a>
+            <a href="/web/profil.html" style="display:block;padding:0.5rem 0.75rem;font-size:0.82rem;color:#2d1f4e;text-decoration:none;border-radius:8px;" onmouseover="this.style.background='#e8e0f5'" onmouseout="this.style.background=''">👤 Profilul meu</a>
+            <div style="border-top:1px solid #e8e0f5;margin:0.4rem 0;"></div>
+            <button onclick="localStorage.clear();location.href='/web/primapagina.html';" style="display:block;width:100%;text-align:left;padding:0.5rem 0.75rem;font-size:0.82rem;color:#880e4f;background:none;border:none;cursor:pointer;border-radius:8px;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='#fce4ec'" onmouseout="this.style.background=''">🚪 Deconectare</button>
+          </div>
+        </div>`;
+    }
+  }
+  
+  function toggleUserMenu() {
+    const dd = document.getElementById('user-dropdown');
+    if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+  }
+  window.toggleUserMenu = toggleUserMenu;
+  
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('user-menu-wrap');
+    const dd = document.getElementById('user-dropdown');
+    if (wrap && dd && !wrap.contains(e.target)) dd.style.display = 'none';
+  });
+})();
+</script>
+</body>
+</html>

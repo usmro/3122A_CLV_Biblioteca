@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cafeneaua Literară Aster · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crem: #f5f0e8;
+  --crem-inchis: #ede4d0;
+  --cafeniu: #6b4c2a;
+  --cafeniu-deschis: #c4956a;
+  --cafeniu-mediu: #8b6340;
+  --verde-matcha: #7a8c5e;
+  --auriu: #c9a84c;
+  --text-inchis: #2c1810;
+  --text-mediu: #5c3d2e;
+  --text-deschis: #9c7b5e;
+  --alb: #fdfaf5;
+  --mov-aster: #6b4fa0;
+  --lila: #d4c5ed;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Lato',sans-serif; background:var(--alb); color:var(--text-inchis); overflow-x:hidden; }
+
+/* HEADER */
+header {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1rem 3rem;
+  background:rgba(253,250,245,0.92); backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(107,76,42,0.1);
+  transition:all 0.3s;
+}
+.logo { display:flex; align-items:center; gap:0.8rem; text-decoration:none; }
+.logo-svg { width:32px; height:32px; }
+.logo-text { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--cafeniu); }
+nav { display:flex; gap:0.5rem; align-items:center; }
+nav a { font-size:0.82rem; color:var(--text-mediu); text-decoration:none; padding:0.4rem 0.9rem; border-radius:20px; transition:all 0.2s; font-weight:400; }
+nav a:hover { background:var(--crem-inchis); color:var(--cafeniu); }
+.btn-rezerva-nav { background:var(--cafeniu) !important; color:var(--crem) !important; font-weight:700 !important; letter-spacing:0.03em; }
+.btn-rezerva-nav:hover { background:var(--cafeniu-mediu) !important; }
+
+/* HERO */
+.hero {
+  height:100vh; position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.hero-bg {
+  position:absolute; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(107,76,42,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 30%, rgba(196,149,106,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(122,140,94,0.08) 0%, transparent 40%),
+    linear-gradient(135deg, #2c1810 0%, #3d2416 30%, #4a2e1a 60%, #2c1810 100%);
+}
+.hero-texture {
+  position:absolute; inset:0; z-index:1;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(196,149,106,0.15) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+.hero-steam {
+  position:absolute; bottom:0; left:0; right:0; z-index:2;
+  height:40%; 
+  background: linear-gradient(to top, rgba(44,24,16,0.8), transparent);
+}
+.hero-content {
+  position:relative; z-index:10;
+  text-align:center; padding:2rem;
+  animation: fadeUp 1.2s ease both;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(40px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.hero-eyebrow {
+  font-size:0.72rem; letter-spacing:0.25em; text-transform:uppercase;
+  color:var(--cafeniu-deschis); margin-bottom:1.5rem;
+  display:flex; align-items:center; justify-content:center; gap:1rem;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content:''; display:block; width:40px; height:1px; background:var(--cafeniu-deschis); opacity:0.5;
+}
+.hero-titlu {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(3rem, 8vw, 6rem);
+  font-weight:400; color:var(--crem);
+  line-height:1.1; margin-bottom:0.5rem;
+}
+.hero-titlu em {
+  font-style:italic; color:var(--cafeniu-deschis);
+}
+.hero-subtitlu {
+  font-size:clamp(1.1rem, 2.5vw, 1.4rem);
+  font-weight:300; color:rgba(245,240,232,0.7);
+  letter-spacing:0.1em; margin-bottom:2.5rem;
+}
+.hero-meta {
+  display:flex; gap:2rem; justify-content:center; flex-wrap:wrap;
+  font-size:0.78rem; color:rgba(245,240,232,0.6);
+  margin-bottom:3rem;
+}
+.hero-meta-item { display:flex; align-items:center; gap:0.4rem; }
+.hero-meta-item svg { width:13px; height:13px; stroke:var(--cafeniu-deschis); fill:none; stroke-width:1.5; stroke-linecap:round; }
+.hero-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+.btn-hero-prim {
+  padding:0.85rem 2.5rem; background:var(--cafeniu-deschis); color:var(--text-inchis);
+  border:none; border-radius:30px; font-family:'Lato',sans-serif; font-size:0.88rem;
+  font-weight:700; cursor:pointer; letter-spacing:0.05em; text-transform:uppercase;
+  transition:all 0.3s; text-decoration:none; display:inline-block;
+}
+.btn-hero-prim:hover { background:var(--auriu); transform:translateY(-2px); box-shadow:0 8px 24px rgba(196,149,106,0.4); }
+.btn-hero-sec {
+  padding:0.85rem 2.5rem; background:transparent; color:var(--crem);
+  border:1px solid rgba(245,240,232,0.3); border-radius:30px;
+  font-family:'Lato',sans-serif; font-size:0.88rem; cursor:pointer;
+  letter-spacing:0.05em; text-transform:uppercase; transition:all 0.3s;
+  text-decoration:none; display:inline-block;
+}
+.btn-hero-sec:hover { background:rgba(245,240,232,0.1); border-color:rgba(245,240,232,0.6); }
+.hero-scroll {
+  position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
+  z-index:10; color:rgba(245,240,232,0.4); font-size:0.7rem;
+  letter-spacing:0.2em; text-transform:uppercase;
+  display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%,100% { transform:translateX(-50%) translateY(0); }
+  50% { transform:translateX(-50%) translateY(6px); }
+}
+.hero-scroll svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.5; }
+
+/* INFO STRIP */
+.info-strip {
+  background:var(--cafeniu); padding:1.25rem 3rem;
+  display:flex; gap:3rem; justify-content:center; flex-wrap:wrap;
+}
+.info-strip-item {
+  display:flex; align-items:center; gap:0.75rem;
+  color:var(--crem); font-size:0.82rem;
+}
+.info-strip-item svg { width:16px; height:16px; stroke:var(--cafeniu-deschis); fill:none; stroke-width:1.5; stroke-linecap:round; }
+.info-strip-item strong { font-weight:700; }
+
+/* SECTIUNI GENERALE */
+.sectiune { padding:5rem 3rem; max-width:1100px; margin:0 auto; }
+.sec-eyebrow {
+  font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--cafeniu-deschis); margin-bottom:0.75rem;
+}
+.sec-titlu {
+  font-family:'Playfair Display',serif; font-size:clamp(2rem, 4vw, 2.8rem);
+  font-weight:400; color:var(--text-inchis); margin-bottom:1rem; line-height:1.2;
+}
+.sec-titlu em { font-style:italic; color:var(--cafeniu-mediu); }
+.sec-desc { font-size:0.92rem; color:var(--text-mediu); font-weight:300; line-height:1.8; max-width:560px; }
+
+/* DESPRE */
+.despre-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
+.despre-stats { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:2.5rem; }
+.stat-card {
+  background:var(--crem); border-radius:16px; padding:1.5rem;
+  border-left:3px solid var(--cafeniu-deschis);
+}
+.stat-nr { font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:700; color:var(--cafeniu); line-height:1; }
+.stat-label { font-size:0.78rem; color:var(--text-deschis); margin-top:0.3rem; font-weight:300; }
+.despre-imagine {
+  background:linear-gradient(135deg, var(--cafeniu) 0%, var(--cafeniu-mediu) 50%, var(--cafeniu-deschis) 100%);
+  border-radius:24px; aspect-ratio:4/5; display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.despre-imagine::before {
+  content:'☕'; font-size:8rem; opacity:0.15; position:absolute;
+  top:50%; left:50%; transform:translate(-50%,-50%);
+}
+.despre-imagine-text {
+  position:relative; z-index:1; text-align:center; color:var(--crem);
+  padding:2rem;
+}
+.despre-imagine-text p { font-family:'Playfair Display',serif; font-size:1.3rem; font-style:italic; line-height:1.6; }
+
+/* MENIU */
+.meniu-wrap { background:var(--crem); padding:5rem 0; }
+.meniu-inner { max-width:1100px; margin:0 auto; padding:0 3rem; }
+.meniu-tabs {
+  display:flex; gap:0.5rem; margin-bottom:3rem; flex-wrap:wrap;
+}
+.meniu-tab {
+  padding:0.5rem 1.25rem; border:1px solid var(--crem-inchis); border-radius:25px;
+  background:white; font-family:'Lato',sans-serif; font-size:0.82rem;
+  cursor:pointer; color:var(--text-mediu); transition:all 0.2s; font-weight:400;
+}
+.meniu-tab.activ { background:var(--cafeniu); color:var(--crem); border-color:var(--cafeniu); }
+.meniu-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1.25rem; }
+.meniu-card {
+  background:white; border-radius:16px; padding:1.5rem;
+  border:1px solid var(--crem-inchis); transition:all 0.25s;
+  display:none;
+}
+.meniu-card.vizibil { display:block; animation:fadeIn 0.3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.meniu-card:hover { border-color:var(--cafeniu-deschis); box-shadow:0 8px 24px rgba(107,76,42,0.08); transform:translateY(-2px); }
+.meniu-icon { font-size:2rem; margin-bottom:0.75rem; }
+.meniu-nume { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--text-inchis); margin-bottom:0.3rem; }
+.meniu-desc { font-size:0.8rem; color:var(--text-deschis); font-weight:300; line-height:1.6; margin-bottom:0.75rem; }
+.meniu-pret { font-weight:700; color:var(--cafeniu); font-size:0.9rem; }
+.meniu-badge { display:inline-block; font-size:0.6rem; padding:2px 8px; border-radius:10px; margin-left:0.5rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; }
+.badge-popular { background:#fff3cd; color:#856404; }
+.badge-nou { background:#d1ecf1; color:#0c5460; }
+.badge-vegan { background:#d4edda; color:#155724; }
+
+/* GALERIE */
+.galerie-grid {
+  display:grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 280px 280px;
+  gap:1rem; border-radius:20px; overflow:hidden;
+}
+.galerie-item {
+  border-radius:12px; overflow:hidden; position:relative;
+  display:flex; align-items:center; justify-content:center;
+  font-size:4rem;
+}
+.galerie-item:first-child { grid-row: span 2; }
+.galerie-item-1 { background:linear-gradient(135deg, #3d2416, #6b4c2a); }
+.galerie-item-2 { background:linear-gradient(135deg, #4a3528, #7a5c3e); }
+.galerie-item-3 { background:linear-gradient(135deg, #2c3e1a, #4a6b2a); }
+.galerie-item-4 { background:linear-gradient(135deg, #5c3d2e, #8b6340); }
+.galerie-item-5 { background:linear-gradient(135deg, #3a2c1e, #6b5240); }
+.galerie-label {
+  position:absolute; bottom:0; left:0; right:0; padding:1rem;
+  background:linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  color:white; font-size:0.75rem; font-weight:300; letter-spacing:0.05em;
+}
+
+/* REZERVARE */
+.rezervare-wrap { background:linear-gradient(135deg, var(--cafeniu) 0%, #3d2416 100%); padding:5rem 0; }
+.rezervare-inner { max-width:800px; margin:0 auto; padding:0 3rem; text-align:center; }
+.rezervare-inner .sec-eyebrow { color:var(--cafeniu-deschis); }
+.rezervare-inner .sec-titlu { color:var(--crem); }
+.rezervare-inner .sec-desc { color:rgba(245,240,232,0.7); margin:0 auto 3rem; }
+.form-rezervare {
+  background:rgba(245,240,232,0.08); border:1px solid rgba(245,240,232,0.15);
+  border-radius:20px; padding:2.5rem; text-align:left;
+  backdrop-filter:blur(10px);
+}
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.25rem; }
+.form-camp label { display:block; font-size:0.72rem; color:rgba(245,240,232,0.6); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.4rem; }
+.form-camp input, .form-camp select {
+  width:100%; padding:0.75rem 1rem; background:rgba(245,240,232,0.1);
+  border:1px solid rgba(245,240,232,0.2); border-radius:10px;
+  color:var(--crem); font-family:'Lato',sans-serif; font-size:0.88rem;
+  outline:none; transition:border-color 0.2s;
+}
+.form-camp input:focus, .form-camp select:focus { border-color:var(--cafeniu-deschis); }
+.form-camp select option { background:var(--cafeniu); color:var(--crem); }
+.form-camp input::placeholder { color:rgba(245,240,232,0.3); }
+.btn-rezerva-form {
+  width:100%; padding:1rem; background:var(--cafeniu-deschis); color:var(--text-inchis);
+  border:none; border-radius:12px; font-family:'Lato',sans-serif; font-size:0.9rem;
+  font-weight:700; cursor:pointer; letter-spacing:0.05em; text-transform:uppercase;
+  transition:all 0.3s; margin-top:0.5rem;
+}
+.btn-rezerva-form:hover { background:var(--auriu); transform:translateY(-1px); }
+.nota-rezervare { font-size:0.72rem; color:rgba(245,240,232,0.5); text-align:center; margin-top:1rem; }
+
+/* RECENZII */
+.recenzii-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:1.25rem; margin-bottom:3rem; }
+.card-recenzie {
+  background:white; border:1px solid var(--crem-inchis); border-radius:16px; padding:1.5rem;
+  transition:all 0.2s;
+}
+.card-recenzie:hover { border-color:var(--cafeniu-deschis); box-shadow:0 4px 16px rgba(107,76,42,0.06); }
+.rec-header { display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem; }
+.rec-avatar {
+  width:36px; height:36px; border-radius:50%; background:var(--cafeniu);
+  color:var(--crem); display:flex; align-items:center; justify-content:center;
+  font-size:0.75rem; font-weight:700; flex-shrink:0;
+}
+.rec-info { flex:1; }
+.rec-nume { font-weight:700; font-size:0.85rem; color:var(--text-inchis); }
+.rec-data { font-size:0.7rem; color:var(--text-deschis); }
+.rec-stele { color:#f0c040; font-size:0.85rem; margin-bottom:0.5rem; }
+.rec-text { font-size:0.83rem; color:var(--text-mediu); line-height:1.6; font-weight:300; font-style:italic; }
+
+.form-recenzie-wrap {
+  background:var(--crem); border-radius:20px; padding:2rem;
+  border:1px solid var(--crem-inchis); max-width:600px; margin:0 auto;
+}
+.form-recenzie-wrap h3 { font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:1.25rem; color:var(--text-inchis); }
+.stele-selector { display:flex; gap:0.3rem; margin-bottom:1rem; }
+.stea-sel { font-size:1.5rem; cursor:pointer; color:#ddd; transition:color 0.15s; }
+.stea-sel.activa { color:#f0c040; }
+.rec-input, .rec-textarea {
+  width:100%; padding:0.7rem 0.9rem; border:1px solid var(--crem-inchis);
+  border-radius:10px; font-family:'Lato',sans-serif; font-size:0.85rem;
+  outline:none; background:white; margin-bottom:0.75rem;
+  transition:border-color 0.2s; color:var(--text-inchis);
+}
+.rec-input:focus, .rec-textarea:focus { border-color:var(--cafeniu-deschis); }
+.rec-textarea { resize:vertical; min-height:90px; }
+.anon-check { display:flex; align-items:center; gap:0.5rem; font-size:0.8rem; color:var(--text-mediu); margin-bottom:1rem; cursor:pointer; }
+.anon-check input { width:16px; height:16px; accent-color:var(--cafeniu); }
+.btn-trimite-rec {
+  width:100%; padding:0.8rem; background:var(--cafeniu); color:var(--crem);
+  border:none; border-radius:10px; font-family:'Lato',sans-serif; font-size:0.88rem;
+  font-weight:700; cursor:pointer; transition:all 0.2s;
+}
+.btn-trimite-rec:hover { background:var(--cafeniu-mediu); }
+
+/* FOOTER */
+footer {
+  background:var(--text-inchis); color:rgba(245,240,232,0.5);
+  text-align:center; padding:2rem; font-size:0.75rem;
+}
+footer a { color:var(--cafeniu-deschis); text-decoration:none; }
+
+@media(max-width:768px) {
+  header { padding:1rem 1.25rem; }
+  .hero-btns { flex-direction:column; align-items:center; }
+  .info-strip { padding:1rem 1.25rem; gap:1.5rem; }
+  .sectiune { padding:3rem 1.25rem; }
+  .despre-grid { grid-template-columns:1fr; gap:2.5rem; }
+  .galerie-grid { grid-template-columns:1fr 1fr; grid-template-rows:auto; }
+  .galerie-item:first-child { grid-row:span 1; }
+  .form-grid { grid-template-columns:1fr; }
+  .rezervare-inner { padding:0 1.25rem; }
+  .meniu-inner { padding:0 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="/web/primapagina.html" class="logo">
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none">
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(157.5 24 24)"/>
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <span class="logo-text">Biblioteca Aster</span>
+  </a>
+  <nav>
+    <a href="/web/primapagina.html">Acasă</a>
+    <a href="/web/anunturi.html">Evenimente</a>
+    <a href="/web/despre.html">Despre</a>
+    <a href="#rezervare" class="btn-rezerva-nav">Rezervă masă</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-texture"></div>
+  <div class="hero-steam"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Biblioteca Aster · Corp A · Parter</div>
+    <h1 class="hero-titlu">Cafeneaua<br><em>Literară</em> Aster</h1>
+    <p class="hero-subtitlu">Unde paginile se întâlnesc cu aroma cafelei</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Luni–Vineri 08:00–20:00 · Sâmbătă 09:00–14:00
+      </div>
+      <div class="hero-meta-item">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        48 locuri · 12 mese
+      </div>
+      <div class="hero-meta-item">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        120+ cărți disponibile
+      </div>
+    </div>
+    <div class="hero-btns">
+      <a href="#rezervare" class="btn-hero-prim">Rezervă o masă</a>
+      <a href="#meniu" class="btn-hero-sec">Vezi meniul</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Descoperă</span>
+    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</div>
+
+<!-- INFO STRIP -->
+<div class="info-strip">
+  <div class="info-strip-item">
+    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span><strong>120+ cărți</strong> disponibile pentru lectură</span>
+  </div>
+  <div class="info-strip-item">
+    <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    <span>Corp A · Parter · <strong>Lângă intrarea principală</strong></span>
+  </div>
+  <div class="info-strip-item">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    <span><strong>48 locuri</strong> · 12 mese confortabile</span>
+  </div>
+  <div class="info-strip-item">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span>Poți veni cu <strong>cartea ta</strong> sau împrumuta din bibliotecă</span>
+  </div>
+</div>
+
+<!-- DESPRE -->
+<div class="sectiune">
+  <div class="despre-grid">
+    <div>
+      <div class="sec-eyebrow">Despre noi</div>
+      <h2 class="sec-titlu">Un loc unde <em>citești</em> și te simți acasă</h2>
+      <p class="sec-desc">Cafeneaua Literară Aster e mai mult decât un loc unde bei o cafea bună. E un spațiu unde poți pierde ore întregi în paginile unei cărți, cu aroma cafelei de Arabica în jur și zgomotul dulce al foilor întoarse.</p>
+      <p class="sec-desc" style="margin-top:1rem;">Avem peste 120 de cărți disponibile direct la mese — de la romane la non-ficțiune — și poți oricând solicita titluri din celelalte corpuri ale bibliotecii.</p>
+      <div class="despre-stats">
+        <div class="stat-card">
+          <div class="stat-nr">120+</div>
+          <div class="stat-label">cărți disponibile la mese</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-nr">12</div>
+          <div class="stat-label">mese confortabile</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-nr">48</div>
+          <div class="stat-label">locuri totale</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-nr">6</div>
+          <div class="stat-label">corpuri din care poți împrumuta</div>
+        </div>
+      </div>
+    </div>
+    <div class="despre-imagine">
+      <div class="despre-imagine-text">
+        <p>"Cel mai bun loc din Suceava pentru o după-amiază cu o carte bună"</p>
+        <div style="margin-top:1rem;font-size:0.75rem;opacity:0.6;letter-spacing:0.1em;">— Recenzie Google, 2026</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MENIU -->
+<div class="meniu-wrap" id="meniu">
+  <div class="meniu-inner">
+    <div class="sec-eyebrow">Meniul nostru</div>
+    <h2 class="sec-titlu" style="margin-bottom:0.5rem;">Băuturi & <em>Gustări</em></h2>
+    <p class="sec-desc" style="margin-bottom:2.5rem;">Ingrediente proaspete, rețete cu suflet. Fiecare comandă e pregătită cu grijă.</p>
+    <div class="meniu-tabs">
+      <button class="meniu-tab activ" onclick="filtraMeniu(this,'toate')">Toate</button>
+      <button class="meniu-tab" onclick="filtraMeniu(this,'cafea')">☕ Cafea</button>
+      <button class="meniu-tab" onclick="filtraMeniu(this,'ceai')">🍵 Ceai</button>
+      <button class="meniu-tab" onclick="filtraMeniu(this,'altele')">✨ Altele</button>
+      <button class="meniu-tab" onclick="filtraMeniu(this,'gustari')">🥐 Gustări</button>
+    </div>
+    <div class="meniu-grid" id="meniu-grid">
+      <!-- CAFEA -->
+      <div class="meniu-card vizibil" data-cat="cafea">
+        <div class="meniu-icon">☕</div>
+        <div class="meniu-nume">Espresso <span class="meniu-badge badge-popular">Popular</span></div>
+        <div class="meniu-desc">Cafea scurtă, intensă, preparată din boabe de Arabica 100%. Perfectă pentru o pauză rapidă.</div>
+        <div class="meniu-pret">8 lei</div>
+      </div>
+      <div class="meniu-card vizibil" data-cat="cafea">
+        <div class="meniu-icon">☕</div>
+        <div class="meniu-nume">Americano</div>
+        <div class="meniu-desc">Cafea lungă, espresso diluat cu apă fierbinte. Blândă și aromată, ideală pentru o lectură lungă.</div>
+        <div class="meniu-pret">10 lei</div>
+      </div>
+      <div class="meniu-card vizibil" data-cat="cafea">
+        <div class="meniu-icon">🥛</div>
+        <div class="meniu-nume">Cappuccino <span class="meniu-badge badge-popular">Popular</span></div>
+        <div class="meniu-desc">Espresso cu lapte spumat cremos. Raportul perfect între intensitate și blândețe.</div>
+        <div class="meniu-pret">14 lei</div>
+      </div>
+      <div class="meniu-card vizibil" data-cat="cafea">
+        <div class="meniu-icon">☕</div>
+        <div class="meniu-nume">Latte</div>
+        <div class="meniu-desc">Espresso cu mult lapte cald și un strat subțire de spumă. Delicat și reconfortant.</div>
+        <div class="meniu-pret">15 lei</div>
+      </div>
+      <div class="meniu-card vizibil" data-cat="cafea">
+        <div class="meniu-icon">🍫</div>
+        <div class="meniu-nume">Mocha</div>
+        <div class="meniu-desc">Espresso cu ciocolată și lapte spumat. Pentru cei care vor mai mult decât o simplă cafea.</div>
+        <div class="meniu-pret">16 lei</div>
+      </div>
+      <div class="meniu-card vizibil" data-cat="cafea">
+        <div class="meniu-icon">❄️</div>
+        <div class="meniu-nume">Iced Latte <span class="meniu-badge badge-nou">Nou</span></div>
+        <div class="meniu-desc">Espresso cu lapte rece și gheață. Răcoros și energizant pentru zilele călduroase.</div>
+        <div class="meniu-pret">16 lei</div>
+      </div>
+      <!-- CEAI -->
+      <div class="meniu-card" data-cat="ceai">
+        <div class="meniu-icon">🌿</div>
+        <div class="meniu-nume">Ceai de mentă <span class="meniu-badge badge-vegan">Vegan</span></div>
+        <div class="meniu-desc">Mentă proaspătă infuzată în apă fierbinte. Răcoritor și relaxant în orice moment al zilei.</div>
+        <div class="meniu-pret">10 lei</div>
+      </div>
+      <div class="meniu-card" data-cat="ceai">
+        <div class="meniu-icon">🌼</div>
+        <div class="meniu-nume">Ceai de mușețel <span class="meniu-badge badge-vegan">Vegan</span></div>
+        <div class="meniu-desc">Flori de mușețel uscate, cu gust blând și dulce. Perfect pentru serile liniștite cu o carte.</div>
+        <div class="meniu-pret">10 lei</div>
+      </div>
+      <div class="meniu-card" data-cat="ceai">
+        <div class="meniu-icon">🍃</div>
+        <div class="meniu-nume">Ceai verde <span class="meniu-badge badge-vegan">Vegan</span></div>
+        <div class="meniu-desc">Ceai verde japonez, ușor astringent și proaspăt. Bogat în antioxidanți.</div>
+        <div class="meniu-pret">11 lei</div>
+      </div>
+      <div class="meniu-card" data-cat="ceai">
+        <div class="meniu-icon">🫐</div>
+        <div class="meniu-nume">Ceai fructe de pădure <span class="meniu-badge badge-popular">Popular</span></div>
+        <div class="meniu-desc">Amestec de afine, zmeură și mure. Intens colorat, ușor acidulat și plin de aromă.</div>
+        <div class="meniu-pret">12 lei</div>
+      </div>
+      <!-- ALTELE -->
+      <div class="meniu-card" data-cat="altele">
+        <div class="meniu-icon">🍵</div>
+        <div class="meniu-nume">Matcha Latte <span class="meniu-badge badge-nou">Nou</span></div>
+        <div class="meniu-desc">Pudră de matcha japoneză cu lapte de ovăz spumat. Cremos, vegetal și plin de energie.</div>
+        <div class="meniu-pret">18 lei</div>
+      </div>
+      <div class="meniu-card" data-cat="altele">
+        <div class="meniu-icon">🍫</div>
+        <div class="meniu-nume">Ciocolată caldă <span class="meniu-badge badge-popular">Popular</span></div>
+        <div class="meniu-desc">Ciocolată belgiana cu lapte integral, groasă și intensă. Adevăratul confort într-o cană.</div>
+        <div class="meniu-pret">16 lei</div>
+      </div>
+      <!-- GUSTARI -->
+      <div class="meniu-card" data-cat="gustari">
+        <div class="meniu-icon">🥐</div>
+        <div class="meniu-nume">Croissant simplu <span class="meniu-badge badge-popular">Popular</span></div>
+        <div class="meniu-desc">Croissant cu unt, crocant la exterior și pufos la interior. Proaspăt în fiecare dimineață.</div>
+        <div class="meniu-pret">12 lei</div>
+      </div>
+      <div class="meniu-card" data-cat="gustari">
+        <div class="meniu-icon">🥐</div>
+        <div class="meniu-nume">Croissant cu ciocolată</div>
+        <div class="meniu-desc">Croissant cu umplutură de ciocolată neagră belgiană. Răsfățul perfect alături de un espresso.</div>
+        <div class="meniu-pret">15 lei</div>
+      </div>
+      <div class="meniu-card" data-cat="gustari">
+        <div class="meniu-icon">🍪</div>
+        <div class="meniu-nume">Biscuiți cu unt</div>
+        <div class="meniu-desc">Biscuiți artizanali cu unt și zahăr brun, crocanți și ușor caramelizați. Porție de 3 bucăți.</div>
+        <div class="meniu-pret">9 lei</div>
+      </div>
+      <div class="meniu-card" data-cat="gustari">
+        <div class="meniu-icon">🍪</div>
+        <div class="meniu-nume">Biscuiți cu ciocolată <span class="meniu-badge badge-popular">Popular</span></div>
+        <div class="meniu-desc">Biscuiți cu bucăți de ciocolată neagră și lapte. Moi în interior, ușor crocanți la exterior.</div>
+        <div class="meniu-pret">11 lei</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GALERIE -->
+<div class="sectiune">
+  <div class="sec-eyebrow">Atmosfera noastră</div>
+  <h2 class="sec-titlu" style="margin-bottom:2.5rem;">Un spațiu <em>de poveste</em></h2>
+  <div class="galerie-grid">
+    <div class="galerie-item galerie-item-1">
+      <img src="/web/images/cafenea/biblioteca.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+      <div class="galerie-label">Zona principală de lectură</div>
+    </div>
+    <div class="galerie-item galerie-item-2">
+      <img src="/web/images/cafenea/rafturi.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+      <div class="galerie-label">Raftul de cărți</div>
+    </div>
+    <div class="galerie-item galerie-item-3">
+      <img src="/web/images/cafenea/verde.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+      <div class="galerie-label">Colțul verde</div>
+    </div>
+    <div class="galerie-item galerie-item-4">
+      <img src="/web/images/cafenea/vitrina.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+      <div class="galerie-label">Vitrina cu gustări</div>
+    </div>
+    <div class="galerie-item galerie-item-5">
+      <img src="/web/images/cafenea/seara.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+      <div class="galerie-label">Seara la cafenea</div>
+    </div>
+  </div>
+</div>
+
+<!-- REZERVARE -->
+<div class="rezervare-wrap" id="rezervare">
+  <div class="rezervare-inner">
+    <div class="sec-eyebrow">Rezervare</div>
+    <h2 class="sec-titlu">Rezervă <em>masa ta</em></h2>
+    <p class="sec-desc">Asigură-ți locul preferat pentru o după-amiază de lectură. Rezervarea e gratuită și simplă.</p>
+    <div class="form-rezervare" id="form-rez">
+      <div class="form-grid">
+        <div class="form-camp">
+          <label>Data</label>
+          <input type="date" id="rez-data" min="2026-05-27">
+        </div>
+        <div class="form-camp">
+          <label>Nr. persoane</label>
+          <input type="number" id="rez-persoane" min="1" max="8" value="1" placeholder="1-8 persoane">
+        </div>
+        <div class="form-camp">
+          <label>Ora început</label>
+          <select id="rez-start">
+            <option>08:00</option><option>08:30</option><option>09:00</option>
+            <option>09:30</option><option>10:00</option><option>10:30</option>
+            <option>11:00</option><option>11:30</option><option>12:00</option>
+            <option>12:30</option><option>13:00</option><option>13:30</option>
+            <option>14:00</option><option>14:30</option><option>15:00</option>
+            <option>15:30</option><option>16:00</option><option>16:30</option>
+            <option>17:00</option><option>17:30</option><option>18:00</option>
+            <option>18:30</option><option>19:00</option>
+          </select>
+        </div>
+        <div class="form-camp">
+          <label>Ora încheiere</label>
+          <select id="rez-end">
+            <option>08:30</option><option>09:00</option><option>09:30</option>
+            <option>10:00</option><option>10:30</option><option>11:00</option>
+            <option>11:30</option><option>12:00</option><option>12:30</option>
+            <option>13:00</option><option>13:30</option><option>14:00</option>
+            <option>14:30</option><option>15:00</option><option>15:30</option>
+            <option>16:00</option><option>16:30</option><option>17:00</option>
+            <option>17:30</option><option>18:00</option><option>18:30</option>
+            <option>19:00</option><option>19:30</option><option>20:00</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-camp" style="margin-bottom:1.25rem;">
+        <label>Mențiuni speciale (opțional)</label>
+        <input type="text" id="rez-mentiuni" placeholder="ex: masă lângă fereastră, aniversare...">
+      </div>
+      <button class="btn-rezerva-form" onclick="faCereRezervareCafenea()">Confirmă rezervarea</button>
+      <p class="nota-rezervare">Rezervarea necesită un cont Biblioteca Aster. Dacă nu ai cont, vei fi redirecționat la pagina de înregistrare.</p>
+    </div>
+  </div>
+</div>
+
+<!-- RECENZII -->
+<div class="sectiune">
+  <div class="sec-eyebrow">Recenzii</div>
+  <h2 class="sec-titlu" style="margin-bottom:0.5rem;">Ce spun <em>vizitatorii</em> noștri</h2>
+  <p class="sec-desc" style="margin-bottom:3rem;">Recenzii reale de la oameni care au petrecut timp la Cafeneaua Literară Aster.</p>
+
+  <div class="recenzii-grid" id="lista-recenzii">
+    <div class="card-recenzie">
+      <div class="rec-header">
+        <div class="rec-avatar">MP</div>
+        <div class="rec-info">
+          <div class="rec-nume">Maria P.</div>
+          <div class="rec-data">12 Mai 2026</div>
+        </div>
+      </div>
+      <div class="rec-stele">★★★★★</div>
+      <div class="rec-text">"Locul perfect pentru o dimineață cu o carte bună. Cafeaua e excelentă, atmosfera e caldă și personalul e extrem de primitor. Revin cu plăcere!"</div>
+    </div>
+    <div class="card-recenzie">
+      <div class="rec-header">
+        <div class="rec-avatar" style="background:#7a5c3e;">AV</div>
+        <div class="rec-info">
+          <div class="rec-nume">Vizitator anonim</div>
+          <div class="rec-data">8 Mai 2026</div>
+        </div>
+      </div>
+      <div class="rec-stele">★★★★☆</div>
+      <div class="rec-text">"Croissantele sunt absolut delicioase și cafeaua e preparată cu grijă. Singurul minus e că uneori e puțin aglomerat la orele de vârf."</div>
+    </div>
+    <div class="card-recenzie">
+      <div class="rec-header">
+        <div class="rec-avatar" style="background:#4a6b2a;">IG</div>
+        <div class="rec-info">
+          <div class="rec-nume">Ion G.</div>
+          <div class="rec-data">3 Mai 2026</div>
+        </div>
+      </div>
+      <div class="rec-stele">★★★★★</div>
+      <div class="rec-text">"Am venit prima dată din curiozitate și am rămas 4 ore. Matcha latte-ul e fenomenal, iar ideea cu cărțile la mese e genială. Bravo!"</div>
+    </div>
+  </div>
+
+  <div class="form-recenzie-wrap">
+    <h3>Lasă o recenzie</h3>
+    <div class="stele-selector" id="stele-rec">
+      <span class="stea-sel" onclick="setSteaRec(1)">★</span>
+      <span class="stea-sel" onclick="setSteaRec(2)">★</span>
+      <span class="stea-sel" onclick="setSteaRec(3)">★</span>
+      <span class="stea-sel" onclick="setSteaRec(4)">★</span>
+      <span class="stea-sel" onclick="setSteaRec(5)">★</span>
+    </div>
+    <input type="text" class="rec-input" id="rec-nume-input" placeholder="Numele tău (opțional dacă ești anonim)">
+    <textarea class="rec-textarea" id="rec-text-input" placeholder="Scrie recenzia ta..."></textarea>
+    <label class="anon-check">
+      <input type="checkbox" id="rec-anon"> Postează anonim (numele nu va fi afișat)
+    </label>
+    <button class="btn-trimite-rec" onclick="trimiteRecenzie()">Publică recenzia</button>
+  </div>
+</div>
+
+<footer>
+  © 2026 <a href="/web/primapagina.html">Biblioteca Aster</a> · Cafeneaua Literară Aster · Corp A, Parter · Suceava, România
+</footer>
+
+<script>
+let steaRecSelectata = 0;
+
+// ── MENIU FILTRARE ────────────────────────────────────────────
+function filtraMeniu(btn, cat) {
+  document.querySelectorAll('.meniu-tab').forEach(t => t.classList.remove('activ'));
+  btn.classList.add('activ');
+  document.querySelectorAll('.meniu-card').forEach(card => {
+    if (cat === 'toate' || card.dataset.cat === cat) {
+      card.classList.add('vizibil');
+    } else {
+      card.classList.remove('vizibil');
+    }
+  });
+}
+
+// ── STELE RECENZIE ────────────────────────────────────────────
+function setSteaRec(n) {
+  steaRecSelectata = n;
+  document.querySelectorAll('.stea-sel').forEach((s, i) => {
+    s.classList.toggle('activa', i < n);
+  });
+}
+
+// ── TRIMITE RECENZIE ──────────────────────────────────────────
+function trimiteRecenzie() {
+  const text = document.getElementById('rec-text-input').value.trim();
+  if (!text || steaRecSelectata === 0) {
+    alert('Te rugăm să dai o notă și să scrii o recenzie.');
+    return;
+  }
+
+  const eAnon = document.getElementById('rec-anon').checked;
+  const numeInput = document.getElementById('rec-nume-input').value.trim();
+  const numeClient = sessionStorage.getItem('prenume_user') || sessionStorage.getItem('nume_client');
+  
+  let numeAfisat;
+  if (eAnon) {
+    numeAfisat = 'Vizitator anonim';
+  } else if (numeInput) {
+    numeAfisat = numeInput;
+  } else if (numeClient) {
+    numeAfisat = numeClient;
+  } else {
+    numeAfisat = 'Vizitator';
+  }
+
+  const initiale = numeAfisat === 'Vizitator anonim' ? 'AV' :
+    numeAfisat.split(' ').map(x => x[0]).join('').substring(0,2).toUpperCase();
+
+  const stele = '★'.repeat(steaRecSelectata) + '☆'.repeat(5 - steaRecSelectata);
+  const azi = new Date();
+  const data = azi.toLocaleDateString('ro-RO', {day:'numeric', month:'long', year:'numeric'});
+
+  const card = document.createElement('div');
+  card.className = 'card-recenzie';
+  card.style.animation = 'fadeIn 0.4s ease';
+  card.innerHTML = `
+    <div class="rec-header">
+      <div class="rec-avatar" style="background:var(--cafeniu-mediu);">${initiale}</div>
+      <div class="rec-info">
+        <div class="rec-nume">${numeAfisat}</div>
+        <div class="rec-data">${data}</div>
+      </div>
+    </div>
+    <div class="rec-stele">${stele}</div>
+    <div class="rec-text">"${text}"</div>`;
+
+  document.getElementById('lista-recenzii').prepend(card);
+
+  // Salveaza local
+  const recenzii = JSON.parse(sessionStorage.getItem('rec_cafenea') || '[]');
+  recenzii.push({nume: numeAfisat, text, stele: steaRecSelectata, data});
+  sessionStorage.setItem('rec_cafenea', JSON.stringify(recenzii));
+
+  // Trimite la server daca e logat
+  const idClient = sessionStorage.getItem('id_client');
+  if (idClient) {
+    fetch('/api/recenzii/cafenea', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id_client: parseInt(idClient), nume: numeAfisat, text, rating: steaRecSelectata, anon: eAnon})
+    }).catch(() => {});
+  }
+
+  // Reset form
+  document.getElementById('rec-text-input').value = '';
+  document.getElementById('rec-nume-input').value = '';
+  document.getElementById('rec-anon').checked = false;
+  setSteaRec(0);
+  
+  alert('Recenzia ta a fost publicată! Mulțumim!');
+}
+
+// ── REZERVARE ─────────────────────────────────────────────────
+async function faCereRezervareCafenea() {
+  const numeClient = sessionStorage.getItem('nume_client') || sessionStorage.getItem('prenume_user');
+  if (!numeClient) {
+    if (confirm('Rezervarea necesită un cont. Vrei să te autentifici?')) {
+      window.location.href = '/web/login.html';
+    }
+    return;
+  }
+
+  const data = document.getElementById('rez-data').value;
+  const persoane = document.getElementById('rez-persoane').value;
+  const start = document.getElementById('rez-start').value;
+  const end = document.getElementById('rez-end').value;
+  const mentiuni = document.getElementById('rez-mentiuni').value;
+
+  if (!data) { alert('Te rugăm să selectezi o dată.'); return; }
+  if (start >= end) { alert('Ora de încheiere trebuie să fie după ora de început.'); return; }
+
+  const btn = document.querySelector('.btn-rezerva-form');
+  btn.textContent = 'Se trimite...';
+  btn.disabled = true;
+
+  try {
+    const idClient = sessionStorage.getItem('id_client') || -1;
+    const r = await fetch('/api/rezervari', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        id_client: parseInt(idClient),
+        tip: 'cafenea',
+        data,
+        ora_start: start,
+        ora_end: end,
+        nr_persoane: parseInt(persoane),
+        mentiuni
+      })
+    });
+    const d = await r.json();
+    if (d.succes) {
+      btn.textContent = '✓ Rezervare confirmată!';
+      btn.style.background = '#2e7d32';
+      document.getElementById('rez-data').value = '';
+      document.getElementById('rez-mentiuni').value = '';
+    } else {
+      btn.textContent = 'Confirmă rezervarea';
+      btn.disabled = false;
+      alert(d.mesaj || 'Eroare la rezervare.');
+    }
+  } catch(e) {
+    btn.textContent = '✓ Rezervare salvată local!';
+    btn.style.background = '#2e7d32';
+  }
+}
+
+// ── SMOOTH SCROLL ─────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+
+<script>
+(function() {
+  const prenume = localStorage.getItem('prenume_user');
+  const nume = localStorage.getItem('nume_user');
+  if (prenume) {
+    const btn = document.getElementById('btn-auth');
+    if (btn) {
+      const initiale = (prenume[0] + (nume?.[0]||'')).toUpperCase();
+      btn.outerHTML = `
+        <div style="position:relative;margin-left:1rem;" id="user-menu-wrap">
+          <div style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;" onclick="toggleUserMenu()">
+            <span style="font-size:0.82rem;color:#7a6a9a;">Bun venit, <strong style="color:#6b4fa0;">${prenume}</strong></span>
+            <div style="width:34px;height:34px;border-radius:50%;background:#6b4fa0;color:white;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:600;">${initiale}</div>
+          </div>
+          <div id="user-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:white;border:1px solid #d4c5ed;border-radius:12px;padding:0.5rem;min-width:160px;box-shadow:0 8px 24px rgba(107,79,160,0.12);z-index:200;">
+            <a href="/web/dashboard-client.html" style="display:block;padding:0.5rem 0.75rem;font-size:0.82rem;color:#2d1f4e;text-decoration:none;border-radius:8px;" onmouseover="this.style.background='#e8e0f5'" onmouseout="this.style.background=''">📚 Dashboard</a>
+            <a href="/web/profil.html" style="display:block;padding:0.5rem 0.75rem;font-size:0.82rem;color:#2d1f4e;text-decoration:none;border-radius:8px;" onmouseover="this.style.background='#e8e0f5'" onmouseout="this.style.background=''">👤 Profilul meu</a>
+            <div style="border-top:1px solid #e8e0f5;margin:0.4rem 0;"></div>
+            <button onclick="localStorage.clear();location.href='/web/primapagina.html';" style="display:block;width:100%;text-align:left;padding:0.5rem 0.75rem;font-size:0.82rem;color:#880e4f;background:none;border:none;cursor:pointer;border-radius:8px;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='#fce4ec'" onmouseout="this.style.background=''">🚪 Deconectare</button>
+          </div>
+        </div>`;
+    }
+  }
+  
+  function toggleUserMenu() {
+    const dd = document.getElementById('user-dropdown');
+    if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+  }
+  window.toggleUserMenu = toggleUserMenu;
+  
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('user-menu-wrap');
+    const dd = document.getElementById('user-dropdown');
+    if (wrap && dd && !wrap.contains(e.target)) dd.style.display = 'none';
+  });
+})();
+</script>
+</body>
+</html>

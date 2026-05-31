@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regulament Voluntari · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mov-deschis: #e8e0f5; --mov-pastel: #c9b8e8; --mov-mediu: #9b7dc8;
+  --mov-inchis: #6b4fa0; --mov-profund: #4a3270; --lila: #d4c5ed;
+  --alb-cald: #faf8fd; --text-principal: #2d1f4e; --text-secundar: #7a6a9a;
+  --text-subtil: #b0a0cc;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--alb-cald); color:var(--text-principal); }
+
+header { display:flex; align-items:center; justify-content:space-between; padding:1rem 2rem; border-bottom:1px solid var(--lila); background:white; position:sticky; top:0; z-index:100; }
+.logo { display:flex; align-items:center; gap:0.6rem; text-decoration:none; }
+.logo-svg { width:28px; height:28px; }
+.logo-nume { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; color:var(--mov-profund); }
+
+.page-wrapper { max-width:760px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+
+.btn-inapoi { display:inline-flex; align-items:center; gap:0.4rem; font-size:0.8rem; color:var(--text-secundar); cursor:pointer; background:none; border:none; font-family:'DM Sans',sans-serif; transition:color 0.2s; margin-bottom:2rem; }
+.btn-inapoi:hover { color:var(--mov-inchis); }
+.btn-inapoi svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+
+.doc-header { background:linear-gradient(135deg, var(--mov-profund), var(--mov-inchis)); border-radius:16px; padding:2rem; margin-bottom:2rem; color:white; }
+.doc-header h1 { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:400; margin-bottom:0.4rem; }
+.doc-header p { font-size:0.82rem; color:rgba(255,255,255,0.65); }
+.doc-meta { display:flex; gap:1.5rem; margin-top:1rem; flex-wrap:wrap; }
+.doc-meta-item { font-size:0.75rem; color:rgba(255,255,255,0.7); display:flex; align-items:center; gap:0.4rem; }
+.doc-meta-item svg { width:13px; height:13px; stroke:var(--mov-pastel); fill:none; stroke-width:1.5; }
+
+.sectiune-reg { background:white; border:1px solid var(--lila); border-radius:14px; padding:1.75rem; margin-bottom:1rem; }
+.sectiune-reg h2 { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; color:var(--mov-inchis); margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:2px solid var(--mov-deschis); display:flex; align-items:center; gap:0.5rem; }
+.sectiune-reg h2 span { font-size:0.75rem; background:var(--mov-deschis); color:var(--mov-inchis); padding:0.15rem 0.5rem; border-radius:8px; font-family:'DM Sans',sans-serif; font-weight:500; }
+.art { padding:0.5rem 0; border-bottom:1px solid var(--alb-cald); font-size:0.85rem; color:var(--text-secundar); line-height:1.7; display:flex; gap:0.75rem; }
+.art:last-child { border:none; padding-bottom:0; }
+.art-nr { font-weight:600; color:var(--mov-inchis); flex-shrink:0; min-width:28px; }
+
+.nota-final { background:var(--mov-deschis); border-radius:12px; padding:1.25rem; text-align:center; font-size:0.82rem; color:var(--mov-profund); font-style:italic; margin-top:1.5rem; }
+
+.btn-download { display:inline-flex; align-items:center; gap:0.5rem; padding:0.6rem 1.25rem; background:white; border:1px solid var(--mov-inchis); color:var(--mov-inchis); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.82rem; cursor:pointer; transition:all 0.2s; margin-bottom:1.5rem; font-weight:500; }
+.btn-download:hover { background:var(--mov-inchis); color:white; }
+.btn-download svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.5; }
+
+footer { text-align:center; padding:1.5rem; font-size:0.75rem; color:var(--text-subtil); border-top:1px solid var(--mov-deschis); }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/web/primapagina.html" class="logo">
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none">
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(157.5 24 24)"/>
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <span class="logo-nume">Biblioteca Aster</span>
+  </a>
+</header>
+
+<div class="page-wrapper">
+  <button class="btn-inapoi" onclick="history.back()">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Înapoi
+  </button>
+
+  <div class="doc-header">
+    <h1>Regulament pentru Voluntari</h1>
+    <p>Biblioteca Aster · Document intern oficial</p>
+    <div class="doc-meta">
+      <div class="doc-meta-item"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Aprobat prin decizia directorului</div>
+      <div class="doc-meta-item"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Legea Nr. 78/2014</div>
+    </div>
+  </div>
+
+  <button class="btn-download" onclick="descarcaRegulament()">
+    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Descarcă regulamentul
+  </button>
+
+  <div class="sectiune-reg">
+    <h2>Cadrul legal și scopul <span>Art. 1</span></h2>
+    <div class="art"><span class="art-nr">1.1.</span><span>Prezentul regulament reglementează desfășurarea activităților de voluntariat din cadrul Bibliotecii Aster.</span></div>
+    <div class="art"><span class="art-nr">1.2.</span><span>Instituția recunoaște voluntariatul ca valoare organizațională și vector al dezvoltării comunității.</span></div>
+    <div class="art"><span class="art-nr">1.3.</span><span>Activitatea se derulează în temeiul Legii Nr. 78/2014, al cărei conținut prevalează în caz de conflict de interpretare.</span></div>
+  </div>
+
+  <div class="sectiune-reg">
+    <h2>Dobândirea calității de voluntar <span>Art. 2</span></h2>
+    <div class="art"><span class="art-nr">2.1.</span><span>Biblioteca stabilește numărul de locuri disponibile și începe demersurile de recrutare printr-un anunț public.</span></div>
+    <div class="art"><span class="art-nr">2.2.</span><span>Orice persoană care are capacitate de muncă poate dobândi calitatea de voluntar, beneficiind de egalitate de șanse.</span></div>
+    <div class="art"><span class="art-nr">2.3.</span><span>Selecția presupune depunerea unei cereri și susținerea unui interviu de selecție, care reprezintă o probă eliminatorie.</span></div>
+    <div class="art"><span class="art-nr">2.4.</span><span>Candidații selectați semnează contractul de voluntariat și beneficiază de o perioadă de probă de 30 de zile.</span></div>
+  </div>
+
+  <div class="sectiune-reg">
+    <h2>Coordonatorul de voluntari <span>Art. 3</span></h2>
+    <div class="art"><span class="art-nr">3.1.</span><span>Directorul bibliotecii desemnează prin decizie coordonatorii de voluntari din cadrul instituției.</span></div>
+    <div class="art"><span class="art-nr">3.2.</span><span>Coordonatorii răspund pentru respectarea Legii Voluntariatului și mențin Registrul de Evidență al Voluntarilor.</span></div>
+    <div class="art"><span class="art-nr">3.3.</span><span>Aceștia întocmesc un raport anual asupra stării voluntariatului, supus spre aprobare directorului.</span></div>
+  </div>
+
+  <div class="sectiune-reg">
+    <h2>Documente obligatorii <span>Art. 4</span></h2>
+    <div class="art"><span class="art-nr">4.1.</span><span>Activitatea este recunoscută doar în urma semnării contractului de voluntariat și a anexelor: fișa de voluntar și fișa de protecție.</span></div>
+    <div class="art"><span class="art-nr">4.2.</span><span>Directorul instituției aprobă modelele standard pentru contractul de voluntariat și anexele acestuia.</span></div>
+    <div class="art"><span class="art-nr">4.3.</span><span>Nu se poate desfășura nicio activitate de voluntariat în lipsa documentelor obligatorii menționate anterior.</span></div>
+  </div>
+
+  <div class="sectiune-reg">
+    <h2>Pierderea calității de voluntar <span>Art. 5</span></h2>
+    <div class="art"><span class="art-nr">5.1.</span><span>Contractul se poate rezilia în cazul constatării abaterilor sau a neregulilor ce periclitează activitatea bibliotecii.</span></div>
+    <div class="art"><span class="art-nr">5.2.</span><span>În cazul suspiciunilor de fraudă sau punere în pericol a beneficiarilor, voluntarul este suspendat de drept.</span></div>
+    <div class="art"><span class="art-nr">5.3.</span><span>Biblioteca evaluează continuu și periodic activitatea voluntarilor prin coordonatorii desemnați.</span></div>
+  </div>
+
+  <div class="sectiune-reg">
+    <h2>Recunoașterea activității <span>Art. 6</span></h2>
+    <div class="art"><span class="art-nr">6.1.</span><span>Biblioteca emite un certificat de voluntariat însoțit de un raport de activitate, la cererea voluntarului.</span></div>
+    <div class="art"><span class="art-nr">6.2.</span><span>Documentele de recunoaștere sunt întocmite de către coordonatorul de voluntari.</span></div>
+  </div>
+
+  <div class="nota-final">
+    Prezentul regulament este aprobat prin decizia directorului Bibliotecii Aster.
+  </div>
+</div>
+
+<footer>© 2026 Biblioteca Aster · Regulament intern · Suceava, România</footer>
+
+<script>
+function descarcaRegulament() {
+  const text = `REGULAMENT PENTRU VOLUNTARI - BIBLIOTECA ASTER
+=====================================================
+
+ART. 1 - CADRUL LEGAL SI SCOPUL
+1.1. Prezentul regulament reglementeaza desfasurarea activitatilor de voluntariat din cadrul Bibliotecii Aster.
+1.2. Institutia recunoaste voluntariatul ca valoare organizationala si vector al dezvoltarii comunitatii.
+1.3. Activitatea se deruleaza in temeiul Legii Nr. 78/2014.
+
+ART. 2 - DOBANDIREA CALITATII DE VOLUNTAR
+2.1. Biblioteca stabileste numarul de locuri disponibile si incepe demersurile de recrutare printr-un anunt public.
+2.2. Orice persoana care are capacitate de munca poate dobandi calitatea de voluntar.
+2.3. Selectia presupune depunerea unei cereri si sustinerea unui interviu de selectie.
+2.4. Candidatii selectati semneaza contractul de voluntariat si beneficiaza de o perioada de proba de 30 de zile.
+
+ART. 3 - COORDONATORUL DE VOLUNTARI
+3.1. Directorul bibliotecii desemneaza prin decizie coordonatorii de voluntari.
+3.2. Coordonatorii raspund pentru respectarea Legii Voluntariatului.
+3.3. Acestia intocmesc un raport anual asupra starii voluntariatului.
+
+ART. 4 - DOCUMENTE OBLIGATORII
+4.1. Activitatea este recunoscuta doar in urma semnarii contractului de voluntariat.
+4.2. Directorul institutiei aproba modelele standard pentru contractul de voluntariat.
+4.3. Nu se poate desfasura nicio activitate de voluntariat in lipsa documentelor obligatorii.
+
+ART. 5 - PIERDEREA CALITATII DE VOLUNTAR
+5.1. Contractul se poate rezilia in cazul constatarii abaterilor.
+5.2. In cazul suspiciunilor de frauda, voluntarul este suspendat de drept.
+5.3. Biblioteca evalueaza continuu activitatea voluntarilor.
+
+ART. 6 - RECUNOASTEREA ACTIVITATII
+6.1. Biblioteca emite un certificat de voluntariat la cererea voluntarului.
+6.2. Documentele de recunoastere sunt intocmite de coordonatorul de voluntari.
+
+=====================================================
+Prezentul regulament este aprobat prin decizia directorului.
+=====================================================`;
+
+  const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Regulament_Voluntari_Biblioteca_Aster.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

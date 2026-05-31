@@ -79,3 +79,37 @@ double AngajatSuport::calculeazaVenitTotal() const {
 void AngajatSuport::afiseazaInterfataSpecifica() const {
     std::cout << "Interfata LOGISTICA: Mentenanta si securitate.\n";
 }
+void Angajat::solicitaConcediu(int nr_zile) {
+    if (nr_zile <= 0) {
+        std::cout << "[Concediu] Numarul de zile trebuie sa fie pozitiv.\n";
+        return;
+    }
+    if (nr_zile > zile_concediu_ramase) {
+        std::cout << "[Concediu] Cerere RESPINSA: ai doar " << zile_concediu_ramase
+                  << " zile ramase, ai solicitat " << nr_zile << ".\n";
+        return;
+    }
+    std::cout << "[Concediu] Cerere trimisa de " << prenume << " " << nume
+              << " pentru " << nr_zile << " zile. Asteapta aprobare.\n";
+}
+
+void Angajat::aprobaConcediu(int nr_zile) {
+    if (nr_zile > zile_concediu_ramase) {
+        std::cout << "[Concediu] Nu se poate aproba: sold insuficient.\n";
+        return;
+    }
+    zile_concediu_ramase -= nr_zile;
+    std::cout << "[Concediu] APROBAT: " << nr_zile << " zile pentru "
+              << prenume << " " << nume
+              << ". Zile ramase: " << zile_concediu_ramase << "\n";
+}
+void Angajat::afiseazaFluturas() const {
+    std::cout << "\n========== FLUTURAS SALARIAL ==========\n";
+    std::cout << "Angajat       : " << prenume << " " << nume << "\n";
+    std::cout << "Salariu baza  : " << salariu_baza << " RON\n";
+    std::cout << "Venit total   : " << calculeazaVenitTotal() << " RON\n";
+    std::cout << "  (bonusul se calculeaza automat dupa tip)\n";
+    std::cout << "Zile concediu ramase : " << zile_concediu_ramase << "\n";
+    std::cout << "Ore lucrate          : " << ore_lucrate << "\n";
+    std::cout << "=======================================\n";
+}

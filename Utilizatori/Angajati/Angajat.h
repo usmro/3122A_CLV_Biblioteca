@@ -1,9 +1,9 @@
 #ifndef ANGAJAT_H
 #define ANGAJAT_H
 
-#include "Voluntar.h"
-#include "Cladire.h"
-#include "Carte.h"
+#include "../Voluntari/Voluntar.h"
+#include "../../Cladiri/Cladire.h"
+#include "../../Carte/Carte.h"
 #include <vector>
 #include <string>
 #include <sstream>
@@ -34,6 +34,12 @@ public:
     // Functii virtuale pentru personalizare
     virtual double calculeazaVenitTotal() const;
     virtual void afiseazaInterfataSpecifica() const;
+    void solicitaConcediu(int nr_zile);
+    void aprobaConcediu(int nr_zile);   // apelata de superior / HR
+    void afiseazaFluturas() const;
+
+    int getZileConcediu() const { return zile_concediu_ramase; }
+    double getSalariu()   const { return salariu_baza; }
 
     // Gettere
     int getIdSuperior() const { return id_superior; }

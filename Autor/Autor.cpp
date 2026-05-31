@@ -1,5 +1,5 @@
 #include "Autor.h"
-#include "Carte.h" 
+#include "../Carte/Carte.h" 
 #include <iostream>
 
 Autor::Autor(const std::string& nume, const std::string& bio, const std::string& poza) 

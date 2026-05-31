@@ -1,0 +1,2792 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mov-deschis: #e8e0f5;
+  --mov-pastel: #c9b8e8;
+  --mov-mediu: #9b7dc8;
+  --mov-inchis: #6b4fa0;
+  --mov-profund: #4a3270;
+  --lila: #d4c5ed;
+  --alb-cald: #faf8fd;
+  --text-principal: #2d1f4e;
+  --text-secundar: #7a6a9a;
+  --text-subtil: #b0a0cc;
+  --sidebar-w: 220px;
+  --header-h: 60px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--alb-cald); color:var(--text-principal); display:flex; flex-direction:column; height:100vh; overflow:hidden; }
+
+/* HEADER */
+.header {
+  height:var(--header-h); background:white; border-bottom:1px solid var(--lila);
+  display:flex; align-items:center; gap:0.5rem;
+  padding:0 1.5rem; position:fixed; top:0; left:0; right:0; z-index:100;
+}
+.logo { display:flex; align-items:center; gap:0.6rem; text-decoration:none; }
+.logo-svg { width:32px; height:32px; }
+.logo-nume { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; color:var(--mov-profund); }
+.header-search {
+  flex:0 0 220px; margin:0 auto; display:flex; align-items:center; gap:0.5rem;
+  background:var(--alb-cald); border:1px solid var(--lila); border-radius:20px;
+  padding:0.3rem 0.75rem; transition:all 0.2s;
+}
+.header-search:focus-within { border-color:var(--mov-mediu); box-shadow:0 0 0 3px rgba(155,125,200,0.1); }
+.header-search svg { width:15px; height:15px; stroke:var(--text-subtil); fill:none; stroke-width:2; stroke-linecap:round; flex-shrink:0; }
+.header-search input { border:none; background:transparent; font-family:'DM Sans',sans-serif; font-size:0.83rem; color:var(--text-principal); outline:none; width:100%; }
+.header-right { display:flex; align-items:center; gap:0.75rem; }
+.avatar { width:34px; height:34px; border-radius:50%; background:var(--mov-inchis); color:white; display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:500; cursor:pointer; }
+.notif-btn { position:relative; background:none; border:none; cursor:pointer; padding:6px; }
+.notif-btn svg { width:18px; height:18px; stroke:var(--text-secundar); fill:none; stroke-width:1.5; stroke-linecap:round; }
+.notif-dot { position:absolute; top:4px; right:4px; width:7px; height:7px; border-radius:50%; background:var(--mov-inchis); border:2px solid white; }
+
+/* LAYOUT */
+.layout { display:flex; margin-top:var(--header-h); height:calc(100vh - var(--header-h)); }
+
+/* SIDEBAR */
+.sidebar {
+  width:var(--sidebar-w); background:white; border-right:1px solid var(--lila);
+  padding:1.25rem 0.75rem; display:flex; flex-direction:column;
+  position:fixed; top:var(--header-h); left:0; bottom:0; z-index:50;
+  overflow-y:auto;
+}
+.sidebar-section { margin-bottom:0.25rem; }
+.sidebar-label { font-size:0.65rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-subtil); padding:0 0.75rem; margin-bottom:0.4rem; margin-top:0.75rem; }
+.nav-btn {
+  width:100%; display:flex; align-items:center; gap:0.65rem;
+  padding:0.6rem 0.75rem; border-radius:10px; border:none;
+  background:transparent; cursor:pointer; font-family:'DM Sans',sans-serif;
+  font-size:0.85rem; color:var(--text-secundar); text-align:left;
+  transition:all 0.18s;
+}
+.nav-btn:hover { background:var(--mov-deschis); color:var(--mov-inchis); }
+.nav-btn.activ { background:var(--mov-deschis); color:var(--mov-inchis); font-weight:500; }
+.nav-btn svg { width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+.nav-btn .badge { margin-left:auto; background:var(--mov-inchis); color:white; font-size:0.65rem; padding:1px 6px; border-radius:10px; }
+
+.sidebar-profil { margin-top:auto; padding:0.75rem; border-top:1px solid var(--lila); }
+.profil-info { display:flex; align-items:center; gap:0.6rem; }
+.profil-avatar { width:32px; height:32px; border-radius:50%; background:var(--mov-inchis); color:white; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:500; flex-shrink:0; }
+.profil-nume { font-size:0.82rem; font-weight:500; color:var(--text-principal); }
+.profil-rank { font-size:0.7rem; color:var(--mov-mediu); font-weight:300; }
+
+/* CONTENT */
+.content { margin-left:var(--sidebar-w); flex:1; overflow-y:auto; padding:1.75rem 2rem; }
+
+/* SECTIUNI */
+.sectiune { display:none; }
+.sectiune.activa { display:block; animation:fadeIn 0.25s ease; }
+@keyframes fadeOut { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-8px)} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+.page-titlu { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:600; color:var(--text-principal); margin-bottom:1.5rem; }
+
+/* CARDURI EVENIMENTE */
+.grid-evenimente { display:flex; flex-direction:column; gap:0.75rem; margin-bottom:2rem; }
+.card-eveniment {
+  background:white; border:1px solid var(--lila); border-radius:14px;
+  padding:1rem 1.25rem; display:flex; gap:1rem; align-items:flex-start;
+  transition:all 0.2s; cursor:pointer;
+}
+.card-eveniment:hover { border-color:var(--mov-pastel); box-shadow:0 4px 16px rgba(107,79,160,0.08); }
+.ev-data { background:var(--mov-deschis); border-radius:10px; padding:0.5rem 0.75rem; text-align:center; flex-shrink:0; min-width:52px; }
+.ev-zi { font-size:1.2rem; font-weight:500; color:var(--mov-inchis); line-height:1; }
+.ev-luna { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-secundar); }
+.ev-info { flex:1; }
+.ev-titlu { font-size:0.9rem; font-weight:500; color:var(--text-principal); margin-bottom:0.2rem; }
+.ev-desc { font-size:0.78rem; color:var(--text-secundar); font-weight:300; line-height:1.4; }
+.ev-loc { font-size:0.72rem; color:var(--mov-mediu); margin-top:0.3rem; }
+.ev-tag { display:inline-block; font-size:0.68rem; background:var(--mov-deschis); color:var(--mov-inchis); padding:2px 8px; border-radius:10px; margin-left:0.5rem; }
+
+/* IN PROGRES HOME */
+.sectiune-titlu { font-size:0.95rem; font-weight:500; color:var(--text-principal); margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+.sectiune-titlu span { font-size:0.75rem; color:var(--text-subtil); font-weight:300; }
+.grid-progres { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; }
+.card-progres {
+  background:white; border:1px solid var(--lila); border-radius:14px;
+  padding:1rem; cursor:pointer; transition:all 0.2s;
+}
+.card-progres:hover { border-color:var(--mov-pastel); transform:translateY(-2px); box-shadow:0 6px 20px rgba(107,79,160,0.1); }
+.coperta-mini { width:100%; height:120px; background:linear-gradient(135deg,var(--mov-deschis),var(--lila)); border-radius:8px; margin-bottom:0.7rem; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.coperta-mini img { width:100%; height:100%; object-fit:cover; border-radius:8px; }
+.coperta-placeholder { font-family:'Cormorant Garamond',serif; font-size:0.8rem; color:var(--mov-inchis); text-align:center; padding:0.5rem; }
+.card-titlu-carte { font-size:0.8rem; font-weight:500; color:var(--text-principal); margin-bottom:0.2rem; line-height:1.3; }
+.card-autor-carte { font-size:0.72rem; color:var(--text-secundar); font-weight:300; margin-bottom:0.5rem; }
+.bara-progres { height:4px; background:var(--mov-deschis); border-radius:2px; overflow:hidden; }
+.bara-progres-fill { height:100%; background:var(--mov-inchis); border-radius:2px; transition:width 0.5s ease; }
+.procent-text { font-size:0.68rem; color:var(--text-subtil); margin-top:0.25rem; }
+
+/* MY BOOKS */
+.foldere-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:0.75rem; margin-bottom:2rem; }
+.card-folder {
+  background:white; border:1px solid var(--lila); border-radius:14px;
+  padding:1.25rem 1rem; text-align:center; cursor:pointer;
+  transition:all 0.2s; position:relative;
+}
+.card-folder:hover { border-color:var(--mov-pastel); background:var(--mov-deschis); transform:translateY(-2px); }
+.card-folder.activ { border-color:var(--mov-inchis); background:var(--mov-deschis); }
+.folder-icon { width:40px; height:40px; border-radius:10px; margin:0 auto 0.6rem; display:flex; align-items:center; justify-content:center; }
+.folder-icon svg { width:22px; height:22px; stroke:var(--mov-inchis); fill:none; stroke-width:1.5; stroke-linecap:round; }
+.folder-nume { font-size:0.8rem; font-weight:500; color:var(--text-principal); }
+.folder-nr { font-size:0.7rem; color:var(--text-subtil); margin-top:0.2rem; }
+.btn-folder-nou {
+  background:transparent; border:1.5px dashed var(--lila); border-radius:14px;
+  padding:1.25rem 1rem; text-align:center; cursor:pointer;
+  transition:all 0.2s; font-family:'DM Sans',sans-serif;
+  color:var(--text-subtil); font-size:0.8rem;
+}
+.btn-folder-nou:hover { border-color:var(--mov-pastel); color:var(--mov-inchis); }
+.btn-folder-nou svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.5; display:block; margin:0 auto 0.4rem; }
+
+/* LISTA CARTI IN FOLDER */
+.lista-carti { display:flex; flex-direction:column; gap:0.6rem; }
+.card-carte-lista {
+  background:white; border:1px solid var(--lila); border-radius:12px;
+  padding:0.9rem 1.1rem; display:flex; gap:1rem; align-items:center;
+  cursor:pointer; transition:all 0.2s;
+}
+.card-carte-lista:hover { border-color:var(--mov-pastel); box-shadow:0 3px 12px rgba(107,79,160,0.08); }
+.coperta-lista { width:42px; height:60px; background:linear-gradient(135deg,var(--mov-deschis),var(--lila)); border-radius:5px; flex-shrink:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.coperta-lista img { width:100%; height:100%; object-fit:cover; }
+.carte-info-lista { flex:1; min-width:0; }
+.carte-titlu-lista { font-size:0.88rem; font-weight:500; color:var(--text-principal); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.carte-autor-lista { font-size:0.75rem; color:var(--text-secundar); font-weight:300; margin-bottom:0.3rem; }
+.carte-stele { color:#f0c040; font-size:0.8rem; letter-spacing:1px; }
+.bara-lista { height:3px; background:var(--mov-deschis); border-radius:2px; margin-top:0.4rem; width:100%; }
+.bara-lista-fill { height:100%; background:var(--mov-inchis); border-radius:2px; }
+.status-badge { font-size:0.68rem; padding:2px 8px; border-radius:10px; flex-shrink:0; }
+.status-progres { background:#e8f5e9; color:#2e7d32; }
+.status-dnf { background:#fce4ec; color:#c62828; }
+.status-citit { background:#e8e0f5; color:#6b4fa0; }
+.status-dorit { background:#fff8e1; color:#f57f17; }
+.status-imprumutat { background:#e3f2fd; color:#1565c0; }
+
+/* DETALII CARTE */
+.detalii-wrapper { max-width:680px; margin:0 auto; padding:0 1rem; min-height:100vh; }
+.btn-inapoi-carte { background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:0.4rem; color:var(--text-secundar); font-family:'DM Sans',sans-serif; font-size:0.82rem; margin-bottom:1.25rem; padding:0; transition:color 0.2s; }
+.btn-inapoi-carte:hover { color:var(--mov-inchis); }
+.btn-inapoi-carte svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+
+.detalii-coperta { width:160px; height:230px; background:linear-gradient(135deg,var(--mov-deschis),var(--lila)); border-radius:10px; margin:0 auto 1.25rem; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(107,79,160,0.15); }
+.detalii-coperta img { width:100%; height:100%; object-fit:cover; border-radius:10px; }
+.detalii-coperta-placeholder { font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--mov-inchis); text-align:center; padding:1rem; }
+
+.detalii-titlu { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; text-align:center; line-height:1.2; margin-bottom:0.4rem; }
+.detalii-autor { text-align:center; font-size:0.9rem; color:var(--mov-mediu); font-style:italic; margin-bottom:1.5rem; }
+
+.detalii-status-row { display:flex; gap:0.5rem; justify-content:center; margin-bottom:1.5rem; flex-wrap:wrap; }
+.detalii-status-btn { padding:0.4rem 1rem; border-radius:20px; border:1px solid var(--lila); background:white; font-family:'DM Sans',sans-serif; font-size:0.78rem; cursor:pointer; transition:all 0.2s; color:var(--text-secundar); }
+.detalii-status-btn:hover, .detalii-status-btn.activ { background:var(--mov-inchis); color:white; border-color:var(--mov-inchis); }
+
+.divider { height:1px; background:var(--lila); margin:1.25rem 0; }
+
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; margin-bottom:1.25rem; }
+.info-item { background:var(--alb-cald); border-radius:10px; padding:0.65rem 0.9rem; }
+.info-label { font-size:0.7rem; color:var(--text-subtil); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.2rem; }
+.info-val { font-size:0.85rem; color:var(--text-principal); font-weight:400; }
+
+.rezumat-text { font-size:0.88rem; color:var(--text-secundar); line-height:1.7; font-weight:300; margin-bottom:1.25rem; }
+
+.bara-progres-detalii { margin-bottom:1.25rem; }
+.bara-progres-detalii label { font-size:0.78rem; color:var(--text-secundar); display:flex; justify-content:space-between; margin-bottom:0.4rem; }
+.bara-mare { height:8px; background:var(--mov-deschis); border-radius:4px; overflow:hidden; }
+.bara-mare-fill { height:100%; background:var(--mov-inchis); border-radius:4px; }
+.update-pagini { display:flex; gap:0.5rem; margin-top:0.5rem; align-items:center; }
+.update-pagini input { width:80px; padding:0.4rem 0.6rem; border:1px solid var(--lila); border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.82rem; outline:none; }
+.update-pagini input:focus { border-color:var(--mov-mediu); }
+.btn-mini { padding:0.4rem 0.9rem; background:var(--mov-inchis); color:white; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.78rem; cursor:pointer; transition:background 0.2s; }
+.btn-mini:hover { background:var(--mov-profund); }
+
+/* STELE */
+.stele-section { margin-bottom:1.25rem; }
+.stele-titlu { font-size:0.82rem; color:var(--text-secundar); margin-bottom:0.5rem; }
+.stele-row { display:flex; gap:0.3rem; }
+.stea { font-size:1.6rem; cursor:pointer; color:#ddd; transition:color 0.15s; }
+.stea.activa, .stea:hover { color:#f0c040; }
+
+/* RECENZII */
+.recenzii-lista { display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.25rem; }
+.card-recenzie { background:var(--alb-cald); border-radius:10px; padding:0.9rem; }
+.rec-header { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.4rem; }
+.rec-avatar { width:28px; height:28px; border-radius:50%; background:var(--mov-pastel); color:var(--mov-profund); font-size:0.7rem; font-weight:500; display:flex; align-items:center; justify-content:center; }
+.rec-user { font-size:0.82rem; font-weight:500; }
+.rec-stele { color:#f0c040; font-size:0.75rem; margin-left:auto; }
+.rec-data { font-size:0.7rem; color:var(--text-subtil); }
+.rec-text { font-size:0.82rem; color:var(--text-secundar); font-weight:300; line-height:1.5; }
+
+.form-recenzie { background:white; border:1px solid var(--lila); border-radius:12px; padding:1.1rem; margin-bottom:1.5rem; }
+.form-recenzie textarea { width:100%; border:1px solid var(--lila); border-radius:8px; padding:0.65rem; font-family:'DM Sans',sans-serif; font-size:0.85rem; color:var(--text-principal); resize:vertical; min-height:80px; outline:none; background:var(--alb-cald); }
+.form-recenzie textarea:focus { border-color:var(--mov-mediu); }
+
+/* CARTI SIMILARE */
+.carti-similare-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:0.75rem; }
+.card-similar { cursor:pointer; transition:transform 0.2s; }
+.card-similar:hover { transform:translateY(-2px); }
+.similar-coperta { width:100%; height:160px; background:linear-gradient(135deg,var(--mov-deschis),var(--lila)); border-radius:8px; margin-bottom:0.5rem; }
+.similar-titlu { font-size:0.75rem; font-weight:500; color:var(--text-principal); line-height:1.3; }
+.similar-autor { font-size:0.68rem; color:var(--text-subtil); }
+
+/* DISCOVER */
+.rec-sectiune { margin-bottom:2rem; }
+.rec-sectiune-titlu { font-size:1rem; font-weight:500; color:var(--text-principal); margin-bottom:0.3rem; }
+.rec-sectiune-sub { font-size:0.78rem; color:var(--text-subtil); font-weight:300; margin-bottom:0.9rem; }
+.rec-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:0.9rem; }
+.card-rec { background:white; border:1px solid var(--lila); border-radius:14px; padding:0.9rem; cursor:pointer; transition:all 0.2s; }
+.card-rec:hover { border-color:var(--mov-pastel); transform:translateY(-2px); box-shadow:0 6px 20px rgba(107,79,160,0.1); }
+
+/* SEARCH */
+.search-bar-mare { display:flex; gap:0.5rem; margin-bottom:1.25rem; }
+.search-bar-mare input { flex:1; padding:0.75rem 1rem; border:1px solid var(--lila); border-radius:12px; font-family:'DM Sans',sans-serif; font-size:0.9rem; outline:none; background:white; }
+.search-bar-mare input:focus { border-color:var(--mov-mediu); box-shadow:0 0 0 3px rgba(155,125,200,0.1); }
+.btn-search { padding:0.75rem 1.25rem; background:var(--mov-inchis); color:white; border:none; border-radius:12px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.85rem; transition:background 0.2s; white-space:nowrap; }
+.btn-search:hover { background:var(--mov-profund); }
+.search-tabs { display:flex; gap:0.4rem; margin-bottom:1.25rem; }
+.search-tab { padding:0.4rem 0.9rem; border:1px solid var(--lila); border-radius:20px; background:white; font-family:'DM Sans',sans-serif; font-size:0.8rem; cursor:pointer; color:var(--text-secundar); transition:all 0.2s; }
+.search-tab.activ { background:var(--mov-inchis); color:white; border-color:var(--mov-inchis); }
+.filtre-avansate { background:white; border:1px solid var(--lila); border-radius:14px; padding:1.1rem; margin-bottom:1.25rem; display:none; }
+.filtre-avansate.vizibil { display:block; }
+.filtre-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; }
+.filtru-camp label { font-size:0.72rem; color:var(--text-secundar); display:block; margin-bottom:0.3rem; }
+.filtru-camp select, .filtru-camp input { width:100%; padding:0.5rem 0.7rem; border:1px solid var(--lila); border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.82rem; outline:none; background:white; }
+
+
+/* Modal folder nou */
+.modal-overlay { position:fixed; inset:0; background:rgba(45,31,78,0.35); z-index:200; display:none; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+.modal-overlay.vizibil { display:flex; }
+.modal { background:white; border-radius:20px; padding:2rem; width:340px; }
+.modal h3 { font-family:'Cormorant Garamond',serif; font-size:1.4rem; margin-bottom:0.3rem; }
+.modal p { font-size:0.82rem; color:var(--text-secundar); margin-bottom:1.25rem; }
+.modal input { width:100%; padding:0.7rem 0.9rem; border:1px solid var(--lila); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.88rem; outline:none; margin-bottom:1rem; }
+.modal input:focus { border-color:var(--mov-mediu); }
+.modal-btns { display:flex; gap:0.6rem; }
+.modal-btns button { flex:1; padding:0.65rem; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.85rem; cursor:pointer; transition:all 0.2s; }
+.btn-anuleaza { background:transparent; border:1px solid var(--lila); color:var(--text-secundar); }
+.btn-anuleaza:hover { background:var(--mov-deschis); }
+.btn-salveaza { background:var(--mov-inchis); border:none; color:white; }
+.btn-salveaza:hover { background:var(--mov-profund); }
+
+
+/* MORE SUBSECTIUNI */
+.more-subsec { display:none; }
+.more-subsec.activa { display:block; animation:fadeIn 0.25s ease; }
+
+
+/* ASISTENT ASTER */
+.msg-asistent { display:flex; gap:0.75rem; align-items:flex-start; }
+.msg-utilizator { display:flex; gap:0.75rem; align-items:flex-start; flex-direction:row-reverse; }
+.msg-avatar-ast { width:32px; height:32px; border-radius:50%; background:var(--mov-deschis); display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+.msg-avatar-user { width:32px; height:32px; border-radius:50%; background:var(--mov-inchis); color:white; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:600; flex-shrink:0; }
+.msg-text-ast { background:var(--mov-deschis); border-radius:0 12px 12px 12px; padding:0.75rem 1rem; font-size:0.83rem; color:var(--text-principal); line-height:1.6; max-width:85%; }
+.msg-text-user { background:var(--mov-inchis); color:white; border-radius:12px 0 12px 12px; padding:0.75rem 1rem; font-size:0.83rem; line-height:1.6; max-width:85%; }
+.msg-loading { display:flex; gap:4px; align-items:center; padding:0.5rem; }
+.msg-loading span { width:6px; height:6px; border-radius:50%; background:var(--mov-mediu); animation:dotBounce 1.2s infinite; }
+.msg-loading span:nth-child(2) { animation-delay:0.2s; }
+.msg-loading span:nth-child(3) { animation-delay:0.4s; }
+@keyframes dotBounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+
+/* NAV TABS */
+.more-nav {
+  display:flex; gap:0.4rem; flex-wrap:wrap;
+  background:white; border-bottom:1px solid var(--lila);
+  padding:0.75rem 1.5rem; position:sticky; top:0; z-index:50;
+}
+.more-tab {
+  padding:0.45rem 1rem; border-radius:20px; border:1px solid var(--lila);
+  background:white; font-family:'DM Sans',sans-serif; font-size:0.8rem;
+  cursor:pointer; color:var(--text-secundar); transition:all 0.2s; white-space:nowrap;
+}
+.more-tab.activ { background:var(--mov-inchis); color:white; border-color:var(--mov-inchis); }
+.more-tab:hover:not(.activ) { background:var(--mov-deschis); color:var(--mov-inchis); }
+
+.content { padding:1.75rem 2rem; max-width:1400px; }
+.sectiune { display:none; }
+.sectiune.activa { display:block; animation:fadeIn 0.25s ease; }
+@keyframes fadeOut { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-8px)} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.page-titlu { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:600; margin-bottom:1.5rem; }
+.sectiune-titlu { font-size:0.95rem; font-weight:500; margin-bottom:0.9rem; margin-top:1.5rem; color:var(--text-principal); }
+.divider { height:1px; background:var(--lila); margin:1.5rem 0; }
+
+/* CARD GENERIC */
+.card { background:white; border:1px solid var(--lila); border-radius:16px; padding:1.25rem 1.5rem; margin-bottom:1rem; }
+
+/* ═══ PROFIL ═══ */
+.profil-header { display:flex; align-items:flex-start; gap:1.5rem; margin-bottom:1.5rem; }
+.poza-wrapper { position:relative; flex-shrink:0; }
+.poza-profil {
+  width:80px; height:80px; border-radius:50%;
+  background:var(--mov-inchis); color:white;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem; font-weight:500; overflow:hidden;
+}
+.poza-profil img { width:100%; height:100%; object-fit:cover; }
+.btn-schimba-poza {
+  position:absolute; bottom:0; right:0;
+  width:26px; height:26px; border-radius:50%;
+  background:var(--mov-inchis); border:2px solid white;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.btn-schimba-poza svg { width:12px; height:12px; stroke:white; fill:none; stroke-width:2; stroke-linecap:round; }
+.profil-info { flex:1; }
+.profil-nume-mare { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:600; }
+.profil-username { font-size:0.85rem; color:var(--text-secundar); margin-bottom:0.4rem; }
+.profil-rank { display:inline-block; font-size:0.78rem; background:var(--mov-deschis); color:var(--mov-inchis); padding:0.25rem 0.75rem; border-radius:20px; }
+.profil-stats { display:flex; gap:1.5rem; margin-top:0.75rem; }
+.stat-item { text-align:center; }
+.stat-nr { font-size:1.1rem; font-weight:500; color:var(--mov-inchis); }
+.stat-label { font-size:0.7rem; color:var(--text-subtil); }
+
+/* Badges challengeuri */
+.badges-grid { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem; }
+.badge-challange {
+  font-family:'Pacifico', cursive;
+  font-size:0.72rem; padding:0.35rem 0.9rem;
+  border-radius:20px; border:none;
+}
+.badge-mov { background:var(--mov-deschis); color:var(--mov-profund); }
+.badge-auriu { background:#fff8e1; color:#b7791f; }
+.badge-roz { background:#fce4ec; color:#880e4f; }
+.badge-verde { background:#e8f5e9; color:#1b5e20; }
+
+/* Camp editabil */
+.camp-editabil { margin-bottom:1rem; }
+.camp-editabil label { font-size:0.75rem; color:var(--text-subtil); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:0.35rem; }
+.input-row { display:flex; gap:0.5rem; align-items:center; }
+.input-row input {
+  flex:1; padding:0.6rem 0.85rem; border:1px solid var(--lila);
+  border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.88rem;
+  color:var(--text-principal); background:var(--alb-cald); outline:none; transition:all 0.2s;
+}
+.input-row input:focus { border-color:var(--mov-mediu); background:white; box-shadow:0 0 0 3px rgba(155,125,200,0.1); }
+.input-row input:disabled { background:var(--alb-cald); color:var(--text-secundar); cursor:not-allowed; }
+.btn-edit { padding:0.5rem 0.9rem; background:transparent; border:1px solid var(--lila); border-radius:10px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.78rem; color:var(--text-secundar); transition:all 0.2s; white-space:nowrap; }
+.btn-edit:hover { background:var(--mov-deschis); color:var(--mov-inchis); border-color:var(--mov-pastel); }
+.btn-salveaza { padding:0.5rem 0.9rem; background:var(--mov-inchis); border:none; border-radius:10px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.78rem; color:white; transition:background 0.2s; white-space:nowrap; }
+.btn-salveaza:hover { background:var(--mov-profund); }
+.info-confirmare { font-size:0.72rem; color:var(--mov-mediu); margin-top:0.3rem; display:none; }
+.info-confirmare.vizibil { display:block; }
+
+/* ═══ NOTIFICARI ═══ */
+.card-notif { display:flex; gap:0.85rem; align-items:flex-start; padding:0.9rem 1.1rem; background:white; border:1px solid var(--lila); border-radius:12px; margin-bottom:0.6rem; }
+.notif-icon { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.notif-icon svg { width:17px; height:17px; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.notif-urgenta .notif-icon { background:#fce4ec; } .notif-urgenta .notif-icon svg { stroke:#c62828; }
+.notif-info .notif-icon { background:var(--mov-deschis); } .notif-info .notif-icon svg { stroke:var(--mov-inchis); }
+.notif-succes .notif-icon { background:#e8f5e9; } .notif-succes .notif-icon svg { stroke:#2e7d32; }
+.notif-corp { flex:1; }
+.notif-titlu { font-size:0.85rem; font-weight:500; margin-bottom:0.15rem; }
+.notif-text { font-size:0.78rem; color:var(--text-secundar); font-weight:300; line-height:1.4; }
+.notif-timp { font-size:0.7rem; color:var(--text-subtil); margin-top:0.25rem; }
+.btn-notif { padding:0.35rem 0.8rem; background:var(--mov-inchis); color:white; border:none; border-radius:8px; font-size:0.72rem; cursor:pointer; margin-top:0.4rem; font-family:'DM Sans',sans-serif; }
+
+/* ═══ PRIETENI ═══ */
+.search-prieteni { display:flex; gap:0.5rem; margin-bottom:1.25rem; }
+.search-prieteni input { flex:1; padding:0.65rem 1rem; border:1px solid var(--lila); border-radius:12px; font-family:'DM Sans',sans-serif; font-size:0.85rem; outline:none; }
+.search-prieteni input:focus { border-color:var(--mov-mediu); }
+.btn-cauta { padding:0.65rem 1.1rem; background:var(--mov-inchis); color:white; border:none; border-radius:12px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.82rem; }
+.card-prieten { display:flex; align-items:center; gap:0.9rem; padding:0.8rem 1rem; background:white; border:1px solid var(--lila); border-radius:12px; margin-bottom:0.5rem; cursor:pointer; transition:all 0.2s; }
+.card-prieten:hover { border-color:var(--mov-pastel); background:var(--mov-deschis); }
+.prieten-avatar { width:38px; height:38px; border-radius:50%; background:var(--mov-inchis); color:white; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:500; flex-shrink:0; }
+.prieten-info { flex:1; }
+.prieten-nume { font-size:0.88rem; font-weight:500; }
+.prieten-citeste { font-size:0.75rem; color:var(--text-secundar); font-weight:300; }
+.prieten-actiuni { display:flex; gap:0.4rem; }
+.btn-profil-prieten { padding:0.35rem 0.75rem; border:1px solid var(--lila); border-radius:8px; background:white; font-size:0.72rem; cursor:pointer; font-family:'DM Sans',sans-serif; color:var(--text-secundar); }
+.btn-profil-prieten:hover { background:var(--mov-deschis); color:var(--mov-inchis); }
+
+/* ═══ GRUPURI ═══ */
+.card-grup { background:white; border:1px solid var(--lila); border-radius:14px; padding:1.1rem 1.25rem; margin-bottom:0.75rem; }
+.grup-header { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:0.5rem; }
+.grup-titlu { font-size:0.95rem; font-weight:500; }
+.grup-sub { font-size:0.78rem; color:var(--text-secundar); font-weight:300; }
+.grup-meta { display:flex; gap:1rem; margin-top:0.5rem; font-size:0.72rem; color:var(--text-subtil); }
+.btn-alatura { padding:0.4rem 1rem; background:var(--mov-inchis); color:white; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.78rem; cursor:pointer; white-space:nowrap; transition:background 0.2s; flex-shrink:0; }
+.btn-alatura:hover { background:var(--mov-profund); }
+.btn-alatura.alaturat { background:var(--mov-deschis); color:var(--mov-inchis); }
+.btn-grup-nou { width:100%; padding:0.85rem; border:1.5px dashed var(--lila); border-radius:14px; background:transparent; font-family:'DM Sans',sans-serif; font-size:0.85rem; color:var(--text-subtil); cursor:pointer; transition:all 0.2s; }
+.btn-grup-nou:hover { border-color:var(--mov-pastel); color:var(--mov-inchis); }
+
+/* ═══ CHALLENGEURI ═══ */
+.card-challange { background:white; border:1px solid var(--lila); border-radius:14px; padding:1.1rem 1.25rem; margin-bottom:0.75rem; position:relative; overflow:hidden; }
+.challange-activ-bar { position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--mov-pastel), var(--mov-inchis)); }
+.challange-titlu { font-family:'Pacifico',cursive; font-size:1rem; color:var(--mov-profund); margin-bottom:0.25rem; }
+.challange-desc { font-size:0.78rem; color:var(--text-secundar); font-weight:300; margin-bottom:0.75rem; }
+.challange-special { font-size:0.7rem; background:#fff8e1; color:#b7791f; padding:2px 8px; border-radius:10px; display:inline-block; margin-bottom:0.5rem; }
+.challange-config { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.75rem; flex-wrap:wrap; }
+.challange-config label { font-size:0.78rem; color:var(--text-secundar); }
+.challange-config input { width:70px; padding:0.4rem 0.6rem; border:1px solid var(--lila); border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.82rem; outline:none; text-align:center; }
+.challange-config input:focus { border-color:var(--mov-mediu); }
+.challange-config span { font-size:0.78rem; color:var(--text-subtil); }
+.challange-progres { margin-bottom:0.75rem; }
+.challange-progres-label { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-subtil); margin-bottom:0.3rem; }
+.bara-challange { height:6px; background:var(--mov-deschis); border-radius:3px; overflow:hidden; }
+.bara-challange-fill { height:100%; background:var(--mov-inchis); border-radius:3px; transition:width 0.5s; }
+.challange-btns { display:flex; gap:0.5rem; }
+.btn-intra { padding:0.45rem 1rem; background:var(--mov-inchis); color:white; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.78rem; cursor:pointer; transition:background 0.2s; }
+.btn-intra:hover { background:var(--mov-profund); }
+.btn-intra.activ { background:var(--mov-deschis); color:var(--mov-inchis); cursor:default; }
+
+/* ═══ REZERVARI ═══ */
+.rezervare-tabs { display:flex; gap:0.5rem; margin-bottom:1.25rem; }
+.rez-tab { padding:0.45rem 1rem; border:1px solid var(--lila); border-radius:20px; background:white; font-family:'DM Sans',sans-serif; font-size:0.8rem; cursor:pointer; color:var(--text-secundar); transition:all 0.2s; }
+.rez-tab.activ { background:var(--mov-inchis); color:white; border-color:var(--mov-inchis); }
+.rez-sectiune { display:none; }
+.rez-sectiune.activa { display:block; }
+.form-rezervare { background:white; border:1px solid var(--lila); border-radius:14px; padding:1.25rem; margin-bottom:1rem; }
+.form-rezervare h3 { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; margin-bottom:0.25rem; }
+.form-rezervare p { font-size:0.78rem; color:var(--text-secundar); margin-bottom:1rem; font-weight:300; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem; }
+.form-camp label { font-size:0.72rem; color:var(--text-subtil); text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:0.35rem; }
+.form-camp select, .form-camp input[type="date"], .form-camp input[type="number"] {
+  width:100%; padding:0.6rem 0.8rem; border:1px solid var(--lila); border-radius:10px;
+  font-family:'DM Sans',sans-serif; font-size:0.85rem; outline:none; background:white; color:var(--text-principal);
+}
+.form-camp select:focus, .form-camp input:focus { border-color:var(--mov-mediu); }
+.form-camp.full { grid-column:span 2; }
+.btn-rezerva { width:100%; padding:0.75rem; background:var(--mov-inchis); color:white; border:none; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.88rem; cursor:pointer; transition:background 0.2s; }
+.btn-rezerva:hover { background:var(--mov-profund); }
+.card-rez-activa { display:flex; align-items:center; gap:1rem; padding:0.85rem 1.1rem; background:white; border:1px solid var(--lila); border-radius:12px; margin-bottom:0.5rem; }
+.rez-icon { width:36px; height:36px; border-radius:10px; background:var(--mov-deschis); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.rez-icon svg { width:18px; height:18px; stroke:var(--mov-inchis); fill:none; stroke-width:1.5; stroke-linecap:round; }
+.rez-info { flex:1; }
+.rez-titlu { font-size:0.88rem; font-weight:500; }
+.rez-detalii { font-size:0.75rem; color:var(--text-secundar); font-weight:300; }
+.btn-anuleaza-rez { padding:0.35rem 0.75rem; border:1px solid #f5c6c6; background:#fdf0f0; color:#c0392b; border-radius:8px; font-size:0.72rem; cursor:pointer; font-family:'DM Sans',sans-serif; }
+
+/* ═══ PROGRAM ═══ */
+.corp-program { background:white; border:1px solid var(--lila); border-radius:14px; margin-bottom:0.75rem; overflow:hidden; }
+.corp-header { padding:1rem 1.25rem; cursor:pointer; display:flex; align-items:center; gap:0.5rem; transition:background 0.2s; }
+.corp-header:hover { background:var(--mov-deschis); }
+.corp-header-info { display:flex; align-items:center; gap:0.75rem; }
+.corp-icon { width:32px; height:32px; border-radius:8px; background:var(--mov-deschis); display:flex; align-items:center; justify-content:center; }
+.corp-icon svg { width:16px; height:16px; stroke:var(--mov-inchis); fill:none; stroke-width:1.5; }
+.corp-titlu { font-size:0.92rem; font-weight:500; }
+.corp-subtitlu { font-size:0.72rem; color:var(--text-subtil); }
+.corp-chevron { width:16px; height:16px; stroke:var(--text-subtil); fill:none; stroke-width:2; stroke-linecap:round; transition:transform 0.2s; }
+.corp-chevron.rotit { transform:rotate(180deg); }
+.corp-body { display:none; border-top:1px solid var(--lila); padding:0.75rem 1.25rem; }
+.corp-body.vizibil { display:block; }
+.program-row { display:flex; justify-content:space-between; padding:0.3rem 0; font-size:0.82rem; border-bottom:1px solid var(--alb-cald); }
+.program-zi { color:var(--text-secundar); }
+.program-interval { font-weight:400; }
+.program-interval.inchis { color:#c0392b; }
+.corp-facilitati { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.6rem; padding-top:0.6rem; border-top:1px solid var(--lila); }
+.facilit-tag { font-size:0.68rem; background:var(--mov-deschis); color:var(--mov-inchis); padding:2px 8px; border-radius:10px; }
+
+/* Modal confirmare date */
+.modal-overlay { position:fixed; inset:0; background:rgba(45,31,78,0.4); z-index:200; display:none; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+.modal-overlay.vizibil { display:flex; }
+.modal { background:white; border-radius:20px; padding:2rem; width:360px; max-width:90vw; }
+.modal h3 { font-family:'Cormorant Garamond',serif; font-size:1.4rem; margin-bottom:0.4rem; }
+.modal p { font-size:0.82rem; color:var(--text-secundar); margin-bottom:1.25rem; line-height:1.5; }
+.modal input { width:100%; padding:0.7rem 0.9rem; border:1px solid var(--lila); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.88rem; outline:none; margin-bottom:1rem; }
+.modal input:focus { border-color:var(--mov-mediu); }
+.modal-btns { display:flex; gap:0.6rem; }
+.modal-btns button { flex:1; padding:0.65rem; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.85rem; cursor:pointer; transition:all 0.2s; border:none; }
+.btn-m-anuleaza { background:var(--mov-deschis); color:var(--mov-inchis); }
+.btn-m-confirma { background:var(--mov-inchis); color:white; }
+.btn-m-confirma:hover { background:var(--mov-profund); }
+
+/* Modal vizibil carti */
+.modal-viz { background:white; border-radius:20px; padding:1.75rem; width:380px; max-width:90vw; }
+.modal-viz h3 { font-family:'Cormorant Garamond',serif; font-size:1.3rem; margin-bottom:0.3rem; }
+.modal-viz p { font-size:0.8rem; color:var(--text-secundar); margin-bottom:1.1rem; }
+.viz-optiuni { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.1rem; }
+.viz-opt { display:flex; align-items:center; gap:0.75rem; padding:0.7rem 0.9rem; border:1px solid var(--lila); border-radius:10px; cursor:pointer; transition:all 0.2s; }
+.viz-opt:hover { border-color:var(--mov-pastel); background:var(--mov-deschis); }
+.viz-opt input[type="radio"] { accent-color:var(--mov-inchis); }
+.viz-opt label { font-size:0.85rem; cursor:pointer; }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="primapagina.html" class="logo">
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none">
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(157.5 24 24)"/>
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <span class="logo-nume">Biblioteca Aster</span>
+  </a>
+
+  <div class="header-search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" placeholder="Caută o carte..." id="input-search-header" onkeydown="if(event.key==='Enter'){navigheaza('search');document.getElementById('input-search-mare').value=this.value;}"/>
+  </div>
+
+  <nav style="display:flex;gap:0.25rem;align-items:center;margin-left:1rem;margin-right:0.5rem;">
+    <a href="/web/primapagina.html" style="font-size:0.78rem;color:var(--text-secundar);text-decoration:none;padding:0.35rem 0.75rem;border-radius:16px;transition:all 0.2s;" onmouseover="this.style.background='var(--mov-deschis)';this.style.color='var(--mov-inchis)'" onmouseout="this.style.background='';this.style.color='var(--text-secundar)'">Acasă</a>
+    <a href="/web/anunturi.html" style="font-size:0.78rem;color:var(--text-secundar);text-decoration:none;padding:0.35rem 0.75rem;border-radius:16px;transition:all 0.2s;" onmouseover="this.style.background='var(--mov-deschis)';this.style.color='var(--mov-inchis)'" onmouseout="this.style.background='';this.style.color='var(--text-secundar)'">Evenimente</a>
+    <a href="/web/cafenea.html" style="font-size:0.78rem;color:var(--text-secundar);text-decoration:none;padding:0.35rem 0.75rem;border-radius:16px;transition:all 0.2s;" onmouseover="this.style.background='var(--mov-deschis)';this.style.color='var(--mov-inchis)'" onmouseout="this.style.background='';this.style.color='var(--text-secundar)'">Cafenea</a>
+    <a href="/web/despre.html" style="font-size:0.78rem;color:var(--text-secundar);text-decoration:none;padding:0.35rem 0.75rem;border-radius:16px;transition:all 0.2s;" onmouseover="this.style.background='var(--mov-deschis)';this.style.color='var(--mov-inchis)'" onmouseout="this.style.background='';this.style.color='var(--text-secundar)'">Despre</a>
+  </nav>
+  <div class="header-right">
+    <button class="notif-btn" onclick="navigheaza('more');schimbaTab('notificari')">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="notif-dot" id="notif-dot"></div>
+    </button>
+    <div style="position:relative;" id="dash-user-wrap">
+      <div class="avatar" id="dash-avatar" onclick="toggleDashMenu()" style="cursor:pointer;" title="Profilul meu">MP</div>
+      <div id="dash-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:white;border:1px solid var(--lila);border-radius:12px;padding:0.5rem;min-width:160px;box-shadow:0 8px 24px rgba(107,79,160,0.12);z-index:200;">
+        <div style="padding:0.5rem 0.75rem;font-size:0.82rem;font-weight:500;color:var(--text-principal);border-bottom:1px solid var(--mov-deschis);margin-bottom:0.4rem;" id="dash-dd-nume">Maria P.</div>
+        <a onclick="navigheaza('more');schimbaTab('profil');toggleDashMenu();" style="display:block;padding:0.5rem 0.75rem;font-size:0.82rem;color:var(--text-principal);text-decoration:none;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--mov-deschis)'" onmouseout="this.style.background=''">👤 Profilul meu</a>
+        <a onclick="navigheaza('more');schimbaTab('notificari');toggleDashMenu();" style="display:block;padding:0.5rem 0.75rem;font-size:0.82rem;color:var(--text-principal);text-decoration:none;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--mov-deschis)'" onmouseout="this.style.background=''">🔔 Notificări</a>
+        <div style="border-top:1px solid var(--mov-deschis);margin:0.4rem 0;"></div>
+        <button onclick="localStorage.clear();window.location.href='/web/primapagina.html';" style="display:block;width:100%;text-align:left;padding:0.5rem 0.75rem;font-size:0.82rem;color:#880e4f;background:none;border:none;cursor:pointer;border-radius:8px;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='#fce4ec'" onmouseout="this.style.background=''">🚪 Deconectare</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <button class="nav-btn activ" onclick="navigheaza('home')" id="nav-home">
+        <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nav-btn" onclick="navigheaza('mybooks')" id="nav-mybooks">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        My Books
+        <span class="badge">12</span>
+      </button>
+      <button class="nav-btn" onclick="navigheaza('discover')" id="nav-discover">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        Discover
+      </button>
+      <button class="nav-btn" onclick="navigheaza('search')" id="nav-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Search
+      </button>
+      <button class="nav-btn" onclick="navigheaza('more')" id="nav-more">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        More
+        <span class="badge">3</span>
+      </button>
+      <a href="/web/regulament.html" class="nav-btn" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;color:var(--text-secundar);">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Regulament
+      </a>
+      <button class="nav-btn" onclick="navigheaza('asistent')" id="nav-asistent">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Asistent Aster
+      </button>
+    </div>
+
+    <div class="sidebar-profil">
+      <div class="profil-info">
+        <div class="profil-avatar">MP</div>
+        <div>
+          <div class="profil-nume">Maria P.</div>
+          <div class="profil-rank">⭐ Cititor Constant</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ═══ HOME ═══ -->
+    <div class="sectiune activa" id="sec-home">
+      <p class="page-titlu">Bună ziua, Maria 👋</p>
+
+      <div class="sectiune-titlu">
+        <svg style="width:16px;height:16px;stroke:var(--mov-inchis);fill:none;stroke-width:1.5;stroke-linecap:round;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Evenimente & Anunțuri <span>această săptămână</span> <a href="/web/anunturi.html" style="font-size:0.72rem;color:var(--mov-inchis);text-decoration:none;margin-left:0.5rem;font-weight:500;">Mai mult... →</a>
+      </div>
+
+      <div class="grid-evenimente">
+        <div class="card-eveniment">
+          <div class="ev-data"><div class="ev-zi">18</div><div class="ev-luna">Iunie</div></div>
+          <div class="ev-info">
+            <div class="ev-titlu">Lansare de carte — "Inima Timpului" <span class="ev-tag">Corp A</span></div>
+            <div class="ev-desc">Autoarea Ana Blandiana prezintă cel mai recent volum de poezie, urmată de sesiune de autografe.</div>
+            <div class="ev-loc">📍 Aula Magna, Corpul A · 18:00</div>
+          </div>
+        </div>
+        <div class="card-eveniment">
+          <div class="ev-data"><div class="ev-zi">19</div><div class="ev-luna">Iunie</div></div>
+          <div class="ev-info">
+            <div class="ev-titlu">Club de lectură — Fantasy & SF <span class="ev-tag">Corp B</span></div>
+            <div class="ev-desc">Discuție despre "The Name of the Wind". Toți cititorii sunt bineveniți!</div>
+            <div class="ev-loc">📍 Salon Literar, Corpul B · 17:00</div>
+          </div>
+        </div>
+        <div class="card-eveniment">
+          <div class="ev-data"><div class="ev-zi">27</div><div class="ev-luna">Iunie</div></div>
+          <div class="ev-info">
+            <div class="ev-titlu">Ora Poveștilor pentru Copii <span class="ev-tag">Corp F</span></div>
+            <div class="ev-desc">Povești interactive pentru copiii între 4-8 ani. Participare gratuită.</div>
+            <div class="ev-loc">📍 Sala Ora Poveștilor, Corpul F · 10:00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sectiune-titlu">
+        <svg style="width:16px;height:16px;stroke:var(--mov-inchis);fill:none;stroke-width:1.5;stroke-linecap:round;" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Continuă să citești <span>în progres</span>
+      </div>
+      <div class="grid-progres">
+        <div class="card-progres" onclick="deschideDetalii('1','Regele Umbrei','George R.R. Martin','Fantasy','480','Cartonată','Roman','O poveste epică despre putere și trădare într-un regat fantastic.','Corpul A, Etaj 2, Raft A2-R03','60','480')">
+          <div class="coperta-mini"><div class="coperta-placeholder">Regele<br>Umbrei</div></div>
+          <div class="card-titlu-carte">Regele Umbrei</div>
+          <div class="card-autor-carte">George R.R. Martin</div>
+          <div class="bara-progres"><div class="bara-progres-fill" style="width:60%"></div></div>
+          <div class="procent-text">60% · 288/480 pag.</div>
+        </div>
+        <div class="card-progres" onclick="deschideDetalii('2','Inima de Piatră','Mihai Eminescu','Roman','320','Brosată','Fictiune','O capodoperă a literaturii române.','Corpul B, Parter, Raft B0-R02','30','320')">
+          <div class="coperta-mini"><div class="coperta-placeholder">Inima de<br>Piatră</div></div>
+          <div class="card-titlu-carte">Inima de Piatră</div>
+          <div class="card-autor-carte">Mihai Eminescu</div>
+          <div class="bara-progres"><div class="bara-progres-fill" style="width:30%"></div></div>
+          <div class="procent-text">30% · 96/320 pag.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MY BOOKS ═══ -->
+    <div class="sectiune" id="sec-mybooks">
+      <p class="page-titlu">My Books</p>
+
+      <div class="foldere-grid" id="grid-foldere">
+        <div class="card-folder activ" onclick="deschidFolder('citit',this)">
+          <div class="folder-icon" style="background:#ede8f8"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="folder-nume">Citite</div>
+          <div class="folder-nr">8 cărți</div>
+        </div>
+        <div class="card-folder" onclick="deschidFolder('progres',this)">
+          <div class="folder-icon" style="background:#e8f5e9"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="folder-nume">În Progres</div>
+          <div class="folder-nr">2 cărți</div>
+        </div>
+        <div class="card-folder" onclick="deschidFolder('dorit',this)">
+          <div class="folder-icon" style="background:#fff8e1"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          <div class="folder-nume">Vreau să citesc</div>
+          <div class="folder-nr">5 cărți</div>
+        </div>
+        <div class="card-folder" onclick="deschidFolder('dnf',this)">
+          <div class="folder-icon" style="background:#fce4ec"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+          <div class="folder-nume">DNF</div>
+          <div class="folder-nr">1 carte</div>
+        </div>
+        <div class="card-folder" onclick="deschidFolder('imprumutat',this)">
+          <div class="folder-icon" style="background:#e3f2fd"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+          <div class="folder-nume">Împrumutate</div>
+          <div class="folder-nr">2 cărți</div>
+        </div>
+        <button class="btn-folder-nou" onclick="document.getElementById('modal-folder').classList.add('vizibil')">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Listă nouă
+        </button>
+      </div>
+
+      <div id="continut-folder">
+        <div class="sectiune-titlu" id="titlu-folder-activ">Citite</div>
+        <div class="lista-carti" id="lista-carti-folder">
+          <div class="card-carte-lista" onclick="deschideDetalii('3','Misterul Nopții','Agatha Christie','Mister','312','Brosată','Fictiune','O crimă misterioasă într-o vilă izolată.','Corpul A, Etaj 1, Raft A1-R01','312','312')">
+            <div class="coperta-lista"><div style="font-size:0.6rem;color:var(--mov-inchis);text-align:center;padding:4px;">Misterul<br>Nopții</div></div>
+            <div class="carte-info-lista">
+              <div class="carte-titlu-lista">Misterul Nopții</div>
+              <div class="carte-autor-lista">Agatha Christie</div>
+              <div class="carte-stele">★★★★★</div>
+            </div>
+            <span class="status-badge status-citit">Citit</span>
+          </div>
+          <div class="card-carte-lista" onclick="deschideDetalii('4','Fizica Modernă','Stephen Hawking','Știință','520','Cartonată','NonFictiune','Explorând universul și legile sale fundamentale.','Corpul E, Etaj 1, Raft E1-R02','520','520')">
+            <div class="coperta-lista"><div style="font-size:0.6rem;color:var(--mov-inchis);text-align:center;padding:4px;">Fizica<br>Modernă</div></div>
+            <div class="carte-info-lista">
+              <div class="carte-titlu-lista">Fizica Modernă</div>
+              <div class="carte-autor-lista">Stephen Hawking</div>
+              <div class="carte-stele">★★★★☆</div>
+            </div>
+            <span class="status-badge status-citit">Citit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ DISCOVER ═══ -->
+    <div class="sectiune" id="sec-discover">
+      <p class="page-titlu">Discover</p>
+      <div class="rec-sectiune">
+        <div class="rec-sectiune-titlu">Bazat pe genurile tale favorite</div>
+        <div class="rec-sectiune-sub">Ai citit Fantasy — iată ce ți-ar putea plăcea</div>
+        <div class="rec-grid">
+          <div class="card-rec" onclick="deschideDetalii('5','Drumul spre Stele','J.R.R. Tolkien','Fantasy','650','Cartonată','Fictiune','O aventură epică prin tărâmuri magice.','Corpul A, Etaj 2','0','650')">
+            <div class="coperta-mini" style="height:140px;"><div class="coperta-placeholder">Drumul<br>spre Stele</div></div>
+            <div class="card-titlu-carte" style="margin-top:0.5rem;">Drumul spre Stele</div>
+            <div class="card-autor-carte">J.R.R. Tolkien</div>
+            <div style="color:#f0c040;font-size:0.75rem;margin-top:0.3rem;">★★★★★ 4.9</div>
+          </div>
+          <div class="card-rec" onclick="deschideDetalii('6','Cetatea de Aur','C.S. Lewis','Fantasy','380','Brosată','Fictiune','O lume ascunsă dincolo de oglindă.','Corpul D, Parter','0','380')">
+            <div class="coperta-mini" style="height:140px;"><div class="coperta-placeholder">Cetatea<br>de Aur</div></div>
+            <div class="card-titlu-carte" style="margin-top:0.5rem;">Cetatea de Aur</div>
+            <div class="card-autor-carte">C.S. Lewis</div>
+            <div style="color:#f0c040;font-size:0.75rem;margin-top:0.3rem;">★★★★☆ 4.6</div>
+          </div>
+        </div>
+      </div>
+      <div class="rec-sectiune">
+        <div class="rec-sectiune-titlu">Mai mulți autori pe care îi apreciezi</div>
+        <div class="rec-sectiune-sub">Alte cărți de Agatha Christie</div>
+        <div class="rec-grid">
+          <div class="card-rec" onclick="deschideDetalii('7','Croitorul de Umbre','Agatha Christie','Mister','290','Brosată','Fictiune','Un nou caz pentru Hercule Poirot.','Corpul A, Etaj 1','0','290')">
+            <div class="coperta-mini" style="height:140px;"><div class="coperta-placeholder">Croitorul<br>de Umbre</div></div>
+            <div class="card-titlu-carte" style="margin-top:0.5rem;">Croitorul de Umbre</div>
+            <div class="card-autor-carte">Agatha Christie</div>
+            <div style="color:#f0c040;font-size:0.75rem;margin-top:0.3rem;">★★★★☆ 4.4</div>
+          </div>
+        </div>
+      </div>
+      <div class="rec-sectiune">
+        <div class="rec-sectiune-titlu">Prietenii tăi au citit</div>
+        <div class="rec-sectiune-sub">Recomandate cu ★★★★+ de persoanele din lista ta</div>
+        <div class="rec-grid">
+          <div class="card-rec">
+            <div class="coperta-mini" style="height:140px;"><div class="coperta-placeholder">Visul<br>Pierdut</div></div>
+            <div class="card-titlu-carte" style="margin-top:0.5rem;">Visul Pierdut</div>
+            <div class="card-autor-carte">Franz Kafka</div>
+            <div style="color:#f0c040;font-size:0.75rem;margin-top:0.3rem;">★★★★★ 4.8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SEARCH ═══ -->
+    <div class="sectiune" id="sec-search">
+      <p class="page-titlu">Căutare</p>
+      <div class="search-bar-mare">
+        <input type="text" id="input-search-mare" placeholder="Caută după titlu, autor..."/>
+        <button class="btn-search" onclick="efectueazaCautare()">Caută</button>
+      </div>
+      <div class="search-tabs">
+        <button class="search-tab activ" onclick="setSearchTab(this,'titlu')">Titlu</button>
+        <button class="search-tab" onclick="setSearchTab(this,'autor')">Autor</button>
+        <button class="search-tab" onclick="setSearchTab(this,'filtre')">Filtre avansate</button>
+      </div>
+      <div class="filtre-avansate" id="filtre-avansate">
+        <div class="filtre-grid">
+          <div class="filtru-camp"><label>Gen</label><select id="filtru-gen"><option value="">Toate</option><option>Copii</option><option>Drama</option><option>Fantasy</option><option>Istoric</option><option>Mister</option><option>Nuvela</option><option>Poezie</option><option>Roman</option><option>Romantic</option><option>SF</option><option>Thriller</option></select></div>
+          <div class="filtru-camp"><label>Suport</label><select id="filtru-suport"><option value="">Toate</option><option value="FIZIC">Fizic</option><option value="DIGITAL_PDF">Digital PDF</option><option value="AUDIOBOOK">Audiobook</option><option value="VIDEO">Video</option></select></div>
+          <div class="filtru-camp"><label>Limbă</label><select><option>Toate</option><option>Română</option><option>Engleză</option><option>Franceză</option></select></div>
+          <div class="filtru-camp"><label>An minim</label><input type="number" id="filtru-an-min" placeholder="1900"/></div>
+          <div class="filtru-camp"><label>An maxim</label><input type="number" id="filtru-an-max" placeholder="2026"/></div>
+          <div class="filtru-camp"><label>Rating minim</label><select id="filtru-rating"><option value="">Orice</option><option value="3">3+</option><option value="4">4+</option><option value="4.5">4.5+</option></select></div>
+        </div>
+        <button class="btn-mini" style="margin-top:0.75rem;" onclick="efectueazaCautare()">Aplică filtrele</button>
+      </div>
+      <div id="rezultate-search" class="lista-carti"></div>
+    </div>
+
+    <!-- ═══ MORE (Notificări) ═══ -->
+    <div class="sectiune" id="sec-more">
+      <nav class="more-nav">
+    <button class="more-tab activ" onclick="schimbaTab('notificari')">🔔 Notificări</button>
+    <button class="more-tab" onclick="schimbaTab('profil')">👤 Profilul meu</button>
+    <button class="more-tab" onclick="schimbaTab('prieteni')">👥 Prieteni</button>
+    <button class="more-tab" onclick="schimbaTab('grupuri')">📚 Grupuri</button>
+    <button class="more-tab" onclick="schimbaTab('challengeuri')">🏆 Challengeuri</button>
+    <button class="more-tab" onclick="schimbaTab('rezervari')">📅 Rezervări</button>
+    <button class="more-tab" onclick="schimbaTab('program')">🕐 Program</button>
+  </nav>
+      
+
+  <div class="more-subsec activa" id="sec-notificari">
+    <p class="page-titlu">Notificări</p>
+
+    <div class="card-notif notif-urgenta">
+      <div class="notif-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <div class="notif-corp">
+        <div class="notif-titlu">Împrumut expiră în 2 zile</div>
+        <div class="notif-text">"Regele Umbrei" trebuie returnat până pe 6 Iunie 2026. Poți reînnoi împrumutul din aplicație sau la recepție.</div>
+        <button class="btn-notif" style="margin-top:0.5rem;" onclick="reinnoiesteImprumut(this,'Regele Umbrei')">Reînnoiește împrumutul</button>
+        <div class="notif-timp">Acum 1 oră</div>
+      </div>
+    </div>
+
+    <div class="card-notif notif-succes">
+      <div class="notif-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="notif-corp">
+        <div class="notif-titlu">Carte gata de ridicat</div>
+        <div class="notif-text">"Fizica Cuantică" rezervată de tine este disponibilă la recepția Corpului E. Rezervarea expiră în 48 de ore.</div>
+        <div class="notif-timp">Ieri, 14:30</div>
+      </div>
+    </div>
+
+    <div class="card-notif notif-info">
+      <div class="notif-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="notif-corp">
+        <div class="notif-titlu">Eveniment mâine</div>
+        <div class="notif-text">Ești înscrisă la "Club de lectură Fantasy & SF" — 19 Iunie, ora 17:00, Salon Literar Corp B.</div>
+        <div class="notif-timp">Acum 3 ore</div>
+      </div>
+    </div>
+
+    <div class="card-notif notif-info">
+      <div class="notif-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="notif-corp">
+        <div class="notif-titlu">Cerere de prietenie</div>
+        <div class="notif-text">andrei_popescu ți-a trimis o cerere de prietenie.</div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+          <button class="btn-notif" onclick="acceptaCerere('andrei_popescu',this)">Acceptă</button>
+          <button class="btn-notif" style="background:var(--mov-deschis);color:var(--mov-inchis);" onclick="refuzaCerere('andrei_popescu',this)">Refuză</button>
+        </div>
+        <div class="notif-timp">Acum 5 ore</div>
+      </div>
+    </div>
+    <div id="notif-dinamice" style="margin-top:0.5rem;"></div>
+  </div>
+
+  <!-- ═══ PROFIL ═══ -->
+  <div class="more-subsec" id="sec-profil">
+    <p class="page-titlu">Profilul meu</p>
+
+    <div class="card">
+      <div class="profil-header">
+        <div class="poza-wrapper">
+          <div class="poza-profil" id="poza-profil-display">MP</div>
+          <button class="btn-schimba-poza" onclick="document.getElementById('input-poza').click()">
+            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </button>
+          <input type="file" id="input-poza" accept="image/*" style="display:none" onchange="schimbaPoza(this)"/>
+        </div>
+        <div class="profil-info">
+          <div class="profil-nume-mare">Maria Popescu</div>
+          <div class="profil-username">@maria_p</div>
+          <div class="profil-rank">⭐ Cititor Constant</div>
+          <div class="profil-stats">
+            <div class="stat-item"><div class="stat-nr">8</div><div class="stat-label">Citite</div></div>
+            <div class="stat-item"><div class="stat-nr">2</div><div class="stat-label">În progres</div></div>
+            <div class="stat-item"><div class="stat-nr">5</div><div class="stat-label">Wishlist</div></div>
+            <div class="stat-item"><div class="stat-nr">3</div><div class="stat-label">Prieteni</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sectiune-titlu" style="margin-top:0;">Badge-uri câștigate</div>
+      <div class="badges-grid">
+        <span class="badge-challange badge-mov">Monthly Read 2026 ✓</span>
+        <span class="badge-challange badge-auriu">Number the Pages ✓</span>
+        <span class="badge-challange badge-roz">April Marathon ✓</span>
+        <span class="badge-challange badge-verde">2026 Reading Challenge ✓</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sectiune-titlu" style="margin-top:0;">Date cont</div>
+
+      <div class="camp-editabil">
+        <label>Username</label>
+        <div class="input-row">
+          <input type="text" id="input-username" value="maria_p" disabled/>
+          <button class="btn-edit" onclick="editeaza('username')">Modifică</button>
+          <button class="btn-salveaza" id="btn-save-username" style="display:none" onclick="salveazaUsername()">Salvează</button>
+        </div>
+      </div>
+
+      <div class="camp-editabil">
+        <label>Telefon</label>
+        <div class="input-row">
+          <input type="tel" id="input-telefon" value="0712 345 678" disabled/>
+          <button class="btn-edit" onclick="editeaza('telefon')">Modifică</button>
+          <button class="btn-salveaza" id="btn-save-telefon" style="display:none" onclick="cereConfirmare('telefon')">Salvează</button>
+        </div>
+        <div class="info-confirmare" id="info-telefon">Vei primi un SMS de confirmare pe noul număr.</div>
+      </div>
+
+      <div class="camp-editabil">
+        <label>Email</label>
+        <div class="input-row">
+          <input type="email" id="input-email" value="maria@email.com" disabled/>
+          <button class="btn-edit" onclick="editeaza('email')">Modifică</button>
+          <button class="btn-salveaza" id="btn-save-email" style="display:none" onclick="cereConfirmare('email')">Salvează</button>
+        </div>
+        <div class="info-confirmare" id="info-email">Vei primi un email de confirmare pe noua adresă.</div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="sectiune-titlu" style="margin-top:0;">Date personale</div>
+      <div style="font-size:0.8rem;color:var(--text-subtil);font-weight:300;line-height:1.6;">
+        Numele, data nașterii și alte date personale pot fi modificate doar la recepția bibliotecii, cu prezentarea unui act de identitate.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PRIETENI ═══ -->
+  <div class="more-subsec" id="sec-prieteni">
+    <p class="page-titlu">Prieteni</p>
+
+    <div class="search-prieteni">
+      <input type="text" id="input-cauta-prieten" placeholder="Caută după username..."/>
+      <button class="btn-cauta" onclick="cautaPrieten()">Caută</button>
+    </div>
+    <div id="rezultat-cautare-prieten"></div>
+
+    <div class="sectiune-titlu">Prietenii mei (3)</div>
+    <div id="lista-prieteni">
+      <div class="card-prieten" onclick="mergiLaProfilPrieten('andrei_p','Andrei P.','@andrei_p','Cititor Activ',12,'citește Umbra Timpului')">
+        <div class="prieten-avatar">AP</div>
+        <div class="prieten-info">
+          <div class="prieten-nume">Andrei P. <span style="font-size:0.72rem;color:var(--text-subtil);">@andrei_p</span></div>
+          <div class="prieten-citeste">📖 Citește acum: Umbra Timpului</div>
+        </div>
+        <div class="prieten-actiuni">
+          <button class="btn-profil-prieten" onclick="event.stopPropagation();mergiLaProfilPrieten('andrei_p','Andrei P.','@andrei_p','Cititor Activ',12,'citeste')">Vezi profil</button>
+          <button class="btn-profil-prieten" style="background:#fce4ec;color:#880e4f;" onclick="event.stopPropagation();stergePrivetenieLista('andrei_p',this)">✕</button>
+        </div>
+      </div>
+      <div class="card-prieten" onclick="mergiLaProfilPrieten('ioana_m','Ioana M.','@ioana_m','Cititor Activ',12,'A citit 12 cărți în 2026')">
+        <div class="prieten-avatar" style="background:#9b5faa;">IM</div>
+        <div class="prieten-info">
+          <div class="prieten-nume">Ioana M. <span style="font-size:0.72rem;color:var(--text-subtil);">@ioana_m</span></div>
+          <div class="prieten-citeste">✓ A citit 12 cărți în 2026</div>
+        </div>
+        <div class="prieten-actiuni">
+          <button class="btn-profil-prieten" onclick="event.stopPropagation();mergiLaProfilPrieten('ioana_m','Ioana M.','@ioana_m','Cititor Activ',12,'citit')">Vezi profil</button>
+          <button class="btn-profil-prieten" style="background:#fce4ec;color:#880e4f;" onclick="event.stopPropagation();stergePrivetenieLista('ioana_m',this)">✕</button>
+        </div>
+      </div>
+      <div class="card-prieten" onclick="mergiLaProfilPrieten('cris_v','Cristian V.','@cris_v','Cititor Constant',8,'Citește acum: Fizica Cuantică')">
+        <div class="prieten-avatar" style="background:#4070a0;">CV</div>
+        <div class="prieten-info">
+          <div class="prieten-nume">Cristian V. <span style="font-size:0.72rem;color:var(--text-subtil);">@cris_v</span></div>
+          <div class="prieten-citeste">📖 Citește acum: Fizica Cuantică</div>
+        </div>
+        <div class="prieten-actiuni">
+          <button class="btn-profil-prieten">Vezi profil</button><button class="btn-profil-prieten" style="background:#fce4ec;color:#880e4f;" onclick="event.stopPropagation();stergePrivetenieLista('cris_v',this)">✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ GRUPURI ═══ -->
+  <div class="more-subsec" id="sec-grupuri">
+    <p class="page-titlu">Grupuri de lectură</p>
+
+    <div class="sectiune-titlu" style="margin-top:0;">Grupurile mele</div>
+    <div class="card-grup" onclick="mergiLaGrup(1,'Fantasy SF Suckers','Discutăm cărți fantasy și SF.',24,2023)" style="cursor:pointer;">
+      <div class="grup-header">
+        <div>
+          <div class="grup-titlu">Fantasy & SF Suckers 🧙</div>
+          <div class="grup-sub">Discutăm cărți fantasy și SF în fiecare săptămână.</div>
+        </div>
+        <div style="display:flex;gap:0.4rem;"><button class="btn-alatura alaturat">✓ Membru</button><button style="font-size:0.72rem;padding:0.3rem 0.6rem;background:#fce4ec;color:#880e4f;border:none;border-radius:8px;cursor:pointer;" onclick="event.stopPropagation();iesireGrup(1,this)">Ieșire</button></div>
+      </div>
+      <div class="grup-meta">
+        <span>👥 24 membri</span>
+        <span>📖 Acum: The Name of the Wind</span>
+        <span>Corp B · Salon Literar</span>
+      </div>
+    </div>
+
+    <div class="sectiune-titlu">Sugestii pentru tine</div>
+    <div class="card-grup">
+      <div class="grup-header">
+        <div>
+          <div class="grup-titlu" onclick="mergiLaGrup(2,'Clasici Români','Un grup dedicat literaturii române clasice și contemporane.',15,2024)" style="cursor:pointer;color:var(--mov-inchis);">Clasici Români 📜 <span style="font-size:0.7rem;color:var(--text-subtil);">→</span></div>
+          <div class="grup-sub">Un grup dedicat literaturii române clasice și contemporane.</div>
+        </div>
+        <button class="btn-alatura" data-grup-id="2" onclick="alatureazaGrup(2,this);">Alătură-te</button>
+      </div>
+      <div class="grup-meta"><span>👥 15 membri</span><span>Corp B · Salon Literar</span></div>
+    </div>
+    <div class="card-grup">
+      <div class="grup-header">
+        <div>
+          <div class="grup-titlu">Știință & Cosmos 🔭</div>
+          <div class="grup-sub">Cărți de popularizare a științei, astronomie și fizică.</div>
+        </div>
+        <button class="btn-alatura" data-grup-id="2" onclick="alatureazaGrup(2,this);">Alătură-te</button>
+      </div>
+      <div class="grup-meta"><span>👥 9 membri</span><span>Corp E · Grand Hall Științific</span></div>
+    </div>
+
+    <button class="btn-grup-nou" onclick="document.getElementById('modal-grup').classList.add('vizibil')">
+      + Creează un grup nou
+    </button>
+  </div>
+
+  <!-- ═══ CHALLENGEURI ═══ -->
+  <div class="more-subsec" id="sec-challengeuri">
+    <p class="page-titlu">Challengeuri</p>
+
+    <div class="sectiune-titlu" style="margin-top:0;">Active acum</div>
+
+    <!-- Monthly Read -->
+    <div class="card-challange">
+      <div class="challange-activ-bar"></div>
+      <div class="challange-titlu">Monthly Read Challenge</div>
+      <div class="challange-desc">Alege câte cărți vrei să citești în această lună. Cărțile finalizate se bifează automat.</div>
+      <div class="challange-config">
+        <label>Obiectiv:</label>
+        <input type="number" id="monthly-target" min="1" max="50" value="4" oninput="updateChallange('monthly')"/>
+        <span>cărți în Iunie 2026</span>
+      </div>
+      <div class="challange-progres">
+        <div class="challange-progres-label"><span id="monthly-label">0 din 4 cărți</span><span id="monthly-proc">50%</span></div>
+        <div class="bara-challange"><div class="bara-challange-fill" id="monthly-bara" style="width:50%"></div></div>
+      </div>
+      <div class="challange-btns">
+        <button class="btn-intra activ">✓ Participi</button>
+      </div>
+    </div>
+
+    <!-- Number the Pages -->
+    <div class="card-challange">
+      <div class="challange-titlu">Number the Pages 📄</div>
+      <div class="challange-desc">Alege câte pagini vrei să citești în total. Se actualizează automat cu paginile citite.</div>
+      <div class="challange-config">
+        <label>Obiectiv:</label>
+        <input type="number" id="pages-target" min="100" max="50000" value="1000" oninput="updateChallange('pages')"/>
+        <span>pagini</span>
+      </div>
+      <div class="challange-progres">
+        <div class="challange-progres-label"><span id="pages-label">384 din 1000 pagini</span><span id="pages-proc">38%</span></div>
+        <div class="bara-challange"><div class="bara-challange-fill" id="pages-bara" style="width:38%"></div></div>
+      </div>
+      <div class="challange-btns">
+        <button class="btn-intra" onclick="intraInChallange(this)">Intră în challenge</button>
+      </div>
+    </div>
+
+    <!-- 2026 Reading Challenge -->
+    <div class="card-challange">
+      <div class="challange-titlu">2026 Reading Challenge 🎯</div>
+      <div class="challange-desc">Câte cărți vrei să citești în tot anul 2026? Urmărește-ți progresul an de an.</div>
+      <div class="challange-config">
+        <label>Obiectiv:</label>
+        <input type="number" id="yearly-target" min="1" max="365" value="24" oninput="updateChallange('yearly')"/>
+        <span>cărți în 2026</span>
+      </div>
+      <div class="challange-progres">
+        <div class="challange-progres-label"><span id="yearly-label">8 din 24 cărți</span><span id="yearly-proc">33%</span></div>
+        <div class="bara-challange"><div class="bara-challange-fill" id="yearly-bara" style="width:33%"></div></div>
+      </div>
+      <div class="challange-btns">
+        <button class="btn-intra activ">✓ Participi</button>
+      </div>
+    </div>
+
+    <!-- Ziua Bibliotecii - special -->
+    <div class="card-challange">
+      <div class="challange-activ-bar" style="background:linear-gradient(90deg,#f0c040,#e67e22);"></div>
+      <div class="challange-special">⭐ Special · Disponibil 1-29 Iunie</div>
+      <div class="challange-titlu" style="color:#b7791f;">Ziua Bibliotecii Challenge 🌸</div>
+      <div class="challange-desc">Challengeul special al anului — celebrează ziua noastră cu o lectură de neuitat! Disponibil doar în luna iunie.</div>
+      <div class="challange-config">
+        <label>Obiectiv:</label>
+        <input type="number" id="bday-target" min="1" max="10" value="2" oninput="updateChallange('bday')"/>
+        <span>cărți în Iunie 2026</span>
+      </div>
+      <div class="challange-progres">
+        <div class="challange-progres-label"><span id="bday-label">0 din 2 cărți</span><span id="bday-proc">0%</span></div>
+        <div class="bara-challange"><div class="bara-challange-fill" id="bday-bara" style="width:0%;background:#e67e22;"></div></div>
+      </div>
+      <div class="challange-btns">
+        <button class="btn-intra" onclick="intraInChallange(this)" style="background:#e67e22;">Intră în challenge</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ REZERVĂRI ═══ -->
+  <div class="more-subsec" id="sec-rezervari">
+    <p class="page-titlu">Rezervări</p>
+
+    <div class="rezervare-tabs">
+      <button class="rez-tab activ" onclick="schimbaRezTab(this,'cafenea')">☕ Cafenea</button>
+      <button class="rez-tab" onclick="schimbaRezTab(this,'studiu')">📚 Sală de studiu</button>
+      <button class="rez-tab" onclick="schimbaRezTab(this,'active')">📋 Rezervările mele</button>
+    </div>
+
+    <!-- Cafenea -->
+    <div class="rez-sectiune activa" id="rez-cafenea">
+      <div class="form-rezervare">
+        <h3>☕ Cafeneaua Literară</h3>
+        <p>Corpul A, Parter · Program: Luni-Vineri 08:00-20:00, Sâmbătă 09:00-14:00</p>
+        <div class="form-grid">
+          <div class="form-camp">
+            <label>Data</label>
+            <input type="date" id="rez-caf-data"/>
+          </div>
+          <div class="form-camp">
+            <label>Nr. persoane</label>
+            <input type="number" id="rez-caf-persoane" min="1" max="8" value="1"/>
+          </div>
+          <div class="form-camp">
+            <label>Ora început</label>
+            <select id="rez-caf-start" onchange="actualizeazaOreEnd('caf')"></select>
+          </div>
+          <div class="form-camp">
+            <label>Ora încheiere</label>
+            <select id="rez-caf-end"></select>
+          </div>
+          <div class="form-camp full">
+            <label>Mențiuni (opțional)</label>
+            <input type="text" id="rez-caf-mentiuni" placeholder="ex: masă lângă fereastră, eveniment aniversar..."/>
+          </div>
+        </div>
+        <button class="btn-rezerva" onclick="faCereReservareNotif('cafenea')">Rezervă masa</button>
+      </div>
+    </div>
+
+    <!-- Sală studiu -->
+    <div class="rez-sectiune" id="rez-studiu">
+      <div class="form-rezervare">
+        <h3>📚 Sală de studiu individual</h3>
+        <p>Disponibil: Corp B (Sala Studiu 1) și Corp D (Sala Studiu D1) · O sală per corp rezervabilă online.</p>
+        <div class="form-grid">
+          <div class="form-camp">
+            <label>Corp</label>
+            <select id="rez-std-corp" onchange="actualizeazaOreStudiu()">
+              <option value="B">Corpul B · Sala Studiu Individual 1</option>
+              <option value="D">Corpul D · Sala Studiu Individual D1</option>
+            </select>
+          </div>
+          <div class="form-camp">
+            <label>Data</label>
+            <input type="date" id="rez-std-data"/>
+          </div>
+          <div class="form-camp">
+            <label>Ora început</label>
+            <select id="rez-std-start" onchange="actualizeazaOreEnd('std')"></select>
+          </div>
+          <div class="form-camp">
+            <label>Ora încheiere</label>
+            <select id="rez-std-end"></select>
+          </div>
+        </div>
+        <div style="font-size:0.75rem;color:#c0392b;margin-bottom:1rem;padding:0.6rem;background:#fdf0f0;border-radius:8px;">
+          ⚠️ Neprezentarea fără anunț prealabil poate duce la penalizarea contului.
+        </div>
+        <button class="btn-rezerva" onclick="faCereReservareNotif('studiu')">Rezervă sala</button>
+      </div>
+    </div>
+
+    <!-- Rezervările mele -->
+    <div class="rez-sectiune" id="rez-active">
+      <div class="sectiune-titlu" style="margin-top:0;">Rezervări active</div>
+      <div class="card-rez-activa">
+        <div class="rez-icon"><svg viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></div>
+        <div class="rez-info">
+          <div class="rez-titlu">Cafeneaua Literară</div>
+          <div class="rez-detalii">22 Iunie 2026 · 14:00 - 16:00 · 2 persoane</div>
+        </div>
+        <button class="btn-anuleaza-rez" onclick="anuleazaRez(this)">Anulează</button>
+      </div>
+      <div id="rezervari-noi"></div>
+      <p style="font-size:0.78rem;color:var(--text-subtil);margin-top:1rem;">Nu ai alte rezervări active.</p>
+    </div>
+  </div>
+
+  <!-- ═══ PROGRAM ═══ -->
+  <div class="more-subsec" id="sec-program">
+    <p class="page-titlu">Program Bibliotecă</p>
+
+    <div id="lista-programe">
+      <!-- Corp A -->
+      <div class="corp-program">
+        <div class="corp-header" onclick="toggleCorp(this)">
+          <div class="corp-header-info">
+            <div class="corp-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+            <div><div class="corp-titlu">Corpul A — Sediul Central</div><div class="corp-subtitlu">Str. Principală 1 · Sediu administrativ</div></div>
+          </div>
+          <svg class="corp-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="corp-body">
+          <div class="program-row"><span class="program-zi">Luni — Vineri</span><span class="program-interval">08:00 — 20:00</span></div>
+          <div class="program-row"><span class="program-zi">Sâmbătă</span><span class="program-interval">09:00 — 14:00</span></div>
+          <div class="program-row"><span class="program-zi">Duminică</span><span class="program-interval inchis">Închis</span></div>
+          <div class="corp-facilitati">
+            <span class="facilit-tag">Cafenea</span><span class="facilit-tag">Aula Magna</span><span class="facilit-tag">Grand Hall</span><span class="facilit-tag">Expozitii</span><span class="facilit-tag">Lift</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Corp B -->
+      <div class="corp-program">
+        <div class="corp-header" onclick="toggleCorp(this)">
+          <div class="corp-header-info">
+            <div class="corp-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            <div><div class="corp-titlu">Corpul B — Studiu & Non-Ficțiune</div><div class="corp-subtitlu">Str. Principală 2</div></div>
+          </div>
+          <svg class="corp-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="corp-body">
+          <div class="program-row"><span class="program-zi">Luni — Vineri</span><span class="program-interval">08:00 — 20:00</span></div>
+          <div class="program-row"><span class="program-zi">Sâmbătă</span><span class="program-interval">09:00 — 14:00</span></div>
+          <div class="program-row"><span class="program-zi">Duminică</span><span class="program-interval inchis">Închis</span></div>
+          <div class="corp-facilitati">
+            <span class="facilit-tag">Sală lectură</span><span class="facilit-tag">Studiu individual</span><span class="facilit-tag">Salon Literar</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Corp C -->
+      <div class="corp-program">
+        <div class="corp-header" onclick="toggleCorp(this)">
+          <div class="corp-header-info">
+            <div class="corp-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+            <div><div class="corp-titlu">Corpul C — Hub Digital & Mediatecă</div><div class="corp-subtitlu">Str. Principală 3</div></div>
+          </div>
+          <svg class="corp-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="corp-body">
+          <div class="program-row"><span class="program-zi">Luni — Vineri</span><span class="program-interval">09:00 — 22:00</span></div>
+          <div class="program-row"><span class="program-zi">Sâmbătă</span><span class="program-interval">09:00 — 14:00</span></div>
+          <div class="program-row"><span class="program-zi">Duminică</span><span class="program-interval inchis">Închis</span></div>
+          <div class="corp-facilitati">
+            <span class="facilit-tag">IT Hub</span><span class="facilit-tag">Mediatecă</span><span class="facilit-tag">Calculatoare</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Corp D -->
+      <div class="corp-program">
+        <div class="corp-header" onclick="toggleCorp(this)">
+          <div class="corp-header-info">
+            <div class="corp-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+            <div><div class="corp-titlu">Corpul D — Ficțiune & Dezvoltare</div><div class="corp-subtitlu">Str. Principală 4</div></div>
+          </div>
+          <svg class="corp-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="corp-body">
+          <div class="program-row"><span class="program-zi">Luni — Vineri</span><span class="program-interval">09:00 — 20:00</span></div>
+          <div class="program-row"><span class="program-zi">Sâmbătă</span><span class="program-interval">09:00 — 14:00</span></div>
+          <div class="program-row"><span class="program-zi">Duminică</span><span class="program-interval inchis">Închis</span></div>
+          <div class="corp-facilitati">
+            <span class="facilit-tag">Common Space</span><span class="facilit-tag">Studiu individual</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Corp E -->
+      <div class="corp-program">
+        <div class="corp-header" onclick="toggleCorp(this)">
+          <div class="corp-header-info">
+            <div class="corp-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+            <div><div class="corp-titlu">Corpul E — Secția Științifică</div><div class="corp-subtitlu">Str. Principală 5</div></div>
+          </div>
+          <svg class="corp-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="corp-body">
+          <div class="program-row"><span class="program-zi">Luni — Vineri</span><span class="program-interval">08:00 — 18:00</span></div>
+          <div class="program-row"><span class="program-zi">Sâmbătă</span><span class="program-interval inchis">Închis</span></div>
+          <div class="program-row"><span class="program-zi">Duminică</span><span class="program-interval inchis">Închis</span></div>
+          <div class="corp-facilitati">
+            <span class="facilit-tag">Jurnale științifice</span><span class="facilit-tag">Laborator conservare</span><span class="facilit-tag">Arhivă</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Corp F -->
+      <div class="corp-program">
+        <div class="corp-header" onclick="toggleCorp(this)">
+          <div class="corp-header-info">
+            <div class="corp-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+            <div><div class="corp-titlu">Corpul F — Copii & Evenimente</div><div class="corp-subtitlu">Str. Principală 6</div></div>
+          </div>
+          <svg class="corp-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="corp-body">
+          <div class="program-row"><span class="program-zi">Luni — Vineri</span><span class="program-interval">09:00 — 19:00</span></div>
+          <div class="program-row"><span class="program-zi">Sâmbătă</span><span class="program-interval">09:00 — 14:00</span></div>
+          <div class="program-row"><span class="program-zi">Duminică</span><span class="program-interval inchis">Închis</span></div>
+          <div class="corp-facilitati">
+            <span class="facilit-tag">Ludotecă</span><span class="facilit-tag">Ora Poveștilor</span><span class="facilit-tag">Atelier creație</span><span class="facilit-tag">Garderobă</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MODAL CONFIRMARE DATE CONT -->
+<div class="modal-overlay" id="modal-confirmare">
+  <div class="modal">
+    <h3 id="modal-conf-titlu">Confirmare necesară</h3>
+    <p id="modal-conf-text">Pentru siguranța contului tău, trebuie să confirmi această modificare.</p>
+    <input type="text" id="modal-conf-input" placeholder="Cod de confirmare"/>
+    <div class="modal-btns">
+      <button class="btn-m-anuleaza" onclick="document.getElementById('modal-confirmare').classList.remove('vizibil')">Anulează</button>
+      <button class="btn-m-confirma" onclick="confirmaModificare()">Confirmă</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL GRUP NOU -->
+<div class="modal-overlay" id="modal-grup">
+  <div class="modal">
+    <h3>Grup nou de lectură</h3>
+    <p>Creează un grup pentru prietenii tăi sau deschis comunității.</p>
+    <input type="text" id="input-grup-nume" placeholder="Numele grupului"/>
+    <input type="text" id="input-grup-desc" placeholder="Scurtă descriere"/>
+    <div class="modal-btns">
+      <button class="btn-m-anuleaza" onclick="document.getElementById('modal-grup').classList.remove('vizibil')">Anulează</button>
+      <button class="btn-m-confirma" onclick="creeazaGrup()">Creează</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VIZIBILITATE CARTE -->
+<div class="modal-overlay" id="modal-viz">
+  <div class="modal-viz">
+    <h3>Vizibilitate pentru prieteni</h3>
+    <p>Vrei ca prietenii tăi să vadă această carte în profilul tău?</p>
+    <div class="viz-optiuni">
+      <div class="viz-opt">
+        <input type="radio" name="viz" id="viz-da" value="da" checked/>
+        <label for="viz-da">Da, vizibil pentru prieteni</label>
+      </div>
+      <div class="viz-opt">
+        <input type="radio" name="viz" id="viz-nu" value="nu"/>
+        <label for="viz-nu">Nu, păstrează privat</label>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-m-anuleaza" onclick="document.getElementById('modal-viz').classList.remove('vizibil')">Sari peste</button>
+      <button class="btn-m-confirma" onclick="salveazaVizibilitate()">Salvează</button>
+    </div>
+  </div>
+</div>
+      </div>
+
+
+    <!-- ═══ ASISTENT ASTER ═══ -->
+    <div class="sectiune" id="sec-asistent">
+      <p class="page-titlu">Asistent <span style="color:var(--mov-mediu);">Aster</span> 🌸</p>
+      <p style="font-size:0.83rem;color:var(--text-secundar);margin-bottom:1.5rem;font-weight:300;">Întreabă-mă orice despre cărți, bibliotecă sau cere-mi recomandări personalizate.</p>
+      
+      <div style="display:flex;justify-content:flex-end;margin-bottom:0.75rem;">
+        <button onclick="conversatieNoua()" style="font-size:0.75rem;padding:0.3rem 0.75rem;border:1px solid var(--lila);border-radius:16px;background:white;cursor:pointer;color:var(--text-secundar);" onmouseover="this.style.background='var(--mov-deschis)'" onmouseout="this.style.background='white'">+ Conversație nouă</button>
+      </div>
+      <div id="asistent-chat" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;max-height:420px;overflow-y:auto;padding:0.5rem 0;">
+        <div class="msg-asistent">
+          <div class="msg-avatar-ast">🌸</div>
+          <div class="msg-text-ast">Bună! Sunt Asistentul Aster, ghidul tău literar. Pot să îți recomand cărți, să îți spun despre colecția noastră sau să răspund la întrebări despre bibliotecă. Cu ce te pot ajuta?</div>
+        </div>
+      </div>
+      
+      <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+        <input type="text" id="input-asistent" placeholder="Scrie un mesaj..." 
+          style="flex:1;padding:0.65rem 1rem;border:1px solid var(--lila);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;transition:border-color 0.2s;"
+          onkeydown="if(event.key==='Enter')trimiteMesajAsistent()"
+          onfocus="this.style.borderColor='var(--mov-mediu)'"
+          onblur="this.style.borderColor='var(--lila)'"/>
+        <button onclick="trimiteMesajAsistent()" style="padding:0.65rem 1.25rem;background:var(--mov-inchis);color:white;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;transition:background 0.2s;white-space:nowrap;"
+          onmouseover="this.style.background='var(--mov-profund)'" onmouseout="this.style.background='var(--mov-inchis)'">
+          Trimite
+        </button>
+      </div>
+      
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button onclick="document.getElementById('input-asistent').value='Recomandă-mi o carte Fantasy';trimiteMesajAsistent()" 
+          style="font-size:0.72rem;padding:0.3rem 0.75rem;border:1px solid var(--lila);border-radius:16px;background:white;cursor:pointer;color:var(--text-secundar);transition:all 0.2s;"
+          onmouseover="this.style.background='var(--mov-deschis)';this.style.color='var(--mov-inchis)'" onmouseout="this.style.background='white';this.style.color='var(--text-secundar)'">
+          📚 Recomandă Fantasy
+        </button>
+        <button onclick="document.getElementById('input-asistent').value='Ce cărți sunt disponibile de Agatha Christie?';trimiteMesajAsistent()"
+          style="font-size:0.72rem;padding:0.3rem 0.75rem;border:1px solid var(--lila);border-radius:16px;background:white;cursor:pointer;color:var(--text-secundar);transition:all 0.2s;"
+          onmouseover="this.style.background='var(--mov-deschis)';this.style.color='var(--mov-inchis)'" onmouseout="this.style.background='white';this.style.color='var(--text-secundar)'">
+          🔍 Cărți autor
+        </button>
+        <button onclick="document.getElementById('input-asistent').value='Care este programul bibliotecii?';trimiteMesajAsistent()"
+          style="font-size:0.72rem;padding:0.3rem 0.75rem;border:1px solid var(--lila);border-radius:16px;background:white;cursor:pointer;color:var(--text-secundar);transition:all 0.2s;"
+          onmouseover="this.style.background='var(--mov-deschis)';this.style.color='var(--mov-inchis)'" onmouseout="this.style.background='white';this.style.color='var(--text-secundar)'">
+          🕐 Program
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ DETALII CARTE ═══ -->
+    <div class="sectiune" id="sec-detalii">
+      <div class="detalii-wrapper">
+        <button class="btn-inapoi-carte" onclick="navigheaza(sectiuneAnterioara)">
+          <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Înapoi
+        </button>
+
+        <div class="detalii-coperta">
+          <div class="detalii-coperta-placeholder" id="det-coperta-text">Titlu</div>
+        </div>
+
+        <h1 class="detalii-titlu" id="det-titlu">—</h1>
+        <p class="detalii-autor" id="det-autor">—</p>
+
+        <div class="detalii-status-row">
+          <button class="detalii-status-btn" onclick="setStatus(this,'citit')">✓ Citit</button>
+          <button class="detalii-status-btn" onclick="setStatus(this,'progres')">📖 În progres</button>
+          <button class="detalii-status-btn" onclick="setStatus(this,'dorit')">♡ Vreau să citesc</button>
+          <button class="detalii-status-btn" onclick="setStatus(this,'dnf')">✕ DNF</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="bara-progres-detalii" id="bara-progres-detalii" style="display:none;">
+          <label><span>Progres lectură</span><span id="det-procent">0%</span></label>
+          <div class="bara-mare"><div class="bara-mare-fill" id="bara-mare-fill" style="width:0%"></div></div>
+          <div class="update-pagini">
+            <span style="font-size:0.78rem;color:var(--text-secundar);">Pagina curentă:</span>
+            <input type="number" id="input-pagina" min="0" placeholder="0"/>
+            <button class="btn-mini" onclick="updateProgres()">Actualizează</button>
+          </div>
+        </div>
+
+        <p class="rezumat-text" id="det-rezumat">—</p>
+
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Număr pagini</div><div class="info-val" id="det-pagini">—</div></div>
+          <div class="info-item"><div class="info-label">Tip copertă</div><div class="info-val" id="det-coperta-tip">—</div></div>
+          <div class="info-item"><div class="info-label">Tip</div><div class="info-val" id="det-tip">—</div></div>
+          <div class="info-item"><div class="info-label">Gen</div><div class="info-val" id="det-gen">—</div></div>
+          <div class="info-item" style="grid-column:span 2;"><div class="info-label">Locație în bibliotecă</div><div class="info-val" id="det-locatie">—</div></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="stele-section">
+          <div class="stele-titlu">Nota ta</div>
+          <div class="stele-row" id="stele-row">
+            <span class="stea" onclick="setStelute(1)">★</span>
+            <span class="stea" onclick="setStelute(2)">★</span>
+            <span class="stea" onclick="setStelute(3)">★</span>
+            <span class="stea" onclick="setStelute(4)">★</span>
+            <span class="stea" onclick="setStelute(5)">★</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="sectiune-titlu">Recenzii cititori</div>
+        <div class="recenzii-lista">
+          <div class="card-recenzie">
+            <div class="rec-header"><div class="rec-avatar">AP</div><span class="rec-user">andrei_p</span><span class="rec-stele">★★★★★</span><span class="rec-data" style="margin-left:0.5rem;">12 Apr 2026</span></div>
+            <div class="rec-text">O carte absolut fascinantă. Am citit-o dintr-o suflare, imposibil de lăsat din mână.</div>
+          </div>
+          <div class="card-recenzie">
+            <div class="rec-header"><div class="rec-avatar">IM</div><span class="rec-user">ioana_m</span><span class="rec-stele">★★★★☆</span><span class="rec-data" style="margin-left:0.5rem;">3 Mar 2026</span></div>
+            <div class="rec-text">Foarte bună, doar finalul mi s-a părut puțin grăbit. Recomand cu căldură!</div>
+          </div>
+        </div>
+
+        <div class="sectiune-titlu" style="margin-top:1rem;">Adaugă o recenzie</div>
+        <div class="form-recenzie">
+          <div class="stele-row" id="stele-recenzie" style="margin-bottom:0.75rem;">
+            <span class="stea" onclick="setSteluteRecenzie(1)">★</span>
+            <span class="stea" onclick="setSteluteRecenzie(2)">★</span>
+            <span class="stea" onclick="setSteluteRecenzie(3)">★</span>
+            <span class="stea" onclick="setSteluteRecenzie(4)">★</span>
+            <span class="stea" onclick="setSteluteRecenzie(5)">★</span>
+          </div>
+          <textarea id="textarea-recenzie" placeholder="Scrie recenzia ta..."></textarea>
+          <button class="btn-mini" style="margin-top:0.6rem;width:100%;padding:0.6rem;" onclick="trimiteRecenzie()">Publică recenzia</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="sectiune-titlu" id="titlu-similare">Alte cărți din serie</div>
+        <div class="carti-similare-grid" id="grid-similare">
+          <div class="card-similar"><div class="similar-coperta"></div><div class="similar-titlu">Umbra Timpului</div><div class="similar-autor">G.R.R. Martin</div></div>
+          <div class="card-similar"><div class="similar-coperta"></div><div class="similar-titlu">Podul dintre Lumi</div><div class="similar-autor">G.R.R. Martin</div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL FOLDER NOU -->
+<div class="modal-overlay" id="modal-folder">
+  <div class="modal">
+    <h3>Listă nouă</h3>
+    <p>Dă un nume listei tale personalizate de cărți.</p>
+    <input type="text" id="input-folder-nou" placeholder="ex: Cărți pentru vară"/>
+    <div class="modal-btns">
+      <button class="btn-anuleaza" onclick="document.getElementById('modal-folder').classList.remove('vizibil')">Anulează</button>
+      <button class="btn-salveaza" onclick="adaugaFolderNou()">Creează</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let sectiuneAnterioara = 'home';
+let steluteSelectate = 0;
+let steluteRecenzieSelectate = 0;
+let searchTipActiv = 'titlu';
+let carteActiva = {};
+
+
+function schimbaTab(tabId) {
+  document.querySelectorAll('.more-subsec').forEach(s => s.classList.remove('activa'));
+  document.querySelectorAll('.more-tab').forEach(t => t.classList.remove('activ'));
+  const sec = document.getElementById('sec-' + tabId);
+  if (sec) sec.classList.add('activa');
+  // Gaseste butonul activ
+  document.querySelectorAll('.more-tab').forEach(t => {
+    if (t.getAttribute('onclick') && t.getAttribute('onclick').includes("'" + tabId + "'")) {
+      t.classList.add('activ');
+    }
+  });
+}
+
+function navigheaza(sectiune) {
+  document.querySelectorAll('.sectiune').forEach(s => s.classList.remove('activa'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('activ'));
+  if (sectiune !== 'detalii') sectiuneAnterioara = sectiune;
+  const el = document.getElementById('sec-' + sectiune);
+  console.log('[DEBUG] navigheaza:', sectiune, 'element gasit:', el);
+  el?.classList.add('activa');
+  document.getElementById('nav-' + sectiune)?.classList.add('activ');
+  if (sectiune === 'more') { schimbaTab('notificari'); document.getElementById('sec-detalii')?.classList.remove('activa'); }
+}
+
+function deschidFolder(tip, el) {
+  console.log('[DEBUG] deschidFolder apelat:', tip);
+  document.querySelectorAll('.card-folder').forEach(f => f.classList.remove('activ'));
+  el.classList.add('activ');
+  const titluri = {citit:'Citite', progres:'În Progres', dorit:'Vreau să citesc', dnf:'DNF', imprumutat:'Împrumutate'};
+  document.getElementById('titlu-folder-activ').textContent = titluri[tip] || tip;
+
+  const carti = {
+    citit: [
+      {id:'3', titlu:'Misterul Nopții', autor:'Agatha Christie', stele:'★★★★★', status:'status-citit', label:'Citit'},
+      {id:'4', titlu:'Fizica Modernă', autor:'Stephen Hawking', stele:'★★★★☆', status:'status-citit', label:'Citit'}
+    ],
+    progres: [
+      {id:'1', titlu:'Regele Umbrei', autor:'George R.R. Martin', stele:'', status:'status-progres', label:'În progres', procent:'60%'},
+      {id:'2', titlu:'Inima de Piatră', autor:'Mihai Eminescu', stele:'', status:'status-progres', label:'În progres', procent:'30%'}
+    ],
+    dorit: [
+      {id:'5', titlu:'Drumul spre Stele', autor:'J.R.R. Tolkien', stele:'', status:'status-dorit', label:'Vreau să citesc'},
+      {id:'6', titlu:'Cetatea de Aur', autor:'C.S. Lewis', stele:'', status:'status-dorit', label:'Vreau să citesc'}
+    ],
+    dnf: [
+      {id:'7', titlu:'Croitorul de Umbre', autor:'Agatha Christie', stele:'★★☆☆☆', status:'status-dnf', label:'DNF'}
+    ],
+    imprumutat: [
+      {id:'8', titlu:'Visul Pierdut', autor:'Franz Kafka', stele:'', status:'status-imprumutat', label:'Împrumutat'}
+    ]
+  };
+
+  const lista = document.getElementById('lista-carti-folder');
+  const cartiFolder = carti[tip] || [];
+  if (!cartiFolder.length) {
+    lista.innerHTML = '<p style="font-size:0.82rem;color:var(--text-subtil);padding:1rem 0;">Nu ai cărți în această listă.</p>';
+    return;
+  }
+  lista.innerHTML = cartiFolder.map(c => `
+    <div class="card-carte-lista" onclick="deschideDetalii('${c.id}','${c.titlu}','${c.autor}','','0','','','','','0','1')">
+      <div class="coperta-lista"><div style="font-size:0.55rem;color:var(--mov-inchis);text-align:center;padding:4px;">${c.titlu.substring(0,15)}</div></div>
+      <div class="carte-info-lista">
+        <div class="carte-titlu-lista">${c.titlu}</div>
+        <div class="carte-autor-lista">${c.autor}</div>
+        ${c.stele ? `<div class="carte-stele">${c.stele}</div>` : ''}
+        ${c.procent ? `<div class="procent-text">${c.procent}</div>` : ''}
+      </div>
+      <span class="status-badge ${c.status}">${c.label}</span>
+    </div>`).join('');
+}
+
+function deschideDetalii(id, titlu, autor, gen, pagini, copertaTip, tip, rezumat, locatie, paginaCitita, paginiTotale) {
+ console.log('[DEBUG] deschideDetalii apelat:', id, titlu);
+  carteActiva = {id, titlu, autor, gen, pagini, copertaTip, tip, rezumat, locatie, paginaCitita:parseInt(paginaCitita), paginiTotale:parseInt(paginiTotale)};
+  document.getElementById('det-titlu').textContent = titlu;
+  document.getElementById('det-autor').textContent = autor;
+  document.getElementById('det-coperta-text').textContent = titlu;
+  document.getElementById('det-rezumat').textContent = rezumat;
+  document.getElementById('det-pagini').textContent = pagini + ' pagini';
+  document.getElementById('det-coperta-tip').textContent = copertaTip;
+  document.getElementById('det-tip').textContent = tip;
+  document.getElementById('det-gen').textContent = gen;
+  document.getElementById('det-locatie').textContent = locatie;
+
+  const bara = document.getElementById('bara-progres-detalii');
+  if (parseInt(paginaCitita) > 0 && parseInt(paginaCitita) < parseInt(paginiTotale)) {
+    bara.style.display = 'block';
+    const proc = Math.round(parseInt(paginaCitita) / parseInt(paginiTotale) * 100);
+    document.getElementById('det-procent').textContent = proc + '%';
+    document.getElementById('bara-mare-fill').style.width = proc + '%';
+    document.getElementById('input-pagina').value = paginaCitita;
+  } else {
+    bara.style.display = 'none';
+  }
+
+  navigheaza('detalii');
+  document.querySelector('.content').focus();
+  document.querySelector('.content').scrollTop = 0;
+}
+
+function setStatus(btn, status) {
+  document.querySelectorAll('.detalii-status-btn').forEach(b => b.classList.remove('activ'));
+  btn.classList.add('activ');
+  const bara = document.getElementById('bara-progres-detalii');
+  bara.style.display = status === 'progres' ? 'block' : 'none';
+}
+
+function setStelute(n) {
+  steluteSelectate = n;
+  document.querySelectorAll('#stele-row .stea').forEach((s,i) => {
+    s.classList.toggle('activa', i < n);
+  });
+}
+
+function setSteluteRecenzie(n) {
+  steluteRecenzieSelectate = n;
+  document.querySelectorAll('#stele-recenzie .stea').forEach((s,i) => {
+    s.classList.toggle('activa', i < n);
+  });
+}
+
+function updateProgres() {
+  const pag = parseInt(document.getElementById('input-pagina').value) || 0;
+  const total = carteActiva.paginiTotale || 1;
+  const proc = Math.min(Math.round(pag / total * 100), 100);
+  document.getElementById('det-procent').textContent = proc + '%';
+  document.getElementById('bara-mare-fill').style.width = proc + '%';
+}
+
+function trimiteRecenzie() {
+  const text = document.getElementById('textarea-recenzie').value.trim();
+  if (!text || steluteRecenzieSelectate === 0) return;
+  const lista = document.querySelector('.recenzii-lista');
+  const card = document.createElement('div');
+  card.className = 'card-recenzie';
+  const stele = '★'.repeat(steluteRecenzieSelectate) + '☆'.repeat(5 - steluteRecenzieSelectate);
+  card.innerHTML = `<div class="rec-header"><div class="rec-avatar">MP</div><span class="rec-user">maria_p</span><span class="rec-stele">${stele}</span><span class="rec-data" style="margin-left:0.5rem;">Acum</span></div><div class="rec-text">${text}</div>`;
+  lista.prepend(card);
+  document.getElementById('textarea-recenzie').value = '';
+  setSteluteRecenzie(0);
+}
+
+function setSearchTab(btn, tip) {
+  document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('activ'));
+  btn.classList.add('activ');
+  searchTipActiv = tip;
+  document.getElementById('filtre-avansate').classList.toggle('vizibil', tip === 'filtre');
+}
+
+async function efectueazaCautare() {
+  const q = document.getElementById('input-search-mare').value.trim();
+  console.log('[DEBUG] searchTipActiv:', searchTipActiv, 'q:', q);
+  if (!q && searchTipActiv !== 'filtre') return;
+  const rezultate = document.getElementById('rezultate-search');
+  rezultate.innerHTML = '<p style="color:var(--text-subtil);font-size:0.82rem;">Se caută...</p>';
+  
+  try {
+    // Construieste URL in functie de tipul de cautare
+    let url;
+    if (searchTipActiv === 'autor') {
+      url = `/api/carti/cauta?q=${encodeURIComponent(q)}&tip=autor`;
+    } else if (searchTipActiv === 'filtre') {
+      const gen = document.getElementById('filtru-gen')?.value || '';
+      const suport = document.getElementById('filtru-suport')?.value || '';
+      const ratingMin = document.getElementById('filtru-rating')?.value || '';
+      const anMin = document.getElementById('filtru-an-min')?.value || '';
+      const anMax = document.getElementById('filtru-an-max')?.value || '';
+      url = `/api/carti/cauta?q=${encodeURIComponent(q)}&tip=titlu`;
+      if (gen) url += `&gen=${encodeURIComponent(gen)}`;
+      if (suport) url += `&suport=${encodeURIComponent(suport)}`;
+      if (ratingMin) url += `&rating=${ratingMin}`;
+      if (anMin) url += `&an_min=${anMin}`;
+      if (anMax) url += `&an_max=${anMax}`;
+    } else {
+      url = `/api/carti/cauta?q=${encodeURIComponent(q)}&tip=titlu`;
+      console.log('[DEBUG] URL:', url);
+    }
+
+    const r = await fetch(url);
+    console.log('[DEBUG] URL:', url);
+    const date = await r.json();
+    
+    if (!date.length) {
+      rezultate.innerHTML = '<p style="color:var(--text-subtil);font-size:0.82rem;">Nu am găsit rezultate pentru "' + q + '".</p>';
+      return;
+    }
+    
+    rezultate.innerHTML = date.map(c => `
+      <div class="card-carte-lista" onclick="deschideDetalii('${c.id}','${(c.titlu||'').replace(/'/g,"\\'")}','${(c.autor||'').replace(/'/g,"\\'")}','${c.gen_specific||c.domeniu||""}','${c.nr_pagini}','${c.tip_coperta||""}','${c.tip}','${(c.rezumat||'').substring(0,100).replace(/'/g,"\\'")}','Corpul ${c.id_cladire}','0','${c.nr_pagini}')">
+        <div class="coperta-lista"><div style="font-size:0.55rem;color:var(--mov-inchis);text-align:center;padding:4px;">${c.titlu.substring(0,20)}</div></div>
+        <div class="carte-info-lista">
+          <div class="carte-titlu-lista">${c.titlu}</div>
+          <div class="carte-autor-lista">${c.autor}</div>
+          <div style="font-size:0.72rem;color:var(--text-subtil);">${c.tip} · ${c.suport}</div>
+        </div>
+        <span class="status-badge ${c.exemplare_disponibile > 0 ? 'status-citit' : 'status-dnf'}">${c.exemplare_disponibile > 0 ? 'Disponibil' : 'Indisponibil'}</span>
+      </div>`).join('');
+  } catch(e) {
+    rezultate.innerHTML = '<p style="color:var(--text-subtil);font-size:0.82rem;">Pornește serverul pentru a căuta.</p>';
+  }
+}
+
+function adaugaFolderNou() {
+  const nume = document.getElementById('input-folder-nou').value.trim();
+  if (!nume) return;
+  
+  // Salveaza in localStorage
+  const foldere = JSON.parse(localStorage.getItem('foldere_custom') || '[]');
+  if (foldere.includes(nume)) {
+    alert('Există deja un folder cu acest nume!');
+    return;
+  }
+  foldere.push(nume);
+  localStorage.setItem('foldere_custom', JSON.stringify(foldere));
+  
+  // Adauga vizual
+  adaugaCardFolder(nume);
+  
+  document.getElementById('input-folder-nou').value = '';
+  document.getElementById('modal-folder').classList.remove('vizibil');
+}
+
+function adaugaCardFolder(nume) {
+  const grid = document.getElementById('grid-foldere');
+  const btnNou = grid.querySelector('.btn-folder-nou');
+  const card = document.createElement('div');
+  card.className = 'card-folder';
+  card.innerHTML = `<div class="folder-icon" style="background:var(--mov-deschis)"><svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:var(--mov-inchis);fill:none;stroke-width:1.5;stroke-linecap:round;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div><div class="folder-nume">${nume}</div><div class="folder-nr">0 cărți</div>`;
+  card.onclick = function() { deschidFolder(nume, this); };
+  grid.insertBefore(card, btnNou);
+}
+
+function incarcaFoldereCustom() {
+  const foldere = JSON.parse(localStorage.getItem('foldere_custom') || '[]');
+  foldere.forEach(nume => adaugaCardFolder(nume));
+  
+  // Adauga folderul "Partajate" daca nu exista
+  const grid = document.getElementById('grid-foldere');
+  if (grid && !grid.querySelector('[data-folder="partajate"]')) {
+    const btnNou = grid.querySelector('.btn-folder-nou');
+    const card = document.createElement('div');
+    card.className = 'card-folder';
+    card.dataset.folder = 'partajate';
+    card.innerHTML = `<div class="folder-icon" style="background:#e3f2fd"><svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:#1565c0;fill:none;stroke-width:1.5;stroke-linecap:round;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div><div class="folder-nume">Partajate</div><div class="folder-nr">0 cărți</div>`;
+    card.onclick = function() { deschidFolder('partajate', this); };
+    grid.insertBefore(card, btnNou);
+  }
+}
+
+document.getElementById('modal-folder').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('vizibil');
+});
+// ── Tab navigare ──────────────────────────────────────────────
+// schimbaTab defined above
+
+// ── Program corporuri ─────────────────────────────────────────
+function toggleCorp(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.corp-chevron');
+  body.classList.toggle('vizibil');
+  chevron.classList.toggle('rotit');
+}
+
+// ── Profil editare ────────────────────────────────────────────
+function editeaza(camp) {
+  document.getElementById('input-' + camp).disabled = false;
+  document.getElementById('input-' + camp).focus();
+  document.querySelector(`[onclick="editeaza('${camp}')"]`).style.display = 'none';
+  document.getElementById('btn-save-' + camp).style.display = 'inline-block';
+}
+
+function salveaza(camp) {
+  document.getElementById('input-' + camp).disabled = true;
+  document.getElementById('btn-save-' + camp).style.display = 'none';
+  document.querySelector(`[onclick="editeaza('${camp}')"]`).style.display = 'inline-block';
+  if (camp === 'username') {
+    document.querySelector('.profil-username').textContent = '@' + document.getElementById('input-username').value;
+  }
+}
+
+function cereConfirmare(camp) {
+  const modal = document.getElementById('modal-confirmare');
+  const titlu = document.getElementById('modal-conf-titlu');
+  const text = document.getElementById('modal-conf-text');
+  const info = document.getElementById('info-' + camp);
+  if (camp === 'email') {
+    titlu.textContent = 'Confirmă noul email';
+    text.textContent = 'Vei primi un email de confirmare la noua adresă. Introdu codul primit.';
+  } else {
+    titlu.textContent = 'Confirmă noul număr de telefon';
+    text.textContent = 'Vei primi un SMS de confirmare pe noul număr. Introdu codul primit.';
+  }
+  info.classList.add('vizibil');
+  modal.classList.add('vizibil');
+  modal.dataset.camp = camp;
+}
+
+function confirmaModificare() {
+  const camp = document.getElementById('modal-confirmare').dataset.camp;
+  salveaza(camp);
+  document.getElementById('modal-confirmare').classList.remove('vizibil');
+  document.getElementById('modal-conf-input').value = '';
+}
+
+function schimbaPoza(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const div = document.getElementById('poza-profil-display');
+    div.innerHTML = `<img src="${e.target.result}" alt="Poza profil"/>`;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ── Prieteni ──────────────────────────────────────────────────
+function cautaPrieten() {
+  const q = document.getElementById('input-cauta-prieten').value.trim();
+  const div = document.getElementById('rezultat-cautare-prieten');
+  if (!q) return;
+  div.innerHTML = `
+    <div class="card-prieten" style="border-color:var(--mov-pastel);background:var(--mov-deschis);margin-bottom:1rem;">
+      <div class="prieten-avatar" style="background:#9b7dc8;">??</div>
+      <div class="prieten-info">
+        <div class="prieten-nume">@${q}</div>
+        <div class="prieten-citeste">Profil privat</div>
+      </div>
+      <div class="prieten-actiuni">
+        <button class="btn-profil-prieten" style="background:var(--mov-inchis);color:white;border-color:var(--mov-inchis);" onclick="trimiteCerere(this,'${q}')">Trimite cerere</button>
+      </div>
+    </div>`;
+}
+
+function trimiteCerere(btn, username) {
+  btn.textContent = '✓ Cerere trimisă';
+  btn.style.background = 'var(--mov-deschis)';
+  btn.style.color = 'var(--mov-inchis)';
+  btn.disabled = true;
+}
+
+// ── Challengeuri ──────────────────────────────────────────────
+function updateChallange(tip) {
+  const configs = {
+    monthly: { target: 'monthly-target', current: 2, unit: 'cărți', label: 'monthly-label', proc: 'monthly-proc', bara: 'monthly-bara' },
+    pages:   { target: 'pages-target',   current: 384, unit: 'pagini', label: 'pages-label', proc: 'pages-proc', bara: 'pages-bara' },
+    yearly:  { target: 'yearly-target',  current: 8, unit: 'cărți', label: 'yearly-label', proc: 'yearly-proc', bara: 'yearly-bara' },
+    bday:    { target: 'bday-target',    current: 0, unit: 'cărți', label: 'bday-label', proc: 'bday-proc', bara: 'bday-bara' }
+  };
+  const c = configs[tip];
+  const target = parseInt(document.getElementById(c.target).value) || 1;
+  const proc = Math.min(Math.round(c.current / target * 100), 100);
+  document.getElementById(c.label).textContent = `${c.current} din ${target} ${c.unit}`;
+  document.getElementById(c.proc).textContent = proc + '%';
+  document.getElementById(c.bara).style.width = proc + '%';
+}
+
+function intraInChallange(btn) {
+  btn.textContent = '✓ Participi';
+  btn.classList.add('activ');
+  btn.onclick = null;
+}
+
+// ── Rezervări ─────────────────────────────────────────────────
+function genereazaOre(start, end) {
+  const ore = [];
+  for (let h = start; h <= end; h++) {
+    ore.push(`${String(h).padStart(2,'0')}:00`);
+    if (h < end) ore.push(`${String(h).padStart(2,'0')}:30`);
+  }
+  return ore;
+}
+
+function populateazaSelectStart(selectId, start, end) {
+  const sel = document.getElementById(selectId);
+  sel.innerHTML = '';
+  genereazaOre(start, end - 1).forEach(o => {
+    sel.innerHTML += `<option value="${o}">${o}</option>`;
+  });
+}
+
+function actualizeazaOreEnd(tip) {
+  const startSel = document.getElementById(`rez-${tip}-start`);
+  const endSel = document.getElementById(`rez-${tip}-end`);
+  const startVal = startSel.value;
+  const [h, m] = startVal.split(':').map(Number);
+  const endOre = genereazaOre(h, tip === 'caf' ? 20 : 20).filter(o => {
+    const [oh, om] = o.split(':').map(Number);
+    return oh > h || (oh === h && om > m);
+  });
+  endSel.innerHTML = endOre.map(o => `<option value="${o}">${o}</option>`).join('');
+}
+
+function actualizeazaOreStudiu() {
+  const corp = document.getElementById('rez-std-corp').value;
+  const endH = corp === 'E' ? 18 : 20;
+  populateazaSelectStart('rez-std-start', 8, endH);
+  actualizeazaOreEnd('std');
+}
+
+function faCereReservare(tip) {
+  let detalii = '';
+  if (tip === 'cafenea') {
+    const data = document.getElementById('rez-caf-data').value;
+    const start = document.getElementById('rez-caf-start').value;
+    const end = document.getElementById('rez-caf-end').value;
+    const pers = document.getElementById('rez-caf-persoane').value;
+    if (!data) { alert('Selectează o dată!'); return; }
+    detalii = `${data} · ${start} - ${end} · ${pers} persoane`;
+    adaugaRezervareActiva('☕ Cafeneaua Literară', detalii);
+  } else {
+    const corp = document.getElementById('rez-std-corp').value;
+    const data = document.getElementById('rez-std-data').value;
+    const start = document.getElementById('rez-std-start').value;
+    const end = document.getElementById('rez-std-end').value;
+    if (!data) { alert('Selectează o dată!'); return; }
+    detalii = `${data} · ${start} - ${end} · Corp ${corp}`;
+    adaugaRezervareActiva('📚 Sală de studiu Individual', detalii);
+  }
+  schimbaRezTab(document.querySelector('[onclick*="active"]'), 'active');
+}
+
+function adaugaRezervareActiva(titlu, detalii) {
+  const div = document.getElementById('rezervari-noi');
+  div.innerHTML += `
+    <div class="card-rez-activa">
+      <div class="rez-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--mov-inchis);fill:none;stroke-width:1.5;stroke-linecap:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="rez-info">
+        <div class="rez-titlu">${titlu}</div>
+        <div class="rez-detalii">${detalii}</div>
+      </div>
+      <button class="btn-anuleaza-rez" onclick="anuleazaRez(this)">Anulează</button>
+    </div>`;
+}
+
+function schimbaRezTab(btn, tip) {
+  document.querySelectorAll('.rez-tab').forEach(t => t.classList.remove('activ'));
+  document.querySelectorAll('.rez-sectiune').forEach(s => s.classList.remove('activa'));
+  if (btn) btn.classList.add('activ');
+  document.getElementById('rez-' + tip).classList.add('activa');
+}
+
+function anuleazaRez(btn) {
+  if (confirm('Ești sigur că vrei să anulezi această rezervare?')) {
+    btn.closest('.card-rez-activa').remove();
+  }
+}
+
+// ── Grupuri ───────────────────────────────────────────────────
+function creeazaGrup() {
+  const nume = document.getElementById('input-grup-nume').value.trim();
+  const desc = document.getElementById('input-grup-desc').value.trim();
+  if (!nume) return;
+  document.getElementById('modal-grup').classList.remove('vizibil');
+  document.getElementById('input-grup-nume').value = '';
+  document.getElementById('input-grup-desc').value = '';
+}
+
+// ── Vizibilitate carte ────────────────────────────────────────
+function salveazaVizibilitate() {
+  document.getElementById('modal-viz').classList.remove('vizibil');
+}
+
+// ── Init ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const nm = sessionStorage.getItem('nume_client');
+    const em = sessionStorage.getItem('email_client');
+    if (nm) {
+      const prenume = nm.split(' ')[0];
+      const el1 = document.querySelector('#sec-home .page-titlu');
+      if (el1) el1.textContent = 'Bună ziua, ' + prenume + ' 👋';
+      const el2 = document.querySelector('.profil-nome');
+      if (el2) el2.textContent = nm;
+      const initiale = nm.split(' ').map(x => x[0]).join('').substring(0,2).toUpperCase();
+      const el3 = document.querySelector('.profil-avatar');
+      if (el3) el3.textContent = initiale;
+      const el4 = document.querySelector('.avatar');
+      if (el4) el4.textContent = initiale;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const idCarte = params.get('id');
+    if (idCarte) {
+      fetch('/api/carti/' + idCarte)
+          .then(r => r.json())
+          .then(c => {
+              det(c.id, c.titlu, c.autor,
+                  c.gen_specific || c.domeniu || '',
+                  c.nr_pagini, c.tip_coperta || '',
+                  c.tip, c.rezumat || '',
+                  'Corpul ' + c.id_cladire,
+                  '0', c.nr_pagini);
+          })
+          .catch(() => console.log('Carte negasita'));
+  }
+  // Seteaza data minima la azi
+  const azi = new Date().toISOString().split('T')[0];
+  ['rez-caf-data', 'rez-std-data'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.min = azi;
+  });
+  populateazaSelectStart('rez-caf-start', 8, 20);
+  actualizeazaOreEnd('caf');
+  populateazaSelectStart('rez-std-start', 8, 20);
+  actualizeazaOreEnd('std');
+
+  // Inchide modalele la click afara
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('vizibil'); });
+  });
+});
+
+
+// ── ASISTENT ASTER ───────────────────────────────────────────
+const ISTORICCAR_CITITE = ['Fantasy', 'Mister', 'NonFictiune'];
+
+// ── PROFIL - USERNAME CHECK ───────────────────────────────────
+async function salveazaUsername() {
+  const input = document.getElementById('input-username');
+  const username = input.value.trim();
+  if (!username) return;
+  
+  const btn = document.getElementById('btn-save-username');
+  btn.textContent = 'Se verifică...';
+  btn.disabled = true;
+  
+  // Simulare verificare username (in productie ar fi fetch la /api/check-username)
+  await new Promise(r => setTimeout(r, 800));
+  
+  const usernameTaken = ['admin', 'biblioteca', 'aster', 'test'].includes(username.toLowerCase());
+  
+  if (usernameTaken) {
+    const msg = document.createElement('div');
+    msg.style.cssText = 'font-size:0.75rem;color:#c62828;margin-top:0.3rem;';
+    msg.textContent = '✕ Username indisponibil. Încearcă altul.';
+    input.parentElement.parentElement.appendChild(msg);
+    setTimeout(() => msg.remove(), 3000);
+    btn.textContent = 'Salvează';
+    btn.disabled = false;
+    input.style.borderColor = '#c62828';
+    return;
+  }
+  
+  // Salveaza
+  localStorage.setItem('username_client', username);
+  input.disabled = true;
+  btn.style.display = 'none';
+  document.getElementById('btn-save-username').style.display = 'none';
+  
+  const succes = document.createElement('div');
+  succes.style.cssText = 'font-size:0.75rem;color:#2e7d32;margin-top:0.3rem;';
+  succes.textContent = '✓ Username actualizat cu succes!';
+  input.parentElement.parentElement.appendChild(succes);
+  setTimeout(() => succes.remove(), 3000);
+  input.style.borderColor = '';
+}
+
+// ── NOTIFICARI - ACTIUNI ─────────────────────────────────────
+function reinnoiesteImprumut(btn, titluCarte) {
+  const actiuni = JSON.parse(localStorage.getItem('notif_actiuni') || '{}');
+  actiuni['imprumut_' + titluCarte] = 'reinnoit';
+  localStorage.setItem('notif_actiuni', JSON.stringify(actiuni));
+  btn.textContent = 'Se procesează...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = '✓ Împrumut reînnoit!';
+    btn.style.background = '#2e7d32';
+    // Adauga notificare de confirmare
+    adaugaNotificare('succes', 'Împrumut reînnoit', `"${titluCarte}" a fost reînnoit cu succes pentru încă 21 de zile.`);
+  }, 600);
+}
+
+function adaugaNotificare(tip, titlu, text) {
+  const lista = document.getElementById('sec-notificari');
+  if (!lista) return;
+  const card = document.createElement('div');
+  card.className = `card-notif notif-${tip}`;
+  card.style.animation = 'fadeIn 0.3s ease';
+  const icons = {succes:'<polyline points="20 6 9 17 4 12"/>', info:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12.01" y2="16"/><line x1="12" y1="8" x2="12.01" y2="12"/>'};
+  card.innerHTML = `<div class="notif-icon"><svg viewBox="0 0 24 24">${icons[tip]||icons.info}</svg></div>
+    <div class="notif-corp">
+      <div class="notif-titlu">${titlu}</div>
+      <div class="notif-text">${text}</div>
+      <div class="notif-timp">Acum</div>
+    </div>`;
+  lista.insertBefore(card, lista.querySelector('.card-notif'));
+}
+
+// ── REZERVARI CU NOTIFICARE ───────────────────────────────────
+async function faCereReservareNotif(tip) {
+  // Verifica datele
+  const dataId = tip === 'cafenea' ? 'rez-caf-data' : 'rez-std-data';
+  const data = document.getElementById(dataId)?.value;
+  if (!data) { alert('Te rugăm să selectezi o dată.'); return; }
+  
+  const startId = tip === 'cafenea' ? 'rez-caf-start' : 'rez-std-start';
+  const endId = tip === 'cafenea' ? 'rez-caf-end' : 'rez-std-end';
+  const start = document.getElementById(startId)?.value;
+  const end = document.getElementById(endId)?.value;
+  
+  const btn = document.querySelector(`#rez-${tip === 'cafenea' ? 'cafenea' : 'studiu'} .btn-rezerva`);
+  if (btn) { btn.textContent = 'Se procesează...'; btn.disabled = true; }
+  
+  // Salveaza in localStorage
+  const rezervari = JSON.parse(localStorage.getItem('rezervari_mele') || '[]');
+  const noua = {
+    tip: tip === 'cafenea' ? 'Cafenea Literară' : 'Sală de Studiu',
+    data, start, end,
+    id: Date.now()
+  };
+  rezervari.push(noua);
+  localStorage.setItem('rezervari_mele', JSON.stringify(rezervari));
+  
+  // Trimite la server
+  try {
+    const idClient = localStorage.getItem('id_client') || -1;
+    await fetch('/api/rezervari', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id_client: parseInt(idClient), tip, data, ora_start: start, ora_end: end})
+    });
+  } catch(e) {}
+  
+  setTimeout(() => {
+    if (btn) { btn.textContent = '✓ Rezervare confirmată!'; btn.style.background = '#2e7d32'; }
+    // Adauga notificare
+    adaugaNotificare('succes', '✓ Rezervare confirmată', 
+      `Mulțumim pentru încredere! Rezervarea la ${noua.tip} pe ${data}, ${start}–${end} a fost înregistrată.`);
+    schimbaTab('notificari');
+    setTimeout(() => schimbaTab('rezervari'), 2000);
+  }, 800);
+}
+
+// ── GRUPURI - NAVIGARE ────────────────────────────────────────
+function mergiLaGrup(id, nume, desc, membri, anInfiintare) {
+  const url = `/web/pagina-grup.html?id=${id}&nume=${encodeURIComponent(nume)}&desc=${encodeURIComponent(desc)}&membri=${membri}&an=${anInfiintare}`;
+  window.location.href = url;
+}
+
+// ── PRIETENI - PROFIL ────────────────────────────────────────
+function mergiLaProfilPrieten(username, nume, usernameAfis, rank, nrCarti, status) {
+  const url = `/web/profil-prieten.html?username=${encodeURIComponent(username)}&nume=${encodeURIComponent(nume)}&rank=${encodeURIComponent(rank)}&carti=${nrCarti}&status=${encodeURIComponent(status)}&prieten=true`;
+  window.location.href = url;
+}
+
+// ── PRIETENI - CAUTARE ────────────────────────────────────────
+async function cautaPrieten() {
+  const q = document.getElementById('input-cauta-prieten').value.trim();
+  const rezultat = document.getElementById('rezultat-cautare-prieten');
+  if (!q) return;
+  
+  try {
+    const r = await fetch('/api/clienti/cauta?username=' + encodeURIComponent(q));
+    const d = await r.json();
+    
+    if (d && d.id) {
+      const initiale = (d.prenume?.[0]||'') + (d.nume?.[0]||'');
+      rezultat.innerHTML = `
+        <div class="card-prieten" style="margin-top:0.75rem;">
+          <div class="prieten-avatar">${initiale.toUpperCase()}</div>
+          <div class="prieten-info">
+            <div class="prieten-nume">${d.prenume} ${d.nume} <span style="font-size:0.72rem;color:var(--text-subtil);">@${d.username||q}</span></div>
+            <div class="prieten-citeste">⭐ ${d.rank||'Cititor'}</div>
+          </div>
+          <div class="prieten-actiuni" style="display:flex;gap:0.5rem;">
+            <button class="btn-profil-prieten" onclick="mergiLaProfilPrieten('${q}','${d.prenume} ${d.nume}','@${q}','${d.rank||'Cititor'}',${d.total_imprumuturi||0},'')">Profil</button>
+            <button class="btn-profil-prieten" style="background:var(--mov-inchis);color:white;" onclick="trimitereCerere('${q}',this)">+ Prieten</button>
+          </div>
+        </div>`;
+    } else {
+      rezultat.innerHTML = `<div style="font-size:0.82rem;color:var(--text-subtil);padding:0.75rem 0;">Nu am găsit niciun utilizator cu username-ul "@${q}".</div>`;
+    }
+  } catch(e) {
+    // Fallback vizual
+    if (q.length >= 3) {
+      rezultat.innerHTML = `
+        <div class="card-prieten" style="margin-top:0.75rem;">
+          <div class="prieten-avatar" style="background:#9b5faa;">${q[0].toUpperCase()}</div>
+          <div class="prieten-info">
+            <div class="prieten-nume">@${q}</div>
+            <div class="prieten-citeste">Profil privat</div>
+          </div>
+          <div class="prieten-actiuni">
+            <button class="btn-profil-prieten" style="background:var(--mov-inchis);color:white;" onclick="trimitereCerere('${q}',this)">+ Prieten</button>
+          </div>
+        </div>`;
+    } else {
+      rezultat.innerHTML = `<div style="font-size:0.82rem;color:var(--text-subtil);padding:0.75rem 0;">Introdu minim 3 caractere.</div>`;
+    }
+  }
+}
+
+function trimitereCerere(username, btn) {
+  btn.textContent = '✓ Cerere trimisă';
+  btn.style.background = '#2e7d32';
+  btn.disabled = true;
+  adaugaNotificare('succes', 'Cerere trimisă', `Cererea de prietenie către @${username} a fost trimisă.`);
+}
+
+// ── CHALLENGEURI - RESET AUTOMAT ────────────────────────────
+function verificaResetChallenge() {
+  const azi = new Date();
+  const lunaAn = `${azi.getFullYear()}-${azi.getMonth()}`;
+  const anAn = `${azi.getFullYear()}`;
+  
+  const ultimaResetareLuna = localStorage.getItem('ch_reset_luna');
+  const ultimaResetareAn = localStorage.getItem('ch_reset_an');
+  
+  if (ultimaResetareLuna !== lunaAn) {
+    // Reset monthly challenge
+    localStorage.setItem('ch_reset_luna', lunaAn);
+    const target = localStorage.getItem('ch_monthly_target') || 4;
+    localStorage.setItem('ch_monthly_progress', '0');
+    document.getElementById('monthly-bara') && (document.getElementById('monthly-bara').style.width = '0%');
+    document.getElementById('monthly-label') && (document.getElementById('monthly-label').textContent = `0 din ${target} cărți`);
+    document.getElementById('monthly-proc') && (document.getElementById('monthly-proc').textContent = '0%');
+  }
+  
+  if (ultimaResetareAn !== anAn && azi.getMonth() === 0) {
+    // Reset yearly challenge (1 ianuarie)
+    localStorage.setItem('ch_reset_an', anAn);
+    localStorage.setItem('ch_yearly_progress', '0');
+    document.getElementById('yearly-bara') && (document.getElementById('yearly-bara').style.width = '0%');
+  }
+}
+
+function updateChallange(tip) {
+  const targets = {
+    monthly: {inputId:'monthly-target', baraId:'monthly-bara', labelId:'monthly-label', procId:'monthly-proc', storageKey:'ch_monthly_target'},
+    pages: {inputId:'pages-target', baraId:'pages-bara', labelId:'pages-label', procId:'pages-proc', storageKey:'ch_pages_target'},
+    yearly: {inputId:'yearly-target', baraId:'yearly-bara', labelId:'yearly-label', procId:'yearly-proc', storageKey:'ch_yearly_target'},
+    bday: {inputId:'bday-target', baraId:'bday-bara', labelId:'bday-label', procId:'bday-proc', storageKey:'ch_bday_target'},
+  };
+  
+  const cfg = targets[tip];
+  if (!cfg) return;
+  
+  const input = document.getElementById(cfg.inputId);
+  const target = parseInt(input.value) || 1;
+  localStorage.setItem(cfg.storageKey, target);
+  
+  // Get current progress
+  const progresMap = {monthly: 2, pages: 384, yearly: 8, bday: 0};
+  const progres = progresMap[tip] || 0;
+  const proc = Math.min(Math.round(progres / target * 100), 100);
+  
+  document.getElementById(cfg.baraId).style.width = proc + '%';
+  document.getElementById(cfg.procId).textContent = proc + '%';
+  
+  const unitati = {monthly:'cărți', pages:'pagini', yearly:'cărți', bday:'cărți'};
+  document.getElementById(cfg.labelId).textContent = `${progres} din ${target} ${unitati[tip]}`;
+  
+  // Verifica daca e complet si adauga badge
+  if (proc >= 100) {
+    const badgeNume = {monthly:'Monthly Read 2026', pages:'Number the Pages', yearly:'2026 Reading Challenge', bday:'Ziua Bibliotecii'};
+    adaugaBadgeProfil(badgeNume[tip]);
+  }
+}
+
+function adaugaBadgeProfil(numeBadge) {
+  const badges = JSON.parse(localStorage.getItem('badges_castigate') || '[]');
+  if (!badges.includes(numeBadge)) {
+    badges.push(numeBadge);
+    localStorage.setItem('badges_castigate', JSON.stringify(badges));
+    adaugaNotificare('succes', '🏆 Challenge completat!', `Felicitări! Ai câștigat badge-ul "${numeBadge}". Îl poți vedea în profilul tău.`);
+  }
+}
+
+function intraInChallange(btn) {
+  btn.textContent = '✓ Participi';
+  btn.classList.add('activ');
+  btn.onclick = null;
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+
+// ══════════════════════════════════════════════════════════════
+// PERSISTENTA - localStorage pentru toate actiunile
+// ══════════════════════════════════════════════════════════════
+
+// ── TOGGLE DASH MENU ─────────────────────────────────────────
+function toggleDashMenu() {
+  const dd = document.getElementById('dash-dropdown');
+  if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('dash-user-wrap');
+  const dd = document.getElementById('dash-dropdown');
+  if (wrap && dd && !wrap.contains(e.target)) dd.style.display = 'none';
+});
+
+// ── NOTIFICARI PERSISTENTE ────────────────────────────────────
+function salveazaNotificare(tip, titlu, text) {
+  const notif = JSON.parse(localStorage.getItem('notificari') || '[]');
+  notif.unshift({tip, titlu, text, timp: new Date().toLocaleTimeString('ro-RO', {hour:'2-digit',minute:'2-digit'}), id: Date.now()});
+  localStorage.setItem('notificari', JSON.stringify(notif.slice(0, 20))); // max 20
+  incarcaNotificariSalvate();
+  // Arata dot
+  const dot = document.getElementById('notif-dot');
+  if (dot) dot.style.display = 'block';
+}
+
+function incarcaNotificariSalvate() {
+  const container = document.getElementById('notif-dinamice');
+  if (!container) return;
+  const notif = JSON.parse(localStorage.getItem('notificari') || '[]');
+  container.innerHTML = notif.map(n => `
+    <div class="card-notif notif-${n.tip}" style="animation:fadeIn 0.3s ease;">
+      <div class="notif-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="notif-corp">
+        <div class="notif-titlu">${n.titlu}</div>
+        <div class="notif-text">${n.text}</div>
+        <div class="notif-timp">${n.timp}</div>
+      </div>
+    </div>`).join('');
+}
+
+function acceptaCerere(username, btn) {
+  const actiuni = JSON.parse(localStorage.getItem('notif_actiuni') || '{}');
+  actiuni['cerere_' + username] = 'acceptat';
+  localStorage.setItem('notif_actiuni', JSON.stringify(actiuni));
+  btn.textContent = '✓ Acceptat';
+  btn.style.background = '#2e7d32';
+  btn.disabled = true;
+  btn.nextElementSibling.disabled = true;
+  // Adauga la prieteni
+  const prieteni = JSON.parse(localStorage.getItem('prieteni') || '[]');
+  if (!prieteni.find(p => p.username === username)) {
+    prieteni.push({username, nume: username, data: new Date().toLocaleDateString('ro-RO')});
+    localStorage.setItem('prieteni', JSON.stringify(prieteni));
+  }
+  salveazaNotificare('succes', 'Prieten adăugat', `@${username} a fost adăugat în lista ta de prieteni.`);
+}
+
+function refuzaCerere(username, btn) {
+  const actiuni = JSON.parse(localStorage.getItem('notif_actiuni') || '{}');
+  actiuni['cerere_' + username] = 'refuzat';
+  localStorage.setItem('notif_actiuni', JSON.stringify(actiuni));
+  btn.textContent = '✗ Refuzat';
+  btn.disabled = true;
+  btn.previousElementSibling.disabled = true;
+  salveazaNotificare('info', 'Cerere refuzată', `Cererea de prietenie de la @${username} a fost refuzată.`);
+}
+
+// ── PROFIL - SALVARE ──────────────────────────────────────────
+function salveaza(camp) {
+  const input = document.getElementById('input-' + camp);
+  const val = input.value.trim();
+  if (!val) return;
+  localStorage.setItem('profil_' + camp, val);
+  input.disabled = true;
+  document.getElementById('btn-save-' + camp).style.display = 'none';
+  salveazaNotificare('succes', 'Profil actualizat', `${camp.charAt(0).toUpperCase() + camp.slice(1)} actualizat cu succes.`);
+}
+
+function salveazaUsername() {
+  const input = document.getElementById('input-username');
+  const username = input.value.trim();
+  if (!username) return;
+  const rezervate = ['admin', 'biblioteca', 'aster'];
+  if (rezervate.includes(username.toLowerCase())) {
+    const msg = document.createElement('div');
+    msg.style.cssText = 'font-size:0.75rem;color:#c62828;margin-top:0.3rem;';
+    msg.textContent = '✕ Username indisponibil.';
+    input.parentElement.parentElement.appendChild(msg);
+    setTimeout(() => msg.remove(), 3000);
+    return;
+  }
+  localStorage.setItem('username_client', username);
+  localStorage.setItem('profil_username', username);
+  input.disabled = true;
+  document.getElementById('btn-save-username').style.display = 'none';
+  salveazaNotificare('succes', 'Username actualizat', `Username schimbat în @${username}`);
+}
+
+function cereConfirmare(camp) {
+  salveaza(camp);
+}
+
+function editeaza(camp) {
+  const input = document.getElementById('input-' + camp);
+  input.disabled = false;
+  input.focus();
+  const btn = document.getElementById('btn-save-' + camp);
+  if (btn) btn.style.display = 'inline-block';
+}
+
+// ── PRIETENI PERSISTENTI ──────────────────────────────────────
+function stergePrivetenie(username, btn) {
+  if (!confirm('Elimini acest prieten?')) return;
+  const prieteni = JSON.parse(localStorage.getItem('prieteni') || '[]');
+  const nou = prieteni.filter(p => p.username !== username);
+  localStorage.setItem('prieteni', JSON.stringify(nou));
+  const card = btn.closest('.card-prieten');
+  if (card) card.remove();
+  salveazaNotificare('info', 'Prieten eliminat', `@${username} a fost eliminat din lista ta de prieteni.`);
+  const titlu = document.querySelector('.sectiune-titlu');
+  if (titlu && titlu.textContent.includes('Prietenii mei')) {
+    const nr = document.querySelectorAll('#lista-prieteni .card-prieten').length;
+    titlu.textContent = `Prietenii mei (${nr})`;
+  }
+}
+
+// ── REZERVARI PERSISTENTE ─────────────────────────────────────
+function incarcaRezervari() {
+  const rezervari = JSON.parse(localStorage.getItem('rezervari_mele') || '[]');
+  const container = document.getElementById('rezervari-noi');
+  if (!container) return;
+  
+  const azi = new Date().toISOString().split('T')[0];
+  const active = rezervari.filter(r => r.data >= azi && !r.anulata);
+  
+  if (active.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+  
+  container.innerHTML = active.map(r => `
+    <div class="card-rez-activa" id="rez-${r.id}">
+      <div class="rez-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--mov-inchis);fill:none;stroke-width:1.5;stroke-linecap:round;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="rez-info">
+        <div class="rez-titlu">${r.tip}</div>
+        <div class="rez-detalii">${r.data} · ${r.start || ''}${r.end ? ' - ' + r.end : ''}</div>
+      </div>
+      <button class="btn-anuleaza-rez" onclick="anuleazaRezervare(${r.id}, this)">Anulează</button>
+    </div>`).join('');
+}
+
+function anuleazaRezervare(id, btn) {
+  if (!confirm('Ești sigur că vrei să anulezi rezervarea?')) return;
+  const rezervari = JSON.parse(localStorage.getItem('rezervari_mele') || '[]');
+  const idx = rezervari.findIndex(r => r.id === id);
+  if (idx >= 0) {
+    rezervari[idx].anulata = true;
+    localStorage.setItem('rezervari_mele', JSON.stringify(rezervari));
+  }
+  const card = document.getElementById('rez-' + id);
+  if (card) card.remove();
+  salveazaNotificare('info', 'Rezervare anulată', `Rezervarea din ${rezervari[idx]?.data || ''} a fost anulată cu succes.`);
+}
+
+function anuleazaRez(btn) {
+  anuleazaRezervare(parseInt(btn.closest('.card-rez-activa')?.id?.replace('rez-','')||0), btn);
+}
+
+// ── CHALLENGEURI PERSISTENTE ─────────────────────────────────
+function intraInChallange(btn) {
+  const challId = btn.closest('.card-challange')?.querySelector('[id$="-target"]')?.id?.replace('-target','');
+  if (challId) {
+    const inscrise = JSON.parse(localStorage.getItem('challengeuri_inscrise') || '[]');
+    if (!inscrise.includes(challId)) {
+      inscrise.push(challId);
+      localStorage.setItem('challengeuri_inscrise', JSON.stringify(inscrise));
+    }
+  }
+  btn.textContent = '✓ Participi';
+  btn.classList.add('activ');
+  btn.onclick = null;
+}
+
+function incarcaChallengeuriInscrise() {
+  const inscrise = JSON.parse(localStorage.getItem('challengeuri_inscrise') || '[]');
+  inscrise.forEach(challId => {
+    const input = document.getElementById(challId + '-target');
+    if (input) {
+      const card = input.closest('.card-challange');
+      const btn = card?.querySelector('.btn-intra');
+      if (btn && !btn.classList.contains('activ')) {
+        btn.textContent = '✓ Participi';
+        btn.classList.add('activ');
+        btn.onclick = null;
+      }
+    }
+  });
+}
+
+// ── ASISTENT ASTER ────────────────────────────────────────────
+let istoricConversatii = JSON.parse(localStorage.getItem('asistent_conversatii') || '[]');
+let conversatieCurenta = [];
+
+async function trimiteMesajAsistent() {
+  const input = document.getElementById('input-asistent');
+  const mesaj = input.value.trim();
+  if (!mesaj) return;
+
+  const chat = document.getElementById('asistent-chat');
+  const prenume = localStorage.getItem('prenume_user') || 'cititorule';
+  const initiale = (prenume[0] || 'U').toUpperCase();
+
+  conversatieCurenta.push({rol: 'user', text: mesaj});
+
+  const msgUser = document.createElement('div');
+  msgUser.className = 'msg-utilizator';
+  msgUser.innerHTML = `<div class="msg-avatar-user">${initiale}</div><div class="msg-text-user">${mesaj}</div>`;
+  chat.appendChild(msgUser);
+  input.value = '';
+
+  const loading = document.createElement('div');
+  loading.className = 'msg-asistent';
+  loading.innerHTML = `<div class="msg-avatar-ast">🌸</div><div class="msg-text-ast"><div class="msg-loading"><span></span><span></span><span></span></div></div>`;
+  chat.appendChild(loading);
+  chat.scrollTop = chat.scrollHeight;
+
+  try {
+    // Fetch carti din DB pentru recomandari reale
+    let cartiDB = [];
+    try {
+      const r = await fetch('/api/carti');
+      cartiDB = await r.json();
+    } catch(e) {}
+
+    const raspuns = await genereazaRaspunsAster(mesaj, prenume, cartiDB);
+    conversatieCurenta.push({rol: 'assistant', text: raspuns});
+
+    loading.remove();
+    const msgAst = document.createElement('div');
+    msgAst.className = 'msg-asistent';
+    msgAst.innerHTML = `<div class="msg-avatar-ast">🌸</div><div class="msg-text-ast">${raspuns}</div>`;
+    chat.appendChild(msgAst);
+    salveazaConversatia();
+  } catch(e) {
+    loading.remove();
+    const msgAst = document.createElement('div');
+    msgAst.className = 'msg-asistent';
+    msgAst.innerHTML = `<div class="msg-avatar-ast">🌸</div><div class="msg-text-ast">Îmi pare rău, a apărut o eroare. Încearcă din nou! 📚</div>`;
+    chat.appendChild(msgAst);
+  }
+  chat.scrollTop = chat.scrollHeight;
+}
+
+async function genereazaRaspunsAster(mesaj, prenume, cartiDB) {
+  const m = mesaj.toLowerCase();
+
+  // ── RECOMANDARI DIN DB ────────────────────────────────────
+  const genMap = {
+    fantasy: 'Fantasy', mister: 'Mister', sf: 'SF', roman: 'Roman',
+    romantic: 'Romantic', thriller: 'Thriller', copii: 'Copii',
+    drama: 'Drama', poezie: 'Poezie', istoric: 'Istoric', stiinta: 'Nuvela'
+  };
+
+  for (const [cuvant, gen] of Object.entries(genMap)) {
+    if (m.includes(cuvant) && (m.includes('recomand') || m.includes('carte') || m.includes('citit') || m.includes('suggest'))) {
+      const filtrate = cartiDB.filter(c => c.gen_specific === gen && c.exemplare_disponibile > 0);
+      if (filtrate.length > 0) {
+        const alese = filtrate.sort(() => Math.random() - 0.5).slice(0, 3);
+        const lista = alese.map(c => `<strong>${c.titlu}</strong> de ${c.autor}`).join(', ');
+        return `Bună alegere, ${prenume}! Iată câteva cărți ${gen} disponibile acum: ${lista}. Le poți găsi în <a href="/web/catalog.html" style="color:var(--mov-inchis);">catalog</a> sau la recepție! 📚`;
+      }
+      return `Momentan nu am cărți ${gen} disponibile, dar verifică <a href="/web/catalog.html" style="color:var(--mov-inchis);">catalogul</a> pentru mai multe opțiuni!`;
+    }
+  }
+
+  // ── CAUTARE AUTOR ─────────────────────────────────────────
+  if (m.includes('autor') || m.includes('scris de') || m.includes('carti de')) {
+    const autori = [...new Set(cartiDB.map(c => c.autor))].filter(a => a && m.includes(a.toLowerCase().split(' ')[1]?.toLowerCase() || ''));
+    if (autori.length > 0) {
+      const cartiAutor = cartiDB.filter(c => c.autor === autori[0] && c.exemplare_disponibile > 0).slice(0, 3);
+      const lista = cartiAutor.map(c => `<strong>${c.titlu}</strong>`).join(', ');
+      return `De ${autori[0]} avem disponibile: ${lista}. Le găsești în <a href="/web/catalog.html" style="color:var(--mov-inchis);">catalog</a>! 📖`;
+    }
+  }
+
+  // ── PROGRAM ───────────────────────────────────────────────
+  if (m.includes('program') || m.includes('orar') || m.includes('deschis') || m.includes('ore')) {
+    return `Biblioteca Aster este deschisă <strong>Luni–Vineri 08:00–20:00</strong> și <strong>Sâmbătă 09:00–14:00</strong>. Corpul C (Digital) are program extins până la 22:00! 🕐`;
+  }
+
+  // ── CAFENEA ───────────────────────────────────────────────
+  if (m.includes('cafenea') || m.includes('cafea') || m.includes('ceai') || m.includes('mancare')) {
+    return `Cafeneaua Literară Aster se află în <strong>Corp A, Parter</strong>. Oferim cafea, ceaiuri, matcha, ciocolată caldă și croissante! Poți face o <a href="/web/cafenea.html" style="color:var(--mov-inchis);">rezervare online</a>. ☕`;
+  }
+
+  // ── EVENIMENTE ────────────────────────────────────────────
+  if (m.includes('eveniment') || m.includes('activitat') || m.includes('club') || m.includes('lansare')) {
+    return `Săptămâna aceasta avem: <strong>Lansare Ana Blandiana</strong> (18 Mai), <strong>Club Fantasy & SF</strong> (20 Mai) și <strong>Ora Poveștilor</strong> (22 Mai). Vezi toate evenimentele pe <a href="/web/anunturi.html" style="color:var(--mov-inchis);">pagina de anunțuri</a>! 🎉`;
+  }
+
+  // ── CORPURI ───────────────────────────────────────────────
+  if (m.includes('corp') || m.includes('etaj') || m.includes('unde') || m.includes('locatie') || m.includes('raft')) {
+    return `Biblioteca are 6 corpuri: <strong>A</strong> (Sediu Central), <strong>B</strong> (Studiu & Non-ficțiune), <strong>C</strong> (Digital & Mediatecă), <strong>D</strong> (Ficțiune), <strong>E</strong> (Știință) și <strong>F</strong> (Copii & Evenimente). 🏛️`;
+  }
+
+  // ── IMPRUMUT ──────────────────────────────────────────────
+  if (m.includes('imprumut') || m.includes('imprumuta') || m.includes('lua') || m.includes('returna')) {
+    return `Poți împrumuta <strong>maxim 6 cărți</strong> pentru <strong>21 de zile</strong>. Termenul poate fi prelungit din secțiunea <strong>My Books</strong> dacă nu există rezervări active. 📋`;
+  }
+
+  // ── CATALOG ───────────────────────────────────────────────
+  if (m.includes('catalog') || m.includes('carti disponibile') || m.includes('ce carti')) {
+    const total = cartiDB.length;
+    const disponibile = cartiDB.filter(c => c.exemplare_disponibile > 0).length;
+    return `Avem <strong>${total} titluri</strong> în colecție, din care <strong>${disponibile} sunt disponibile</strong> acum. Explorează <a href="/web/catalog.html" style="color:var(--mov-inchis);">catalogul complet</a>! 📚`;
+  }
+
+  // ── SALUT ─────────────────────────────────────────────────
+  if (m.includes('buna') || m.includes('salut') || m.includes('hello') || m.includes('hey')) {
+    return `Bună ziua, ${prenume}! 🌸 Sunt Asistentul Aster. Te pot ajuta cu recomandări de cărți, informații despre bibliotecă, program sau evenimente. Cu ce te pot ajuta?`;
+  }
+
+  // ── MULTUMIRE ─────────────────────────────────────────────
+  if (m.includes('multumesc') || m.includes('mersi') || m.includes('super') || m.includes('perfect')) {
+    return `Cu plăcere, ${prenume}! 🌸 Dacă mai ai nevoie de ceva, sunt aici. Lectură plăcută!`;
+  }
+
+  // ── DEFAULT ───────────────────────────────────────────────
+  const sugestii = ['Vrei să-ți recomand o carte?', 'Dorești informații despre program?', 'Vrei să afli despre evenimentele din această săptămână?'];
+  const sugestie = sugestii[Math.floor(Math.random() * sugestii.length)];
+  return `Bună întrebare, ${prenume}! Nu sunt sigur că am înțeles corect. ${sugestie} Sau poți căuta direct în <a href="/web/catalog.html" style="color:var(--mov-inchis);">catalog</a>! 📚`;
+}
+
+function salveazaConversatia() {
+  if (conversatieCurenta.length < 2) return;
+  const titlu = conversatieCurenta[0]?.text?.substring(0, 40) + '...';
+  const data = new Date().toLocaleDateString('ro-RO');
+  istoricConversatii.unshift({titlu, data, mesaje: [...conversatieCurenta]});
+  localStorage.setItem('asistent_conversatii', JSON.stringify(istoricConversatii.slice(0, 10)));
+}
+
+function conversatieNoua() {
+  conversatieCurenta = [];
+  const chat = document.getElementById('asistent-chat');
+  if (chat) chat.innerHTML = `
+    <div class="msg-asistent">
+      <div class="msg-avatar-ast">🌸</div>
+      <div class="msg-text-ast">Conversație nouă! Cu ce te pot ajuta?</div>
+    </div>`;
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  verificaResetChallenge();
+  incarcaFoldereCustom();
+  incarcaNotificariSalvate();
+  incarcaRezervari();
+  incarcaChallengeuriInscrise();
+  incarcaStareaGrupuri();
+  // Restaureaza starea actiunilor
+  const actiuni = JSON.parse(localStorage.getItem('notif_actiuni') || '{}');
+  if (actiuni['cerere_andrei_popescu']) {
+    const btns = document.querySelectorAll('.btn-notif');
+    btns.forEach(b => {
+      if (b.textContent === 'Acceptă' || b.textContent === 'Refuză') {
+        b.closest('div').innerHTML = `<span style="font-size:0.75rem;color:var(--mov-mediu);">✓ ${actiuni['cerere_andrei_popescu'] === 'acceptat' ? 'Acceptat' : 'Refuzat'}</span>`;
+      }
+    });
+  }
+  if (actiuni['imprumut_Regele Umbrei']) {
+    const btns = document.querySelectorAll('.btn-notif');
+    btns.forEach(b => {
+      if (b.textContent === 'Reînnoiește împrumutul') {
+        b.textContent = '✓ Împrumut reînnoit!';
+        b.style.background = '#2e7d32';
+        b.disabled = true;
+      }
+    });
+  }
+  // Actualizeaza avatar si dropdown cu datele din localStorage
+  const prenume = localStorage.getItem('prenume_user');
+  const nume = localStorage.getItem('nume_user');
+  if (prenume && nume) {
+    const initiale = (prenume[0] + (nume[0]||'')).toUpperCase();
+    const av = document.getElementById('dash-avatar');
+    if (av) av.textContent = initiale;
+    const dd = document.getElementById('dash-dd-nume');
+    if (dd) dd.textContent = prenume + ' ' + nume;
+    // Avatar in sidebar
+    const avSidebar = document.querySelector('.avatar');
+    if (avSidebar) avSidebar.textContent = initiale;
+    const profilAv = document.querySelector('.profil-avatar');
+    if (profilAv) profilAv.textContent = initiale;
+  }
+  
+  // Incarca targeturile challenge salvate
+  ['monthly','pages','yearly','bday'].forEach(tip => {
+    const val = localStorage.getItem('ch_' + tip + '_target');
+    const input = document.getElementById(tip + '-target');
+    if (val && input) { input.value = val; updateChallange(tip); }
+  });
+  
+  // Incarca datele profil salvate
+  ['username', 'telefon', 'email'].forEach(camp => {
+    const val = localStorage.getItem('profil_' + camp);
+    const input = document.getElementById('input-' + camp);
+    if (val && input) input.value = val;
+  });
+});
+
+
+// ── PRIETENI - STERGE DIN LISTA ──────────────────────────────
+function stergePrivetenieLista(username, btn) {
+  if (!confirm('Elimini @' + username + ' din prieteni?')) return;
+  // Sterge din localStorage
+  const prieteni = JSON.parse(localStorage.getItem('prieteni_stersi') || '[]');
+  prieteni.push(username);
+  localStorage.setItem('prieteni_stersi', JSON.stringify(prieteni));
+  // Sterge vizual
+  const card = btn.closest('.card-prieten');
+  if (card) card.style.animation = 'fadeOut 0.3s ease forwards';
+  setTimeout(() => {
+    if (card) card.remove();
+    const titlu = document.querySelector('#sec-prieteni .sectiune-titlu');
+    if (titlu) {
+      const nr = document.querySelectorAll('#lista-prieteni .card-prieten').length;
+      titlu.textContent = 'Prietenii mei (' + nr + ')';
+    }
+  }, 350);
+  salveazaNotificare('info', 'Prieten eliminat', '@' + username + ' a fost eliminat din lista ta de prieteni.');
+}
+
+// ── GRUPURI - ALATURA-TE / IESI ──────────────────────────────
+function alatureazaGrup(idGrup, btn) {
+  const grupuriJoin = JSON.parse(localStorage.getItem('grupuri_joined') || '[]');
+  if (!grupuriJoin.includes(idGrup)) {
+    grupuriJoin.push(idGrup);
+    localStorage.setItem('grupuri_joined', JSON.stringify(grupuriJoin));
+  }
+  btn.textContent = '✓ Solicitare trimisă';
+  btn.style.background = 'var(--mov-deschis)';
+  btn.style.color = 'var(--mov-inchis)';
+  btn.disabled = true;
+  salveazaNotificare('info', 'Cerere trimisă', 'Cererea ta de alăturare la grup a fost trimisă.');
+}
+
+function iesireGrup(idGrup, btn) {
+  if (!confirm('Ești sigur că vrei să ieși din acest grup?')) return;
+  const grupuriJoin = JSON.parse(localStorage.getItem('grupuri_joined') || '[]');
+  const nou = grupuriJoin.filter(id => id !== idGrup);
+  localStorage.setItem('grupuri_joined', JSON.stringify(nou));
+  // Schimba butonul
+  const wrap = btn.parentElement;
+  wrap.innerHTML = '<button class="btn-alatura" onclick="alatureazaGrup(' + idGrup + ',this)">Alătură-te</button>';
+  salveazaNotificare('info', 'Grup abandonat', 'Ai ieșit din grup.');
+}
+
+function incarcaStareaGrupuri() {
+  const grupuriJoin = JSON.parse(localStorage.getItem('grupuri_joined') || '[]');
+  grupuriJoin.forEach(idGrup => {
+    const btns = document.querySelectorAll('[data-grup-id="' + idGrup + '"]');
+    btns.forEach(btn => {
+      btn.textContent = '✓ Solicitare trimisă';
+      btn.style.background = 'var(--mov-deschis)';
+      btn.style.color = 'var(--mov-inchis)';
+      btn.disabled = true;
+    });
+  });
+  
+  // Sterge prietenii eliminati
+  const stersi = JSON.parse(localStorage.getItem('prieteni_stersi') || '[]');
+  stersi.forEach(username => {
+    const cards = document.querySelectorAll('.card-prieten');
+    cards.forEach(card => {
+      if (card.innerHTML.includes('@' + username)) card.remove();
+    });
+  });
+}
+
+</script>
+</body>
+</html>
