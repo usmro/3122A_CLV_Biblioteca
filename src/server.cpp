@@ -384,7 +384,37 @@ svr.Post("/api/carti", [&db](const httplib::Request& req, httplib::Response& res
         };
         res.set_content(r.dump(), "application/json");
     });
-
+// GET /api/autori/:id — detalii autor
+    svr.Get(R"(/api/autori/(\d+))", [&db](const httplib::Request& req, httplib::Response& res) {
+        try {
+            int id = std::stoi(req.matches[1].str());
+            AutorDB a = db.getAutorDupaId(id);
+            if (a.id == -1) {
+                json err = {{"succes", false}, {"mesaj", "Autorul nu a fost gasit."}};
+                res.status = 404;
+                res.set_content(err.dump(), "application/json");
+                return;
+            }
+            auto carti = db.cautaDupaAutor(a.nume_complet);
+            json carti_arr = json::array();
+            for (const auto& c : carti) {
+                carti_arr.push_back({{"id", c.id}, {"titlu", c.titlu}, {"gen_specific", c.gen_specific}, {"exemplare_disponibile", c.exemplare_disponibile}});
+            }
+            json r = {
+                {"id", a.id},
+                {"nume_complet", a.nume_complet},
+                {"biografie", a.biografie},
+                {"nationalitate", a.nationalitate},
+                {"ani_activitate", a.ani_activitate},
+                {"carti", carti_arr}
+            };
+            res.set_content(r.dump(), "application/json");
+        } catch (...) {
+            json err = {{"succes", false}, {"mesaj", "Eroare server."}};
+            res.status = 500;
+            res.set_content(err.dump(), "application/json");
+        }
+    });
     // ════════════════════════════════════════════════════════
     // API — IMPRUMUTURI & REZERVARI
     // ════════════════════════════════════════════════════════

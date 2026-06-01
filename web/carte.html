@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carte · Biblioteca Aster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--mov-deschis:#e8e0f5;--mov-pastel:#c9b8e8;--mov-mediu:#9b7dc8;--mov-inchis:#6b4fa0;--mov-profund:#4a3270;--lila:#d4c5ed;--alb-cald:#faf8fd;--text-principal:#2d1f4e;--text-secundar:#7a6a9a;--text-subtil:#b0a0cc;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--alb-cald);color:var(--text-principal);}
+header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--lila);background:white;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:0.6rem;text-decoration:none;}
+.logo-svg{width:28px;height:28px;}
+.logo-nume{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--mov-profund);}
+.nav-header{display:flex;gap:1.5rem;}
+.nav-header a{text-decoration:none;font-size:0.85rem;color:var(--text-secundar);transition:color 0.2s;}
+.nav-header a:hover{color:var(--mov-inchis);}
+.page-wrapper{max-width:860px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.btn-inapoi{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--text-secundar);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;margin-bottom:2rem;}
+.btn-inapoi svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
+
+/* CARTE HERO */
+.carte-hero{display:flex;gap:2.5rem;align-items:flex-start;margin-bottom:2rem;}
+.carte-coperta{width:160px;height:220px;border-radius:14px;background:linear-gradient(135deg,var(--mov-deschis),var(--mov-pastel));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.78rem;font-weight:500;color:var(--mov-inchis);text-align:center;padding:1rem;line-height:1.4;}
+.carte-detalii{flex:1;}
+.carte-titlu{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:400;margin-bottom:0.4rem;line-height:1.2;}
+.carte-autor-link{font-size:1rem;color:var(--mov-inchis);cursor:pointer;text-decoration:none;font-style:italic;margin-bottom:1rem;display:inline-block;}
+.carte-autor-link:hover{text-decoration:underline;}
+
+/* STATUS BUTOANE */
+.status-btns{display:flex;gap:0.5rem;flex-wrap:wrap;margin:1.25rem 0;}
+.btn-status{padding:0.45rem 1rem;border-radius:20px;border:1.5px solid var(--lila);background:white;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--text-secundar);cursor:pointer;transition:all 0.2s;}
+.btn-status:hover{border-color:var(--mov-mediu);color:var(--mov-inchis);}
+.btn-status.activ{background:var(--mov-inchis);color:white;border-color:var(--mov-inchis);}
+.btn-status.activ-citit{background:#2e7d32;border-color:#2e7d32;color:white;}
+.btn-status.activ-progres{background:var(--mov-inchis);border-color:var(--mov-inchis);color:white;}
+.btn-status.activ-wishlist{background:#c62828;border-color:#c62828;color:white;}
+.btn-status.activ-dnf{background:#555;border-color:#555;color:white;}
+
+/* IMPRUMUTA */
+.btn-imprumuta{padding:0.65rem 1.5rem;background:var(--mov-inchis);color:white;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:500;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
+.btn-imprumuta:hover{background:var(--mov-profund);}
+.btn-imprumuta:disabled{background:var(--text-subtil);cursor:not-allowed;}
+.btn-imprumuta.imprumutat{background:#2e7d32;}
+
+/* META */
+.carte-meta{display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;}
+.meta-badge{font-size:0.72rem;padding:0.2rem 0.65rem;border-radius:12px;background:var(--mov-deschis);color:var(--mov-inchis);}
+.stele{color:#f0c040;font-size:1rem;letter-spacing:0.05em;}
+
+/* SECTIUNI */
+.sectiune-card{background:white;border:1px solid var(--lila);border-radius:16px;padding:1.5rem;margin-bottom:1rem;}
+.sectiune-titlu{font-size:0.82rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-subtil);margin-bottom:1rem;}
+.detaliu-row{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--alb-cald);font-size:0.85rem;}
+.detaliu-row:last-child{border:none;}
+.detaliu-label{color:var(--text-subtil);}
+.detaliu-val{color:var(--text-principal);font-weight:500;}
+.rezumat-text{font-size:0.88rem;color:var(--text-secundar);line-height:1.75;}
+.locatie-info{display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;color:var(--text-secundar);}
+.locatie-info svg{width:16px;height:16px;stroke:var(--mov-inchis);fill:none;stroke-width:1.5;}
+
+.loading{text-align:center;padding:3rem;color:var(--text-subtil);}
+footer{text-align:center;padding:1.5rem;font-size:0.75rem;color:var(--text-subtil);border-top:1px solid var(--mov-deschis);}
+@media(max-width:600px){.carte-hero{flex-direction:column;}.carte-coperta{width:100%;height:180px;}}
+</style>
+</head>
+<body>
+<header>
+  <a href="/web/primapagina.html" class="logo">
+    <svg class="logo-svg" viewBox="0 0 48 48" fill="none">
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(0 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(45 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(90 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#c9b8e8" transform="rotate(135 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(22.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(67.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(112.5 24 24)"/>
+      <ellipse cx="24" cy="10" rx="3.5" ry="7" fill="#9b7dc8" transform="rotate(157.5 24 24)"/>
+      <circle cx="24" cy="24" r="6" fill="#6b4fa0"/>
+      <circle cx="24" cy="24" r="3.5" fill="#9b7dc8"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8e0f5"/>
+    </svg>
+    <span class="logo-nume">Biblioteca Aster</span>
+  </a>
+  <nav class="nav-header">
+    <a href="/web/catalog.html">Catalog</a>
+    <a href="/web/anunturi.html">Evenimente</a>
+    <a href="/web/cafenea.html">Cafenea</a>
+    <a href="/web/despre.html">Despre</a>
+  </nav>
+</header>
+
+<div class="page-wrapper">
+  <button class="btn-inapoi" onclick="history.back()">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Înapoi
+  </button>
+  <div id="continut"><div class="loading">Se încarcă cartea...</div></div>
+</div>
+
+<footer>© 2026 Biblioteca Aster · Suceava, România</footer>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const idCarte = params.get('id');
+let carteDate = null;
+
+const CORPURI = {1:'Corp A — Sediu Central',2:'Corp B — Studiu',3:'Corp C — Digital',4:'Corp D — Ficțiune',5:'Corp E — Știință',6:'Corp F — Copii'};
+
+function getStatus() {
+  return localStorage.getItem('carte_status_' + idCarte) || '';
+}
+
+function setStatus(status) {
+  const curent = getStatus();
+  if (curent === status) {
+    localStorage.removeItem('carte_status_' + idCarte);
+  } else {
+    localStorage.setItem('carte_status_' + idCarte, status);
+  }
+  actualizeazaButoane();
+  // Sincronizeaza cu my-books din dashboard
+  sincronizeazaMyBooks();
+}
+
+function actualizeazaButoane() {
+  const status = getStatus();
+  document.querySelectorAll('.btn-status').forEach(function(btn) {
+    btn.className = 'btn-status';
+    const s = btn.dataset.status;
+    if (s === status) {
+      if (s === 'citit') btn.classList.add('activ-citit');
+      else if (s === 'progres') btn.classList.add('activ-progres');
+      else if (s === 'wishlist') btn.classList.add('activ-wishlist');
+      else if (s === 'dnf') btn.classList.add('activ-dnf');
+    }
+  });
+}
+
+function sincronizeazaMyBooks() {
+  if (!carteDate) return;
+  const status = getStatus();
+  const cheie = 'mybooks_' + status;
+  if (!status) return;
+  const lista = JSON.parse(localStorage.getItem(cheie) || '[]');
+  const exista = lista.find(function(c) { return c.id == idCarte; });
+  if (!exista) {
+    lista.push({id: parseInt(idCarte), titlu: carteDate.titlu, autor: carteDate.autor, gen: carteDate.gen_specific});
+    localStorage.setItem(cheie, JSON.stringify(lista));
+  }
+}
+
+async function imprumuta(btn) {
+  const idClient = localStorage.getItem('id_client');
+  if (!idClient) { window.location.href = '/web/login.html'; return; }
+  btn.textContent = 'Se procesează...';
+  btn.disabled = true;
+  try {
+    const r = await fetch('/api/imprumuturi', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id_client: parseInt(idClient), id_carte: parseInt(idCarte)})
+    });
+    const d = await r.json();
+    if (d.succes) {
+      btn.textContent = '✓ Împrumutat!';
+      btn.className = 'btn-imprumuta imprumutat';
+      // Salveaza in localStorage
+      const imp = JSON.parse(localStorage.getItem('imprumuturi_locale') || '[]');
+      imp.push({id_carte: parseInt(idCarte), titlu: carteDate.titlu, data: new Date().toLocaleDateString('ro-RO')});
+      localStorage.setItem('imprumuturi_locale', JSON.stringify(imp));
+    } else {
+      btn.textContent = '📖 Împrumută';
+      btn.disabled = false;
+      alert(d.mesaj || 'Eroare la împrumut.');
+    }
+  } catch(e) {
+    btn.textContent = '📖 Împrumută';
+    btn.disabled = false;
+    alert('Serverul nu răspunde.');
+  }
+}
+
+function eImprumutata() {
+  const imp = JSON.parse(localStorage.getItem('imprumuturi_locale') || '[]');
+  return imp.some(function(i) { return i.id_carte == idCarte; });
+}
+
+function genereazaStele(rating) {
+  if (!rating) return '—';
+  const r = Math.round(rating);
+  return '★'.repeat(r) + '☆'.repeat(5-r) + ' ' + parseFloat(rating).toFixed(1);
+}
+
+async function incarcaCarte() {
+  const container = document.getElementById('continut');
+  if (!idCarte) { container.innerHTML = '<div class="loading">ID carte lipsă.</div>'; return; }
+  try {
+    const r = await fetch('/api/carti/' + idCarte);
+    if (!r.ok) throw new Error('Not found');
+    const c = await r.json();
+    carteDate = c;
+
+    const titluCurat = (c.titlu || '').replace(/_/g, ' ');
+    const disponibil = c.exemplare_disponibile > 0;
+    const imprumutat = eImprumutata();
+    const status = getStatus();
+
+    document.title = titluCurat + ' · Biblioteca Aster';
+
+    container.innerHTML =
+      '<div class="carte-hero">' +
+        '<div class="carte-coperta">' + titluCurat + '</div>' +
+        '<div class="carte-detalii">' +
+          '<div class="carte-titlu">' + titluCurat + '</div>' +
+          '<a class="carte-autor-link" href="/web/autor.html?id=' + (c.id_autor||'') + '" onclick="cautaAutorLink(event)">' + (c.autor||'') + '</a>' +
+          '<div class="carte-meta">' +
+            (c.gen_specific ? '<span class="meta-badge">' + c.gen_specific + '</span>' : '') +
+            (c.tip ? '<span class="meta-badge">' + c.tip + '</span>' : '') +
+            (c.suport ? '<span class="meta-badge">' + c.suport + '</span>' : '') +
+            (c.limba ? '<span class="meta-badge">' + c.limba + '</span>' : '') +
+            (c.an_aparitie ? '<span class="meta-badge">' + c.an_aparitie + '</span>' : '') +
+          '</div>' +
+          '<div class="stele">' + genereazaStele(c.rating) + '</div>' +
+          '<div class="status-btns">' +
+            '<button class="btn-status" data-status="citit" onclick="setStatus(\'citit\')">✓ Citit</button>' +
+            '<button class="btn-status" data-status="progres" onclick="setStatus(\'progres\')">📖 În progres</button>' +
+            '<button class="btn-status" data-status="wishlist" onclick="setStatus(\'wishlist\')">♡ Vreau să citesc</button>' +
+            '<button class="btn-status" data-status="dnf" onclick="setStatus(\'dnf\')">✕ DNF</button>' +
+          '</div>' +
+          (imprumutat
+            ? '<button class="btn-imprumuta imprumutat" disabled>✓ Împrumutat</button>'
+            : '<button class="btn-imprumuta" onclick="imprumuta(this)" ' + (!disponibil?'disabled':'') + '>' + (disponibil ? '📖 Împrumută' : 'Indisponibil') + '</button>') +
+          '<div style="font-size:0.75rem;color:var(--text-subtil);margin-top:0.5rem;">' + (disponibil ? c.exemplare_disponibile + ' exemplare disponibile' : 'Toate exemplarele sunt împrumutate') + '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="sectiune-card">' +
+        '<div class="sectiune-titlu">Rezumat</div>' +
+        '<div class="rezumat-text">' + (c.rezumat && c.rezumat !== 'Rezumat in curs de adaugare.' ? c.rezumat : 'Rezumatul acestei cărți va fi disponibil în curând.') + '</div>' +
+      '</div>' +
+
+      '<div class="sectiune-card">' +
+        '<div class="sectiune-titlu">Detalii carte</div>' +
+        (c.isbn ? '<div class="detaliu-row"><span class="detaliu-label">ISBN</span><span class="detaliu-val">' + c.isbn + '</span></div>' : '') +
+        (c.editura ? '<div class="detaliu-row"><span class="detaliu-label">Editura</span><span class="detaliu-val">' + c.editura + '</span></div>' : '') +
+        (c.nr_pagini ? '<div class="detaliu-row"><span class="detaliu-label">Pagini</span><span class="detaliu-val">' + c.nr_pagini + '</span></div>' : '') +
+        (c.tip_coperta ? '<div class="detaliu-row"><span class="detaliu-label">Copertă</span><span class="detaliu-val">' + c.tip_coperta + '</span></div>' : '') +
+        (c.serie ? '<div class="detaliu-row"><span class="detaliu-label">Serie</span><span class="detaliu-val">' + c.serie + '</span></div>' : '') +
+        (c.cod_identificare ? '<div class="detaliu-row"><span class="detaliu-label">Cod</span><span class="detaliu-val">' + c.cod_identificare + '</span></div>' : '') +
+      '</div>' +
+
+      '<div class="sectiune-card">' +
+        '<div class="sectiune-titlu">Locație în bibliotecă</div>' +
+        '<div class="locatie-info"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' +
+        (CORPURI[c.id_cladire] || 'Corp ' + c.id_cladire) +
+        (c.id_sala ? ' · Sala ' + c.id_sala : '') +
+        (c.id_raft ? ' · Raft ' + c.id_raft : '') +
+        '</div>' +
+      '</div>';
+
+    actualizeazaButoane();
+  } catch(e) {
+    container.innerHTML = '<div class="loading">Cartea nu a putut fi încărcată.</div>';
+  }
+}
+
+async function cautaAutorLink(e) {
+  if (!carteDate) return;
+  // Daca nu avem id_autor, cautam dupa nume
+  if (!carteDate.id_autor) {
+    e.preventDefault();
+    try {
+      const r = await fetch('/api/autori/cauta?q=' + encodeURIComponent(carteDate.autor));
+      const a = await r.json();
+      if (a && a.id !== -1) {
+        window.location.href = '/web/autor.html?id=' + a.id;
+      }
+    } catch(err) {}
+  }
+}
+
+incarcaCarte();
+</script>
+</body>
+</html>

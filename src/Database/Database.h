@@ -38,6 +38,7 @@ struct CarteDB {
 struct AutorDB {
     int id;
     std::string nume_complet, biografie, cale_poza;
+    std::string nationalitate, ani_activitate;
 };
 
 struct ClientDB {

@@ -1,1 +1,4 @@
 biblioteca.exe
+biblioteca.db-shm
+biblioteca.db-wal
+server

@@ -236,13 +236,14 @@ bool Database::stergeCarte(int id) {
 
 std::vector<AutorDB> Database::getToatiAutorii() {
     std::vector<AutorDB> rezultat;
-    query("SELECT id, nume_complet, biografie, cale_poza FROM autori",
-    [&](sqlite3_stmt* s) {
+    query("SELECT id, nume_complet, biografie, cale_poza, nationalitate, ani_activitate FROM autori",[&](sqlite3_stmt* s) {
         AutorDB a;
         a.id           = sqlite3_column_int(s, 0);
         a.nume_complet = getText(s, 1);
         a.biografie    = getText(s, 2);
         a.cale_poza    = getText(s, 3);
+        a.nationalitate = getText(s, 4);
+        a.ani_activitate = getText(s, 5);
         rezultat.push_back(a);
     });
     return rezultat;
@@ -250,13 +251,15 @@ std::vector<AutorDB> Database::getToatiAutorii() {
 
 AutorDB Database::getAutorDupaNumele(const std::string& nume) {
     AutorDB a; a.id = -1;
-    query("SELECT id, nume_complet, biografie, cale_poza FROM autori WHERE nume_complet LIKE '%" + nume + "%'",
+   query("SELECT id, nume_complet, biografie, cale_poza, nationalitate, ani_activitate FROM autori WHERE nume_complet LIKE '%" + nume + "%'",
     [&](sqlite3_stmt* s) {
         a.id           = sqlite3_column_int(s, 0);
         a.nume_complet = getText(s, 1);
         a.biografie    = getText(s, 2);
         a.cale_poza    = getText(s, 3);
-    });
+        a.nationalitate = getText(s, 4);
+        a.ani_activitate = getText(s, 5);
+});
     return a;
 }
 
@@ -830,4 +833,19 @@ bool Database::adaugaInscriere(int id_voluntar, const std::string& eveniment, co
         return true;
     }
     return false;
+}
+
+
+AutorDB Database::getAutorDupaId(int id) {
+    AutorDB a; a.id = -1;
+    query("SELECT id, nume_complet, biografie, cale_poza, nationalitate, ani_activitate FROM autori WHERE id = " + std::to_string(id),
+    [&](sqlite3_stmt* s) {
+        a.id             = sqlite3_column_int(s, 0);
+        a.nume_complet   = getText(s, 1);
+        a.biografie      = getText(s, 2);
+        a.cale_poza      = getText(s, 3);
+        a.nationalitate  = getText(s, 4);
+        a.ani_activitate = getText(s, 5);
+    });
+    return a;
 }
